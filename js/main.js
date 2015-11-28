@@ -4,6 +4,8 @@ var canvas,
 	isDrawing = false,
 	points = [ ],
 	paint = {
+		title : "WebDraft",
+		version : 1.5,
 		key : {
 			Ctrl  : false,//press Control (Ctrl)
 			Shift : false,//press Shift
@@ -36,15 +38,18 @@ var canvas,
 		size : 10,
 		sensitivityPoints : 1000,
 		color : "#000000",
-		selectTool : "pencil"
+		selectTool : "pencil",
+		func : {
+			makeid : function(){
+				var text = "";
+				var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+				for( var i=0; i < 15; i++ )
+					text += possible.charAt(Math.floor(Math.random() * possible.length));
+				return text;
+			}
+		}
 	};
-function makeid(){
-	var text = "";
-	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	for( var i=0; i < 15; i++ )
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
-	return text;
-}
+
 function resize(){
 	$("html, body, #paint").css({
 		"width"  : $(window).width(),
@@ -57,16 +62,6 @@ function resize(){
 	$("#resizer").css({
 		marginLeft : ( $("#content").width() - $("#resizer").width() )/2+"px",
 		marginTop  : ( $("#content").height() - $("#resizer").height() )/2+"px"
-	})
-	var i = 0,
-		w = 0;
-	$(".tools").each(function(){
-		w += $(".tools#t"+i).width()+5
-		$(this).css({
-			marginLeft : w,
-			marginTop  : 10
-		})
-		i++;
 	})
 }
 function drawPos(){
@@ -95,8 +90,8 @@ function drawPos(){
 	}
 	$("#content").perfectScrollbar()
 	ctx.putImageData(image, 0, 0)
-	$("title").text("WebDraft v1.0 ["+paint.draw.width+" x "+paint.draw.height+"]")
-	$("html, body, #paint").fadeIn()
+	$("title").text(paint.title+" v"+paint.version+" ["+paint.draw.width+" x "+paint.draw.height+"]")
+	$("html, body, #paint").css({"visibility":"visible"})
 }
 function drawStyle(){
 	ctx.lineWidth = paint.size;
@@ -110,7 +105,7 @@ function drawStyle(){
 	ctx.strokeStyle = paint.color;//line color
 }
 function erase(){
-	ctx.clearRect(paint.mPosition.x,paint.mPosition.y,paint.size,paint.size);
+	ctx.clearRect(paint.mPosition.x-paint.size/2,paint.mPosition.y-paint.size/2,paint.size,paint.size);
 	points = [ ]
 }
 function drawing(){
@@ -145,7 +140,7 @@ function mousePosition(event){
 	$("#mousePosition").text(paint.mPosition.x+" , "+paint.mPosition.y)
 }
 function init(){
-	randomId = makeid()//generare random id for canvas selector
+	randomId = paint.func.makeid()//generare random id for canvas selector
 	$(paint.draw.selectorId).append('<canvas id="'+randomId+'" width="'+paint.draw.width+'" height="'+paint.draw.height+'"></canvas>');
 	canvas = document.getElementById(randomId);
 	ctx = canvas.getContext('2d');
@@ -225,7 +220,7 @@ $(document)
 		kolo;
 		init();
 		//draggable .tools & #resizer
-		$(".tools")
+		$("#tools_group")
 			.draggable({
 				//snap    : true,
 				handle  : ".title",
@@ -240,15 +235,15 @@ $(document)
 			.css("position","absolute")
 		//switch tool panels visibility
 		$(".toggle_visibility").click(function(){
-			var switcher = $(this),
-				panel    = switcher.parent(),
-				icon     = switcher.find(".fa");
+			var icon  = $(this),
+				bar   = $(this).parent(),
+				panel = bar.parent();
 			panel.find(".show_hide").slideToggle()
 			switch(icon.attr("class")){
-				case "fa fa-chevron-down" :
+				case "fa fa-chevron-down toggle_visibility" :
 					icon.removeClass("fa fa-chevron-down").addClass("fa fa-chevron-up")
 				break;
-				case "fa fa-chevron-up" :
+				case "fa fa-chevron-up toggle_visibility" :
 					icon.removeClass("fa fa-chevron-up").addClass("fa fa-chevron-down")
 				break;
 			}
@@ -295,19 +290,19 @@ $(document)
 			init();
 		})
 		//changing size
-		$("input[type=range]#pointSize").change(function(){
+		$("input[type=range]#pointSize").mousemove(function(){
 			paint.size = $(this).val();
 			$("#pointSizeValue").text("size:"+$(this).val()+"px")
 		})
 		//changing shadow blur
-		$("input[type=range]#ShadowBlur").change(function(){
+		$("input[type=range]#ShadowBlur").mousemove(function(){
 			paint.shadow.blur = $(this).val();
 			$("#ShadowBlurValue").text("shadow:"+$(this).val()+"px")
 		})
 		//changing sensitivity of common points
-		$("input[type=range]#sensitivityPoints").change(function(){
+		$("input[type=range]#sensitivityPoints").mousemove(function(){
 			paint.sensitivityPoints = $(this).val();
-			$("#sensitivityPointsValue").text("sensitivity:"+$(this).val()/1000+"%")
+			$("#sensitivityPointsValue").text("sensitivity:"+Math.floor($(this).val()/1000)+"%")
 		})
 		//choosing pencil
 		$("#pencil").click(function(){

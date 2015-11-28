@@ -18,7 +18,7 @@ html, body, #paint{
 	float:left;
 	position:fixed;
 	overflow:hidden;
-	display:none;
+/*	visibility:hidden;*/
 }
 #paint{z-index:99999999999999999999999999}
 /*płótno*/
@@ -83,16 +83,19 @@ canvas{position:absolute;cursor:crosshair;}
 .buttonAction:hover{background:#09c;color:#ccc}
 /*Narzedzia*/
 #shadowColor, #shadow_slider, #sensitivityPoints_slider{display:none}
+#tools_group{
+		width:200px;
+		position:absolute;
+		float:left;
+		z-index:2;
+}
 .tools{
-	width:150px;
-	position:absolute;
+	width:200px;
 	background:#2C2B2B;
 	float:left;
 	z-index:2;
 	color:#666;
 }
-.tools#t1{width:200px}
-.tools#t3{width:180px}
 .tools .title{
 	width:100%;
 	height:30px;
@@ -105,7 +108,7 @@ canvas{position:absolute;cursor:crosshair;}
 }
 .tools .title:hover{color:#09c}
 .tools .title .fa{
-	position:absolute;
+	position:relative;
 	height:30px;
 	line-height:30px;
 	cursor:move;
@@ -115,9 +118,9 @@ canvas{position:absolute;cursor:crosshair;}
 	text-align:left;
 }
 .tools .toggle_visibility{
-	position:absolute;
-	right:0;
+	position:relative;
 	top:0;
+	margin:0;
 	width:30px;
 	text-align:center;
 	color:#000;
@@ -125,17 +128,16 @@ canvas{position:absolute;cursor:crosshair;}
 	line-height:30px;
 }
 .tools .toggle_visibility:hover .fa{ color:#09c }
-.tools .toggle_visibility .fa, .tools .toggle_visibility{ cursor:pointer }
+.tools .toggle_visibility .fa, .tools .toggle_visibility{ cursor:pointer !important}
 #colorPicker{
 	width:180px;
 	margin:0px;
 	float:left;
 }
 #generalColor .color{ background:#000 }
-#backgroundColor .color{ background:#fff }
 #shadowColor .color{ background:#232324 }
 .colorTab{
-	width:180px;
+	width:200px;
 	height:40px;
 	line-height:40px;
 	font-size:15px;
@@ -143,7 +145,7 @@ canvas{position:absolute;cursor:crosshair;}
 }
 .colorTab:hover{ color:#09c;background:#1C1B1B }
 .color{
-	border-radius:5px;
+	border-radius:100%;
 	width:20px;
 	height:20px;
 	margin:10px;
@@ -197,13 +199,13 @@ input[type=color]{
 .Tool:hover, .paintTool:hover ,.paintTool.active{color:#ffffff}
 .paintTool.active, .Tool:active{cursor:default;color:#09c;background:#1C1B1B}
 .sliderContainer{
-	width:130px;
+	width:200px;
 	height:45px;
-	margin:0px 10px;
+	margin:0px;
 	float:left
 }
 .sliderVal{
-	width:130px;
+	width:200px;
 	height:20px;
 	margin-top:5px;
 	line-height:20px;
@@ -241,37 +243,38 @@ input[type=checkbox] + label{
 }
 input[type=range] {
 	-webkit-appearance: none;
-	width: 130px;
+	width: 180px;
+	margin:0 10px;
 }
 input[type=range]::-webkit-slider-runnable-track {
-	width: 130px;
-	height: 15px;
+	width: 180px;
+	height: 10px;
 	background: #ddd;
 	border: none;
 }
 input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	border: none;
-	height: 15px;
+	height: 10px;
 	width: 5px;
 	background: #09c;
 }
 input[type=range]::-moz-range-track {
-	width: 130px;
-	height: 15px;
+	width: 180px;
+	height: 10px;
 	background: #ddd;
 	border: none;
 }
 input[type=range]::-moz-range-thumb {
 	border: none;
-	height: 15px;
+	height: 10px;
 	width: 5px;
 	background: #09c;
 	border-radius:0;
 }
 input[type=range]::-ms-track {
-	width: 130px;
-	height: 15px;
+	width: 180px;
+	height: 10px;
 	background: transparent;
 	border-color: transparent;
 	border-width: 0;
@@ -279,7 +282,7 @@ input[type=range]::-ms-track {
 }
 input[type=range]::-ms-thumb {
 	border: none;
-	height: 15px;
+	height: 10px;
 	width: 5px;
 	background: #09c;
 }
