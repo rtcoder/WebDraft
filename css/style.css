@@ -191,18 +191,18 @@ input[type=color]{
 .paint_tools .fa{
 	vertical-align: middle;
 	margin:0px 0px 0px 10px;
-	font-size:25px;
-	width:40px;
+	font-size:15px;
+	width:30px;
 }
 .paint_tools{
-	height:30px;
+	height:20px;
 	width:100%;
-	font-size:15px;
+	font-size:13px;
 	float:left;
 	cursor:pointer;
 	margin:0px;
 	padding:5px 0px;
-	line-height:30px;
+	line-height:20px;
 }
 .Tool, .paintTool{color:#666;cursor:pointer}
 .Tool:hover, .paintTool:hover ,.paintTool.active{color:#ffffff}
