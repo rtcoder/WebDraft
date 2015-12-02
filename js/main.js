@@ -3,9 +3,9 @@ var canvas,
 	randomId,
 	isDrawing = false,
 	points = [ ],
-	paint = {
+	webDraft = {
 		title : "WebDraft",
-		version : 1.5,
+		version : "1.5.3",
 		key : {
 			Ctrl  : false,//press Control (Ctrl)
 			Shift : false,//press Shift
@@ -19,26 +19,27 @@ var canvas,
 			left  : false, //left mouse button
 			right : false  //right mouse button
 		},
-		mPosition : {
+		mPosition : {//mouse position on draw
 			x : 0,
 			y : 0
 		},
 		draw : {
-			width       : 600,
-			height      : 400,
-			thisParrent : "#drawHandler",
-			selectorId  : "#draw",
-			bg          : "url('pic/transparent.png') repeat",
+			width        : 600,
+			height       : 400,
+			thisParrent  : "#drawHandler",
+			selectorId   : "#draw",
+			eventHandler : "#eventHandler",
+			bg           : "url('pic/transparent.png') repeat",
 		},
 		shadow : {
 			isShadow : false,
 			blur     : 1,
 			color    : "#232324"
 		},
-		size : 10,
+		size : 20,
 		sensitivityPoints : 1000,
 		color : "#000000",
-		selectTool : "pencil",
+		selectedTool : "pencil",//default is pencil
 		func : {
 			makeid : function(){
 				var text = "";
@@ -46,190 +47,211 @@ var canvas,
 				for( var i=0; i < 15; i++ )
 					text += possible.charAt(Math.floor(Math.random() * possible.length));
 				return text;
+			},
+			resize : function(){
+				$("html, body, #paint").css({
+					"width"  : $(window).width(),
+					"height" : $(window).height()
+				})
+				$("#content").css({
+					"width"  : $(window).width(),
+					"height" : $(window).height() - 30
+				}).perfectScrollbar()
+				$("#resizer").css({
+					marginLeft : ( $("#content").width() - $("#resizer").width() )/2+"px",
+					marginTop  : ( $("#content").height() - $("#resizer").height() )/2+"px"
+				})
+			},
+			drawPos : function(){
+				var image = ctx.getImageData(0, 0 , webDraft.draw.width, webDraft.draw.height);
+				$(webDraft.draw.selectorId).css({
+					"width"  : webDraft.draw.width,
+					"height" : webDraft.draw.height
+				})
+				$(webDraft.draw.thisParrent).css({
+					"background" : webDraft.draw.bg,
+					"width"      : webDraft.draw.width,
+					"height"     : webDraft.draw.height
+				})
+				$("canvas")
+					.attr("width" , webDraft.draw.width)
+					.attr("height" , webDraft.draw.height)
+					
+				if(webDraft.draw.width >= $("#content").width()){
+					$(webDraft.draw.thisParrent).css({"margin-left" : "0px"})
+				}else{
+					$(webDraft.draw.thisParrent).css({"margin-left" : ($("#content").width() - webDraft.draw.width)/2})
+				}
+				if(webDraft.draw.height >= $("#content").height()){
+					$(webDraft.draw.thisParrent).css({"margin-top" :"0px"})
+				}else{
+					$(webDraft.draw.thisParrent).css({"margin-top":($("#content").height() - webDraft.draw.height)/2})
+				}
+				
+				$("#content").perfectScrollbar()
+				ctx.putImageData(image, 0, 0)
+				$("title").text(webDraft.title+" v"+webDraft.version+" ["+webDraft.draw.width+" x "+webDraft.draw.height+"]")
+				$("html, body, #paint").css({"visibility":"visible"})
+			},
+			moveEraseRect : function(event){
+				$("#eraseRect").css({
+					"width" : webDraft.size,
+					"height" : webDraft.size,
+					"top" : event.pageY-(webDraft.size/2)+"px",
+					"left" : event.pageX-(webDraft.size/2)+"px"
+				})
+			},
+			drawStyle : function(){
+				ctx.lineWidth = webDraft.size;
+				ctx.lineJoin = ctx.lineCap = 'round';
+				if(webDraft.shadow.isShadow === true){
+					ctx.shadowBlur = webDraft.shadow.blur;
+					ctx.shadowColor = webDraft.shadow.color;
+				}else{
+					ctx.shadowBlur = 0;
+				}
+				ctx.strokeStyle = webDraft.color;//line color
+			},
+			erase : function(event){
+				webDraft.func.moveEraseRect(event)
+				ctx.clearRect(webDraft.mPosition.x-webDraft.size/2,webDraft.mPosition.y-webDraft.size/2,webDraft.size,webDraft.size);
+				points = [ ]
+			},
+			drawing : function(){
+				ctx.beginPath()
+				ctx.moveTo(webDraft.mPosition.x, webDraft.mPosition.y);
+				webDraft.func.drawStyle();
+				ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
+				ctx.stroke();
+			},
+			drawWeb : function(){
+				ctx.beginPath();
+				webDraft.func.drawStyle();
+				ctx.moveTo(points[points.length - 2].x, points[points.length - 2].y);
+				ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+				ctx.stroke();
+				for (var i = 0, len = points.length; i < len; i++) {
+					dx = points[i].x - points[points.length-1].x;
+					dy = points[i].y - points[points.length-1].y;
+					d = dx * dx + dy * dy;
+					if (d < webDraft.sensitivityPoints) {
+						ctx.beginPath();
+						webDraft.func.drawStyle();
+						ctx.moveTo( points[points.length-1].x + (dx * 0.2), points[points.length-1].y + (dy * 0.2));
+						ctx.lineTo( points[i].x - (dx * 0.2), points[i].y - (dy * 0.2));
+						ctx.stroke();
+					}
+				}
+			},
+			mousePosition : function(event){
+				webDraft.mPosition.x = event.pageX - parseInt( $(webDraft.draw.selectorId).offset().left ),
+				webDraft.mPosition.y = event.pageY - parseInt( $(webDraft.draw.selectorId).offset().top );
+				$("#mousePosition").text(webDraft.mPosition.x+" , "+webDraft.mPosition.y)
+			},
+			init : function(){
+				randomId = webDraft.func.makeid()//generare random id for canvas selector
+				$(webDraft.draw.selectorId).append('<canvas id="'+randomId+'" width="'+webDraft.draw.width+'" height="'+webDraft.draw.height+'"></canvas>');
+				canvas = document.getElementById(randomId);
+				ctx = canvas.getContext('2d');
+				//events on #draw
+				//$(webDraft.draw.selectorId).find("canvas#"+randomId)
+				$(webDraft.draw.eventHandler)
+					.hover(function(){
+						ctx.beginPath()
+						ctx.stroke();
+					})
+					.bind("contextmenu",function(event){
+						event.preventDefault()
+						webDraft.click.right = true;
+						webDraft.click.left  = false;
+					})
+					.mousedown(function(event){
+						webDraft.click.left = true;
+						if(!webDraft.click.right && webDraft.click.left){
+							points.push({ x: webDraft.mPosition.x, y: webDraft.mPosition.y });
+							switch( webDraft.selectedTool ){
+								case "pencil" :
+									webDraft.func.drawing();
+								break;
+								case "eraser" :
+									webDraft.func.erase(event);
+								break;
+							}
+						}
+					})
+					.mouseup(function() {
+						webDraft.click.left  = false;
+						webDraft.click.right = false;
+						ctx.beginPath()
+						ctx.stroke();
+					})
+					.mousemove(function(event){
+						webDraft.func.mousePosition(event);
+						if(webDraft.selectedTool=="eraser")
+							webDraft.func.moveEraseRect(event)
+						if(webDraft.click.left && !webDraft.click.right){
+							points.push({ x: webDraft.mPosition.x, y: webDraft.mPosition.y });
+							switch(webDraft.selectedTool){
+								case "pencil" :
+									webDraft.func.drawStyle();
+									ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
+									ctx.stroke();
+								break;
+								case "common" :
+									webDraft.func.drawWeb();
+								break;
+								case "eraser" :
+									webDraft.func.erase(event);
+								break;
+							}
+						}
+					})
+					.mouseleave(function(){
+						$("#mousePosition").empty()
+						ctx.stroke();
+					})
 			}
 		}
 	};
 
-function resize(){
-	$("html, body, #paint").css({
-		"width"  : $(window).width(),
-		"height" : $(window).height()
-	})
-	$("#content").css({
-		"width"  : $(window).width(),
-		"height" : $(window).height() - 30
-	}).perfectScrollbar()
-	$("#resizer").css({
-		marginLeft : ( $("#content").width() - $("#resizer").width() )/2+"px",
-		marginTop  : ( $("#content").height() - $("#resizer").height() )/2+"px"
-	})
-}
-function drawPos(){
-	var image = ctx.getImageData(0, 0 , paint.draw.width, paint.draw.height);
-	$(paint.draw.selectorId).css({
-		"width"  : paint.draw.width,
-		"height" : paint.draw.height
-	})
-	$(paint.draw.thisParrent).css({
-		"background" : paint.draw.bg,
-		"width"      : paint.draw.width,
-		"height"     : paint.draw.height
-	})
-	$("canvas")
-		.attr("width" , paint.draw.width)
-		.attr("height" , paint.draw.height)
-	if(paint.draw.width >= $("#content").width()){
-		$(paint.draw.thisParrent).css({"margin-left" : "0px"})
-	}else{
-		$(paint.draw.thisParrent).css({"margin-left" : ($("#content").width() - paint.draw.width)/2})
-	}
-	if(paint.draw.height >= $("#content").height()){
-		$(paint.draw.thisParrent).css({"margin-top" :"0px"})
-	}else{
-		$(paint.draw.thisParrent).css({"margin-top":($("#content").height() - paint.draw.height)/2})
-	}
-	$("#content").perfectScrollbar()
-	ctx.putImageData(image, 0, 0)
-	$("title").text(paint.title+" v"+paint.version+" ["+paint.draw.width+" x "+paint.draw.height+"]")
-	$("html, body, #paint").css({"visibility":"visible"})
-}
-function drawStyle(){
-	ctx.lineWidth = paint.size;
-	ctx.lineJoin = ctx.lineCap = 'round';
-	if(paint.shadow.isShadow === true){
-		ctx.shadowBlur = paint.shadow.blur;
-		ctx.shadowColor = paint.shadow.color;
-	}else{
-		ctx.shadowBlur = 0;
-	}
-	ctx.strokeStyle = paint.color;//line color
-}
-function erase(){
-	ctx.clearRect(paint.mPosition.x-paint.size/2,paint.mPosition.y-paint.size/2,paint.size,paint.size);
-	points = [ ]
-}
-function drawing(){
-	ctx.beginPath()
-	ctx.moveTo(paint.mPosition.x, paint.mPosition.y);
-	drawStyle();
-	ctx.lineTo(paint.mPosition.x, paint.mPosition.y);
-	ctx.stroke();
-}
-function drawWeb(){
-	ctx.beginPath();
-	drawStyle();
-	ctx.moveTo(points[points.length - 2].x, points[points.length - 2].y);
-	ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
-	ctx.stroke();
-	for (var i = 0, len = points.length; i < len; i++) {
-		dx = points[i].x - points[points.length-1].x;
-		dy = points[i].y - points[points.length-1].y;
-		d = dx * dx + dy * dy;
-		if (d < paint.sensitivityPoints) {
-			ctx.beginPath();
-			drawStyle();
-			ctx.moveTo( points[points.length-1].x + (dx * 0.2), points[points.length-1].y + (dy * 0.2));
-			ctx.lineTo( points[i].x - (dx * 0.2), points[i].y - (dy * 0.2));
-			ctx.stroke();
-		}
-	}
-}
-function mousePosition(event){
-	paint.mPosition.x = event.pageX - parseInt( $(paint.draw.selectorId).offset().left ),
-	paint.mPosition.y = event.pageY - parseInt( $(paint.draw.selectorId).offset().top );
-	$("#mousePosition").text(paint.mPosition.x+" , "+paint.mPosition.y)
-}
-function init(){
-	randomId = paint.func.makeid()//generare random id for canvas selector
-	$(paint.draw.selectorId).append('<canvas id="'+randomId+'" width="'+paint.draw.width+'" height="'+paint.draw.height+'"></canvas>');
-	canvas = document.getElementById(randomId);
-	ctx = canvas.getContext('2d');
-	//events on #draw
-	$(paint.draw.selectorId).find("canvas#"+randomId)
-		.hover(function(){
-			ctx.beginPath()
-			ctx.stroke();
-		})
-		.bind("contextmenu",function(event){
-			event.preventDefault()
-			paint.click.right = true;
-			paint.click.left  = false;
-		})
-		.mousedown(function(event){
-			paint.click.left = true;
-			if(!paint.click.right && paint.click.left){
-				points.push({ x: paint.mPosition.x, y: paint.mPosition.y });
-				switch( paint.selectTool ){
-					case "pencil" :
-						drawing()
-					break;
-					case "eraser" :
-						erase()
-					break;
-				}
-			}
-		})
-		.mouseup(function() {
-			paint.click.left  = false;
-			paint.click.right = false;
-			ctx.beginPath()
-			ctx.stroke();
-		})
-		.mousemove(function(event){
-			mousePosition(event);
-			if(paint.click.left && !paint.click.right){
-				points.push({ x: paint.mPosition.x, y: paint.mPosition.y });
-				switch(paint.selectTool){
-					case "pencil" :
-						drawStyle();
-						ctx.lineTo(paint.mPosition.x, paint.mPosition.y);
-						ctx.stroke();
-					break;
-					case "common" :
-						drawWeb()
-					break;
-					case "eraser" :
-						erase()
-					break;
-				}
-			}
-		})
-		.mouseleave(function(){
-			$("#mousePosition").empty()
-			ctx.stroke();
-		})
-}
+
+
+
+
+
+
+
 $(window)
 	.resize(function(){
-		resize();
-		drawPos();
+		webDraft.func.resize();
+		webDraft.func.drawPos();
 	})
 	.bind('mousewheel DOMMouseScroll', function(event) {
-		if(paint.key.Ctrl === true){ event.preventDefault() } //press control - do nothing
-		if(paint.key.Alt === true){}
+		if(webDraft.key.Ctrl === true){ event.preventDefault() } //press control - do nothing
+		if(webDraft.key.Alt === true){}
 	});
 $(document)
 	.keydown(function(event){
-		if(paint.key.f12 === true || event.keyCode == 123){ event.preventDefault() }
-		if(paint.key.f11 === true || event.keyCode == 122){ event.preventDefault() }
-		if(paint.key.Ctrl === true || event.keyCode == 17){ event.preventDefault() }
+		if(webDraft.key.f12 === true || event.keyCode == 123){ event.preventDefault() }
+		if(webDraft.key.f11 === true || event.keyCode == 122){ event.preventDefault() }
+		if(webDraft.key.Ctrl === true || event.keyCode == 17){ event.preventDefault() }
 	})
 	.ready(function(event){
 		$("#isShadow").button()
 		var pointStyle="",
 		kolo;
-		init();
+		webDraft.func.init();
 		//draggable .tools & #resizer
 		$("#tools_group")
 			.draggable({
-				//snap    : true,
-				handle  : ".title",
+				snap    : true,
+				handle  : ".title.draghandler",
 				opacity : 0.75
 			})
 			.css("position","absolute")
 		$("#resizer")
 			.draggable({
-				//snap    : true,
+				snap    : true,
 				opacity : 0.75
 			})
 			.css("position","absolute")
@@ -250,7 +272,7 @@ $(document)
 		})
 		//Save button Click event
 		$("#btnSave").click(function(){
-			html2canvas($(paint.draw.selectorId),{
+			html2canvas($(webDraft.draw.selectorId),{
 				onrendered: function(canvas){
 					var img = canvas.toDataURL()
 					window.open(img);
@@ -265,64 +287,65 @@ $(document)
 			}else{
 				$("#sensitivityPoints_slider").hide()
 			}
+			if($(this).attr("id") == "eraser"){
+				$("#eraseRect").show()
+			}else{
+				$("#eraseRect").hide()
+			}
 		})
 		$("#resizeDraw").click(function(){
 			$("#resizer").fadeIn()
-			$("input[type=number]#drawWidth").val(paint.draw.width)
-			$("input[type=number]#drawHeight").val(paint.draw.height)
-			$("#resizeinfo").html(paint.draw.width+" <i class='fa fa-times'></i> "+paint.draw.height)
+			$("input[type=number]#drawWidth").val(webDraft.draw.width)
+			$("input[type=number]#drawHeight").val(webDraft.draw.height)
+			$("#resizeinfo").html(webDraft.draw.width+" <i class='fa fa-times'></i> "+webDraft.draw.height)
 		})
 		$("#cancel").click(function(){
 			$("#resizer").fadeOut();
-			$("input[type=number]#drawWidth").val(paint.draw.width)
-			$("input[type=number]#drawHeight").val(paint.draw.height)
+			$("input[type=number]#drawWidth").val(webDraft.draw.width)
+			$("input[type=number]#drawHeight").val(webDraft.draw.height)
 		})
 		$("#apply").click(function(){
 			$("#resizer").fadeOut();
-			paint.draw.width=$("input[type=number]#drawWidth").val()
-			paint.draw.height=$("input[type=number]#drawHeight").val()
+			webDraft.draw.width=$("input[type=number]#drawWidth").val()
+			webDraft.draw.height=$("input[type=number]#drawHeight").val()
 			drawPos()
 		})
 		//Clear button Click event
 		$("#btnCLear").click(function(){
-			$(paint.draw.selectorId).empty()
+			$(webDraft.draw.selectorId).empty()
 			points = [ ];
-			init();
+			webDraft.func.init();
 		})
 		//changing size
 		$("input[type=range]#pointSize").mousemove(function(){
-			paint.size = $(this).val();
+			webDraft.size = $(this).val();
 			$("#pointSizeValue").text("size:"+$(this).val()+"px")
 		})
 		//changing shadow blur
 		$("input[type=range]#ShadowBlur").mousemove(function(){
-			paint.shadow.blur = $(this).val();
+			webDraft.shadow.blur = $(this).val();
 			$("#ShadowBlurValue").text("shadow:"+$(this).val()+"px")
 		})
 		//changing sensitivity of common points
 		$("input[type=range]#sensitivityPoints").mousemove(function(){
-			paint.sensitivityPoints = $(this).val();
+			webDraft.sensitivityPoints = $(this).val();
 			$("#sensitivityPointsValue").text("sensitivity:"+Math.floor($(this).val()/1000)+"%")
 		})
 		//choosing pencil
 		$("#pencil").click(function(){
-			paint.selectTool = "pencil";
+			webDraft.selectedTool = "pencil";
 		})
 		//choosing pencil
 		$("#common").click(function(){
-			paint.selectTool = "common";
+			webDraft.selectedTool = "common";
 		})
 		//choosing pencil
 		$("#eraser").click(function(){
-			paint.selectTool = "eraser";
+			webDraft.selectedTool = "eraser";
 		})
 		//setting first Color
 		$("#generalColor").click(function(){
 			$("input[type=color]#firstColor").click()
-		})
-		//setting second Color
-		$("#backgroundColor").click(function(){
-			$("input[type=color]#secondColor").click()
 		})
 		//setting shadow Color
 		$("#shadowColor").click(function(){
@@ -331,12 +354,12 @@ $(document)
 		//changing first color input
 		$("input[type=color]#firstColor").change(function(){
 			$("#generalColor .color").css({"background" : $(this).val()})
-			paint.color = $(this).val()
+			webDraft.color = $(this).val()
 		})
-		//changing second color input
+		//changing shadow color input
 		$("input[type=color]#shadowColorVal").change(function(){
 			$("#shadowColor .color").css({"background" : $(this).val()})
-			paint.shadow.color = $(this).val()
+			webDraft.shadow.color = $(this).val()
 		})
 		$("#resizer input[type=number]")
 			.change(function(){
@@ -354,8 +377,8 @@ $(document)
 				}
 			})
 		$("input[type=checkbox]#isShadow").change(function(){
-			paint.shadow.isShadow = $(this).is(":checked")//return true if is :checked or false if not
-			if(paint.shadow.isShadow){
+			webDraft.shadow.isShadow = $(this).is(":checked")//return true if is :checked or false if not
+			if(webDraft.shadow.isShadow){
 				$("#shadowColor, #shadow_slider").show()
 			}else{
 				$("#shadowColor, #shadow_slider").hide()
@@ -368,54 +391,54 @@ $(document)
 	.keydown(function(e){
 		switch(e.keyCode){
 			case 13 :
-				paint.key.Enter = true;
+				webDraft.key.Enter = true;
 			break;
 			case 16 :
-				paint.key.Shift = true;
+				webDraft.key.Shift = true;
 			break;
 			case 17 :
-				paint.key.Ctrl = true;
+				webDraft.key.Ctrl = true;
 			break;
 			case 18 :
-				paint.key.Alt = true;
+				webDraft.key.Alt = true;
 			break;
 			case 27 :
-				paint.key.Esc = true
+				webDraft.key.Esc = true
 			break;
 			case 122 :
-				paint.key.f11 = true
+				webDraft.key.f11 = true
 			break;
 			case 123 :
-				paint.key.f12 = true
+				webDraft.key.f12 = true
 			break;
 		}
 	})
 	.keyup(function(e){
 		switch(e.keyCode){
 			case 13 :
-				paint.key.Enter = false;
+				webDraft.key.Enter = false;
 			break;
 			case 16 :
-				paint.key.Shift = false;
+				webDraft.key.Shift = false;
 			break;
 			case 17 :
-				paint.key.Ctrl = false;
+				webDraft.key.Ctrl = false;
 			break;
 			case 18 :
-				paint.key.Alt = false;
+				webDraft.key.Alt = false;
 			break;
 			case 27 :
-				paint.key.Esc = false
+				webDraft.key.Esc = false
 			break;
 			case 122 :
-				paint.key.f11 = false
+				webDraft.key.f11 = false
 			break;
 			case 123 :
-				paint.key.f12 = false
+				webDraft.key.f12 = false
 			break;
 		}
 	})
 	.mouseup(function(){
-			paint.click.left  = false;
-			paint.click.right = false;
+			webDraft.click.left  = false;
+			webDraft.click.right = false;
 	})
