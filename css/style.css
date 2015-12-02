@@ -28,13 +28,14 @@ html, body, #paint{
 	overflow:hidden;
 	position:absolute;
 }
-#draw, #drawHandler{
+#draw, #drawHandler, #eventHandler{
 	width:600px;
 	height:400px;
 	overflow:hidden;
 	position:relative;
 	cursor:crosshair;
 }
+#eventHandler{z-index:3;position:absolute}
 #drawHandler{border:1px dotted #09c}
 canvas{position:absolute;cursor:crosshair;}
 #resizer{
@@ -81,19 +82,28 @@ canvas{position:absolute;cursor:crosshair;}
 	cursor:pointer;
 }
 .buttonAction:hover{background:#09c;color:#ccc}
+#eraseRect{
+	display:none;
+	position:absolute;
+	z-index:2;
+	border:1px solid #000;
+	background:rgba(255,255,255,0.1);
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+}
 /*Narzedzia*/
 #shadowColor, #shadow_slider, #sensitivityPoints_slider{display:none}
 #tools_group{
 		width:200px;
 		position:absolute;
 		float:left;
-		z-index:2;
+		z-index:4;
 }
 .tools{
 	width:200px;
 	background:#2C2B2B;
 	float:left;
-	z-index:2;
+	z-index:4;
 	color:#666;
 }
 .tools .title{
@@ -104,14 +114,13 @@ canvas{position:absolute;cursor:crosshair;}
 	text-align:center;
 	background:#eee;
 	color:#2E3436;
-	cursor:move;
 }
+.title.draghandler{cursor:move}
 .tools .title:hover{color:#09c}
 .tools .title .fa{
 	position:relative;
 	height:30px;
 	line-height:30px;
-	cursor:move;
 	left:0;
 	top:0;
 	margin:0px 0px 0px 10px;
