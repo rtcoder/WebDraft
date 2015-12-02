@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>WebDraft v1.5</title>
+		<title>WebDraft</title>
 		<meta charset="utf-8" />
 		<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 		<script src="js/jquery-ui.min.js"></script>
@@ -10,10 +10,10 @@
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/perfect-scrollbar.css">
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> -->
 	</head>
-	<body onload="resize();drawPos()">
+	<body onload="webDraft.func.resize();webDraft.func.drawPos()">
 		<!--all site elements-->
 		<div id="paint">
 			<div id="eraseRect"></div>
@@ -21,27 +21,7 @@
 			<div id="tools_group">
 				<!--tools-->
 				<div class="tools">
-					<div class="title" title="Move">
-						<i class="fa fa-tint"></i>
-						Colors
-						<i class="fa fa-chevron-up toggle_visibility"></i>
-					</div>
-					<!--color picker-->
-					<div id="colorPicker" class="show_hide">
-						<div id="generalColor" class="colorTab">
-							<div title="set color" class="color"></div>
-							Color
-						</div>
-						<div id="shadowColor" class="colorTab">
-							<div title="set shadow color" class="color"></div>
-							Shadow color
-						</div>
-						<input type="color" id="firstColor">
-						<input type="color" id="shadowColorVal" value="#232324">
-					</div>
-				</div>
-				<div class="tools">
-					<div class="title" title="Move">
+					<div class="title draghandler" title="Move">
 						<i class="fa fa-wrench"></i>
 						Tools
 						<i class="fa fa-chevron-up toggle_visibility"></i>
@@ -66,6 +46,26 @@
 					</div>
 				</div>
 				<!--tools-->
+				<div class="tools">
+					<div class="title" title="Move">
+						<i class="fa fa-tint"></i>
+						Colors
+						<i class="fa fa-chevron-up toggle_visibility"></i>
+					</div>
+					<!--color picker-->
+					<div id="colorPicker" class="show_hide">
+						<div id="generalColor" class="colorTab">
+							<div title="set color" class="color"></div>
+							Color
+						</div>
+						<div id="shadowColor" class="colorTab">
+							<div title="set shadow color" class="color"></div>
+							Shadow color
+						</div>
+						<input type="color" id="firstColor">
+						<input type="color" id="shadowColorVal" value="#232324">
+					</div>
+				</div>
 				<div class="tools">
 					<div class="title" title="Move">
 						<i class="fa fa-sliders"></i>
@@ -99,6 +99,7 @@
 			<!--content and draw field-->
 			<div id="content">
 				<div id="drawHandler">
+					<div id="eventHandler"></div>
 					<div id="draw"></div>
 				</div>
 			</div>
