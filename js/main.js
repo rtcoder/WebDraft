@@ -2,6 +2,7 @@ var canvas,
 	ctx,
 	randomId,
 	isDrawing = false,
+	startRectPoints = [0,0],
 	points = [ ],
 	webDraft = {
 		title : "WebDraft",
@@ -143,6 +144,34 @@ var canvas,
 					}
 				}
 			},
+			startRect : function(){
+				startRectPoints = [webDraft.mPosition.x, webDraft.mPosition.y];
+			},
+			prepareRect : function(event){
+				
+			},
+			drawRect : function(){
+				if(startRectPoints[0] <= webDraft.mPosition.x){
+					var x     = startRectPoints[0],
+						width = webDraft.mPosition.x-startRectPoints[0];
+				}else{
+					var x     = webDraft.mPosition.x,
+						width = startRectPoints[0]-webDraft.mPosition.x;
+				}
+				if(startRectPoints[1] <= webDraft.mPosition.y){
+					var y      = startRectPoints[1],
+						height = webDraft.mPosition.y-startRectPoints[1];
+				}else{
+					var y      = webDraft.mPosition.y,
+						height = startRectPoints[1]-webDraft.mPosition.y;
+				}
+				
+				ctx.beginPath();
+				webDraft.func.drawStyle();
+				ctx.rect(x,y,width,height);
+				//alert(x+" "+y+" "+webDraft.mPosition.x+" "+webDraft.mPosition.y)
+				ctx.stroke();
+			},
 			mousePosition : function(event){
 				webDraft.mPosition.x = event.pageX - parseInt( $(webDraft.draw.selectorId).offset().left ),
 				webDraft.mPosition.y = event.pageY - parseInt( $(webDraft.draw.selectorId).offset().top );
@@ -176,6 +205,9 @@ var canvas,
 								case "eraser" :
 									webDraft.func.erase(event);
 								break;
+								case "rectangle" :
+									webDraft.func.startRect();
+								break;
 							}
 						}
 					})
@@ -184,6 +216,11 @@ var canvas,
 						webDraft.click.right = false;
 						ctx.beginPath()
 						ctx.stroke();
+						switch(webDraft.selectedTool){
+							case "rectangle":
+								webDraft.func.drawRect();
+							break;
+						}
 					})
 					.mousemove(function(event){
 						webDraft.func.mousePosition(event);
@@ -202,6 +239,9 @@ var canvas,
 								break;
 								case "eraser" :
 									webDraft.func.erase(event);
+								break;
+								case "rectangle" :
+									webDraft.func.prepareRect(event);
 								break;
 							}
 						}
@@ -342,6 +382,10 @@ $(document)
 		//choosing pencil
 		$("#eraser").click(function(){
 			webDraft.selectedTool = "eraser";
+		})
+		//choosing pencil
+		$("#rectangle").click(function(){
+			webDraft.selectedTool = "rectangle";
 		})
 		//setting first Color
 		$("#generalColor").click(function(){
