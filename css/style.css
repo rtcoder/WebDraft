@@ -92,7 +92,7 @@ canvas{position:absolute;cursor:crosshair;}
 }
 #eraseRect{background:rgba(255,255,255,0.3)}
 /*Narzedzia*/
-#shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput{display:none}
+#shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput, .tools#textTools{display:none}
 #tools_group{
 		width:200px;
 		position:absolute;
@@ -180,7 +180,7 @@ input[type=color]{
 	padding: 0px;
 	position: absolute;
 }
-#toolsBtns, #radioBtns, #colorPicker, #sliders{
+#primaryTools, #toolsBtns, #radioBtns, #colorPicker, #sliders{
 	width:100%;
 	float:left;
 	margin:0px;
