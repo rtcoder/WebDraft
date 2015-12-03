@@ -23,10 +23,10 @@
 			<div id="tools_group">
 				<!--tools-->
 				<div class="tools">
-					<div class="title" title="Move">
+					<div class="title draghandler" title="Move">
 						<i class="fa fa-cogs"></i>
 						Tools
-						<i class="fa fa-chevron-up toggle_visibility"></i>
+						<i class="toggle_visibility fa fa-chevron-up"></i>
 					</div>
 					<div id="primaryTools" class="show_hide">
 						<div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt fa-2x"></i></div>
@@ -36,14 +36,14 @@
 				</div>
 				<!--tools-->
 				<div class="tools">
-					<div class="title draghandler" title="Move">
+					<div class="title">
 						<i class="fa fa-magic"></i>
 						Draw
-						<i class="fa fa-chevron-up toggle_visibility"></i>
+						<i class="toggle_visibility fa fa-chevron-up"></i>
 					</div>
 					<div id="toolsBtns" class="show_hide">
 						<div id="pencil" class="paint_tools paintTool active"><i class="fa fa-pencil fa-2x"></i>Pencil</div>
-						<div id="common" class="paint_tools paintTool"><i class="fa fa-certificate fa-2x"></i>Common points</div>
+						<div id="web" class="paint_tools paintTool"><i class="fa fa-random fa-2x"></i>Web</div>
 						<div id="eraser" class="paint_tools paintTool"><i class="fa fa-eraser fa-2x"></i>Eraser</div>
 						<div id="rectangle" class="paint_tools paintTool"><i class="fa fa-square-o fa-2x"></i>Rectangle</div>
 						<div id="circle" class="paint_tools paintTool"><i class="fa fa-circle-thin fa-2x"></i>Circle</div>
@@ -68,12 +68,19 @@
 						</div>
 					</div>
 				</div>
+				<div class="tools" id="textTools">
+					<div class="title">
+						<i class="fa fa-font"></i>
+						Text
+					</div>
+					<textarea id="textValue" style="width:180px;height:100px;resize:none;"></textarea>
+				</div>
 				<!--tools-->
 				<div class="tools">
-					<div class="title" title="Move">
+					<div class="title">
 						<i class="fa fa-tint"></i>
 						Colors
-						<i class="fa fa-chevron-up toggle_visibility"></i>
+						<i class="toggle_visibility fa fa-chevron-up"></i>
 					</div>
 					<!--color picker-->
 					<div id="colorPicker" class="show_hide">
@@ -95,10 +102,10 @@
 					</div>
 				</div>
 				<div class="tools">
-					<div class="title" title="Move">
+					<div class="title">
 						<i class="fa fa-sliders"></i>
 						Sliders
-						<i class="fa fa-chevron-up toggle_visibility"></i>
+						<i class="toggle_visibility fa fa-chevron-up"></i>
 					</div>
 					<div id="sliders" class="show_hide">
 						<div class="sliderContainer" id="size_slider">
@@ -119,7 +126,7 @@
 						</div>
 						<div class="sliderContainer" id="sensitivityPoints_slider">
 							<div class="sliderVal" id="sensitivityPointsValue">sensitivity:1%</div>
-							<input id="sensitivityPoints" type="range" min="1000" max="100000" value="1000">
+							<input id="sensitivityPoints" type="range" min="100" max="10000" value="100">
 						</div>
 						<div class="sliderContainer" id="fillOpacity_slider">
 							<div class="sliderVal" id="fillOpacityValue">fill opacity:100%</div>
