@@ -139,7 +139,7 @@ canvas{position:absolute;cursor:crosshair;}
 .tools .toggle_visibility:hover .fa{ color:#09c }
 .tools .toggle_visibility .fa, .tools .toggle_visibility{ cursor:pointer !important}
 #colorPicker{
-	width:180px;
+	width:200px;
 	margin:0px;
 	float:left;
 }
@@ -147,28 +147,28 @@ canvas{position:absolute;cursor:crosshair;}
 #shadowColor .color{ background:#232324 }
 .colorTab{
 	width:200px;
-	height:40px;
-	line-height:40px;
-	font-size:15px;
+	height:25px;
+	line-height:25px;
+	font-size:14px;
 	cursor:pointer;
 }
 .colorTab:hover{ color:#09c;background:#1C1B1B }
 .color{
 	border-radius:100%;
-	width:20px;
-	height:20px;
-	margin:10px;
+	width:15px;
+	height:15px;
+	margin:5px 10px;
 	float:left;
 	border:1px solid #ccc;
 	box-sizing:border-box
 }
 #shadowInput{
 	width:200px;
-	height:30px;
-	line-height:30px;
+	height:20px;
+	line-height:20px;
 	float:left;
 	padding:5px 0px;
-	font-size:13px;
+	font-size:12px;
 }
 #shadowInput *{
 	cursor:pointer;
@@ -226,14 +226,14 @@ input[type=color]{
 input[type=checkbox] + label .fa-circle-o,input[type=checkbox] + label .fa-dot-circle-o{
 	float:left;
 	text-align:center;
-	width:40px;
+	width:30px;
 	vertical-align: middle;
 	margin:0px 0px 0px 10px;
 	font-size:18px;
-	height:30px;
-	line-height:30px
+	height:20px;
+	line-height:20px
 }
-input[type=checkbox] + label #l{margin-left:10px;height:30px;line-height:30px;}
+input[type=checkbox] + label #l{margin-left:10px;height:20px;line-height:20px;}
 input[type=checkbox]:hover + label{color:#fff}
 input[type=checkbox]:checked + label{color:#09c;font-weight:bold}
 input[type=checkbox] + label .fa-dot-circle-o{display:none}
@@ -244,7 +244,7 @@ input[type=checkbox] + label{
 	cursor: pointer;
 	color:#666;
 	width:200px;
-	height:30px;
+	height:20px;
 	background:transparent;
 	text-align:left;
 	border:none;
