@@ -10,8 +10,8 @@
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/perfect-scrollbar.css">
-		<!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> -->
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	</head>
 	<body onload="webDraft.func.resize();webDraft.func.drawPos()">
 		<!--all site elements-->
@@ -23,9 +23,22 @@
 			<div id="tools_group">
 				<!--tools-->
 				<div class="tools">
-					<div class="title draghandler" title="Move">
-						<i class="fa fa-wrench"></i>
+					<div class="title" title="Move">
+						<i class="fa fa-cogs"></i>
 						Tools
+						<i class="fa fa-chevron-up toggle_visibility"></i>
+					</div>
+					<div id="primaryTools" class="show_hide">
+						<div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt fa-2x"></i></div>
+						<div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-times-circle-o fa-2x"></i></div>
+						<div id="btnSave" class="primaryTool" title="Save"><i class="fa fa-save fa-2x"></i></div>
+					</div>
+				</div>
+				<!--tools-->
+				<div class="tools">
+					<div class="title draghandler" title="Move">
+						<i class="fa fa-magic"></i>
+						Draw
 						<i class="fa fa-chevron-up toggle_visibility"></i>
 					</div>
 					<div id="toolsBtns" class="show_hide">
@@ -34,25 +47,25 @@
 						<div id="eraser" class="paint_tools paintTool"><i class="fa fa-eraser fa-2x"></i>Eraser</div>
 						<div id="rectangle" class="paint_tools paintTool"><i class="fa fa-square-o fa-2x"></i>Rectangle</div>
 						<div id="circle" class="paint_tools paintTool"><i class="fa fa-circle-thin fa-2x"></i>Circle</div>
-						<div id="resizeDraw" class="paint_tools Tool"><i class="fa fa-arrows-alt fa-2x"></i>Resize</div>
-						<div id="btnCLear" class="paint_tools Tool"><i class="fa fa-times-circle-o fa-2x"></i>Clear</div>
-						<div id="btnSave" class="paint_tools Tool"><i class="fa fa-save fa-2x"></i>Save</div>
+						<div id="text" class="paint_tools paintTool"><i class="fa fa-font fa-2x"></i>Text</div>
 					</div>
-					<div id="shadowInput" class="show_hide">
-						<input type="checkbox" id="isShadow">
-						<label for="isShadow">
-							<i class="fa fa-circle-o"></i>
-							<i class="fa fa-dot-circle-o"></i>
-							<div id="l">Shadow</div>
-						</label>
-					</div>
-					<div id="fillShapeInput" class="show_hide">
-						<input type="checkbox" id="isFillSet">
-						<label for="isFillSet">
-							<i class="fa fa-circle-o"></i>
-							<i class="fa fa-dot-circle-o"></i>
-							<div id="l">Fill</div>
-						</label>
+					<div id="radioBtns" class="show_hide">
+						<div id="shadowInput">
+							<input type="checkbox" id="isShadow">
+							<label for="isShadow">
+								<i class="fa fa-circle-o"></i>
+								<i class="fa fa-dot-circle-o"></i>
+								<div id="l">Shadow</div>
+							</label>
+						</div>
+						<div id="fillShapeInput">
+							<input type="checkbox" id="isFillSet">
+							<label for="isFillSet">
+								<i class="fa fa-circle-o"></i>
+								<i class="fa fa-dot-circle-o"></i>
+								<div id="l">Fill</div>
+							</label>
+						</div>
 					</div>
 				</div>
 				<!--tools-->
@@ -109,8 +122,8 @@
 							<input id="sensitivityPoints" type="range" min="1000" max="100000" value="1000">
 						</div>
 						<div class="sliderContainer" id="fillOpacity_slider">
-							<div class="sliderVal" id="fillOpacityValue">fill opacity:0%</div>
-							<input id="fillOpacity" type="range" min="0" max="100" value="0">
+							<div class="sliderVal" id="fillOpacityValue">fill opacity:100%</div>
+							<input id="fillOpacity" type="range" min="0" max="100" value="100">
 						</div>
 					</div>
 				</div>
@@ -133,6 +146,7 @@
 			<!--statusbar-->
 			<div id="statusbar">
 				<div id="mousePosition"></div>
+				<div id="layerSize"></div>
 				<div id="author">
 					Designed & Coded by rtCoder
 				</div>
