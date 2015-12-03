@@ -6,7 +6,7 @@ var canvas,
 	points = [ ],
 	webDraft = {
 		title : "WebDraft",
-		version : "1.5.3",
+		version : "1.7",
 		key : {
 			Ctrl  : false,//press Control (Ctrl)
 			Shift : false,//press Shift
@@ -35,7 +35,14 @@ var canvas,
 		shadow : {
 			isShadow : false,
 			blur     : 1,
+			offsetX  : 0,
+			offsetY  : 0,
 			color    : "#232324"
+		},
+		fill : {
+			isSet : false,
+			color : "#ffffff",
+			opacity : 0
 		},
 		size : 10,
 		sensitivityPoints : 1000,
@@ -105,9 +112,16 @@ var canvas,
 			drawStyle : function(){
 				ctx.lineWidth = webDraft.size;
 				ctx.lineJoin = ctx.lineCap = 'round';
+				if(webDraft.fill.isSet == true){
+					ctx.fillStyle = convertHex(webDraft.fill.color, webDraft.fill.opacity)
+				}else{
+					ctx.fillStyle = "transparent"
+				}
 				if(webDraft.shadow.isShadow === true){
 					ctx.shadowBlur = webDraft.shadow.blur;
 					ctx.shadowColor = webDraft.shadow.color;
+					ctx.shadowOffsetX = webDraft.shadow.offsetX;
+					ctx.shadowOffsetY = webDraft.shadow.offsetY;
 				}else{
 					ctx.shadowBlur = 0;
 				}
@@ -169,6 +183,25 @@ var canvas,
 					"height" : height+"px",
 					"border" : webDraft.size+"px solid "+webDraft.color
 				})
+				if(webDraft.fill.isSet){
+					$("#prepareRect").css({
+						"background" : convertHex(webDraft.fill.color, webDraft.fill.opacity)
+					})
+				}else{
+					$("#prepareRect").css({
+						"background" : "transparent"
+					})
+				}
+				if(webDraft.shadow.isShadow){
+					$("#prepareRect").css({
+						"box-shadow" : webDraft.shadow.offsetX+"px "+webDraft.shadow.offsetY+"px "+webDraft.shadow.blur+"px "+webDraft.shadow.color
+					})
+				}else{
+					$("#prepareRect").css({
+						"box-shadow" : "none"
+					})
+				}
+				
 			},
 			drawRect : function(){
 				if(startShapePoints[0] <= webDraft.mPosition.x){
@@ -189,6 +222,7 @@ var canvas,
 				ctx.beginPath();
 				webDraft.func.drawStyle();
 				ctx.rect(x,y,width,height);
+				ctx.fill();
 				ctx.stroke();
 			},
 			prepareCircle : function(){
@@ -217,6 +251,24 @@ var canvas,
 					"border" : webDraft.size+"px solid "+webDraft.color,
 					"border-radius" : "100%"
 				})
+				if(webDraft.fill.isSet){
+					$("#prepareCircle").css({
+						"background" : convertHex(webDraft.fill.color, webDraft.fill.opacity)
+					})
+				}else{
+					$("#prepareCircle").css({
+						"background" : "transparent"
+					})
+				}
+				if(webDraft.shadow.isShadow){
+					$("#prepareCircle").css({
+						"box-shadow" : webDraft.shadow.offsetX+"px "+webDraft.shadow.offsetY+"px "+webDraft.shadow.blur+"px "+webDraft.shadow.color
+					})
+				}else{
+					$("#prepareCircle").css({
+						"box-shadow" : "none"
+					})
+				}
 			},
 			drawCircle : function(){
 				var x = startShapePoints[0],
@@ -240,7 +292,7 @@ var canvas,
 				ctx.beginPath();
 				webDraft.func.drawStyle();
 				ctx.arc(x,y, radius, 0, 2 * Math.PI, false);
-				//alert(x+" "+y+" "+webDraft.mPosition.x+" "+webDraft.mPosition.y)
+				ctx.fill();
 				ctx.stroke();
 			},
 			mousePosition : function(event){
@@ -333,7 +385,15 @@ var canvas,
 			}
 		}
 	};
+function convertHex(hex,opacity){
+	hex = hex.replace('#','');
+	r = parseInt(hex.substring(0,2), 16);
+	g = parseInt(hex.substring(2,4), 16);
+	b = parseInt(hex.substring(4,6), 16);
 
+	result = 'rgba('+r+','+g+','+b+','+opacity/100+')';
+	return result;
+}
 
 $(window)
 	.resize(function(){
@@ -351,7 +411,7 @@ $(document)
 		if(webDraft.key.Ctrl === true || event.keyCode == 17){ event.preventDefault() }
 	})
 	.ready(function(event){
-		$("#isShadow").button()
+		$("#isShadow, #isFillSet").button()
 		var pointStyle="",
 		kolo;
 		webDraft.func.init();
@@ -386,12 +446,13 @@ $(document)
 		})
 		//Save button Click event
 		$("#btnSave").click(function(){
-			html2canvas($(webDraft.draw.selectorId),{
+			/* html2canvas($(webDraft.draw.selectorId),{
 				onrendered: function(canvas){
 					var img = canvas.toDataURL()
 					window.open(img);
 				}
-			});
+			}); */
+			window.open(document.getElementById(randomId).toDataURL())
 		});
 		$(".paintTool").click(function(){
 			$(".paintTool").removeClass("active");
@@ -403,15 +464,23 @@ $(document)
 				$("#sensitivityPoints_slider").hide()
 			}
 			if(thisId == "eraser"){
-				$("#eraseRect").show()
+				$("#eraseRect").show();
+				$("#draw, #drawHandler, #eventHandler").css("cursor", "none")
 			}else{
 				$("#eraseRect").hide()
+				$("#draw, #drawHandler, #eventHandler").css("cursor", "crosshair")
 			}
-			if(thisId !="rectangle"){
+			if(thisId != "rectangle"){
 				$("#prepareRect").hide();
 			}
-			if(thisId !="circle"){
+			if(thisId != "circle"){
 				$("#prepareCircle").hide();
+			}
+			if(thisId == "rectangle" || thisId == "circle"){
+				$("#fillShapeInput").show()
+			}else{
+				$("#fillShapeInput").hide()
+				$("input#isFillSet").attr('checked', false).change()
 			}
 		})
 		$("#resizeDraw").click(function(){
@@ -447,10 +516,25 @@ $(document)
 			webDraft.shadow.blur = $(this).val();
 			$("#ShadowBlurValue").text("shadow:"+$(this).val()+"px")
 		})
+		//changing shadow offset X
+		$("input[type=range]#ShadowOffSetX").mousemove(function(){
+			webDraft.shadow.offsetX = $(this).val();
+			$("#ShadowOffSetXValue").text("shadow offset X:"+$(this).val()+"px")
+		})
+		//changing shadow offset Y
+		$("input[type=range]#ShadowOffSetY").mousemove(function(){
+			webDraft.shadow.offsetY = $(this).val();
+			$("#ShadowOffSetYValue").text("shadow offset Y:"+$(this).val()+"px")
+		})
 		//changing sensitivity of common points
 		$("input[type=range]#sensitivityPoints").mousemove(function(){
 			webDraft.sensitivityPoints = $(this).val();
 			$("#sensitivityPointsValue").text("sensitivity:"+Math.floor($(this).val()/1000)+"%")
+		})
+		//changing fill opacity
+		$("input[type=range]#fillOpacity").mousemove(function(){
+			webDraft.fill.opacity = $(this).val();
+			$("#fillOpacityValue").text("fill opacity:"+Math.floor($(this).val())+"%")
 		})
 		//choosing pencil
 		$("#pencil").click(function(){
@@ -480,6 +564,10 @@ $(document)
 		$("#shadowColor").click(function(){
 			$("input[type=color]#shadowColorVal").click()
 		})
+		//setting fill Color
+		$("#fillColor").click(function(){
+			$("input[type=color]#fillColorVal").click()
+		})
 		//changing first color input
 		$("input[type=color]#firstColor").change(function(){
 			$("#generalColor .color").css({"background" : $(this).val()})
@@ -489,6 +577,11 @@ $(document)
 		$("input[type=color]#shadowColorVal").change(function(){
 			$("#shadowColor .color").css({"background" : $(this).val()})
 			webDraft.shadow.color = $(this).val()
+		})
+		//changing fill color input
+		$("input[type=color]#fillColorVal").change(function(){
+			$("#fillColor .color").css({"background" : $(this).val()})
+			webDraft.fill.color = $(this).val()
 		})
 		$("#resizer input[type=number]")
 			.change(function(){
@@ -508,9 +601,17 @@ $(document)
 		$("input[type=checkbox]#isShadow").change(function(){
 			webDraft.shadow.isShadow = $(this).is(":checked")//return true if is :checked or false if not
 			if(webDraft.shadow.isShadow){
-				$("#shadowColor, #shadow_slider").show()
+				$("#shadowColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider").show()
 			}else{
-				$("#shadowColor, #shadow_slider").hide()
+				$("#shadowColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider").hide()
+			}
+		})
+		$("input[type=checkbox]#isFillSet").change(function(){
+			webDraft.fill.isSet = $(this).is(":checked")//return true if is :checked or false if not
+			if(webDraft.fill.isSet){
+				$("#fillColor, #fillOpacity_slider").show()
+			}else{
+				$("#fillColor, #fillOpacity_slider").hide()
 			}
 		})
 	})
