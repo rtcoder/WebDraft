@@ -6,7 +6,7 @@ var canvas,
 	points = [ ],
 	webDraft = {
 		title : "WebDraft",
-		version : "1.7",
+		version : "1.9",
 		key : {
 			Ctrl  : false,//press Control (Ctrl)
 			Shift : false,//press Shift
@@ -40,9 +40,20 @@ var canvas,
 			color    : "#232324"
 		},
 		fill : {
-			isSet : false,
-			color : "#ffffff",
+			isSet   : false,
+			color   : "#ffffff",
 			opacity : 100
+		},
+		text : {
+			size   : 10,
+			align  : "left",
+			font   : "Arial",
+			value  : "",
+			pos    : {
+				x : 0,
+				y : 0
+			}
+			
 		},
 		size : 10,
 		sensitivityPoints : 1000,
@@ -296,6 +307,19 @@ var canvas,
 				ctx.fill();
 				ctx.stroke();
 			},
+			drawText : function(){
+				webDraft.text.value = $("#textValue").val();
+				webDraft.text.size = webDraft.size;//tymczasowe !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				if(webDraft.text.value != ""){
+					webDraft.text.pos.x = webDraft.mPosition.x;
+					webDraft.text.pos.y = webDraft.mPosition.y;
+					ctx.font = webDraft.text.size+"px "+webDraft.text.font;
+					ctx.fillStyle = webDraft.color;
+					ctx.textAlign = webDraft.text.align;
+					ctx.fillText(webDraft.text.value, webDraft.text.pos.x, webDraft.text.pos.y);
+					webDraft.text.value = "";
+				}
+			},
 			mousePosition : function(event){
 				webDraft.mPosition.x = event.pageX - parseInt( $(webDraft.draw.selectorId).offset().left ),
 				webDraft.mPosition.y = event.pageY - parseInt( $(webDraft.draw.selectorId).offset().top );
@@ -335,6 +359,9 @@ var canvas,
 								case "circle" :
 									webDraft.func.startShape();
 								break;
+								case "text" :
+									webDraft.func.drawText();
+								break
 							}
 						}
 					})
@@ -364,7 +391,7 @@ var canvas,
 									ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
 									ctx.stroke();
 								break;
-								case "common" :
+								case "web" :
 									webDraft.func.drawWeb();
 								break;
 								case "eraser" :
@@ -402,7 +429,19 @@ $(window)
 		webDraft.func.drawPos();
 	})
 	.bind('mousewheel DOMMouseScroll', function(event) {
-		if(webDraft.key.Ctrl === true){ event.preventDefault() } //press control - do nothing
+		if(webDraft.key.Ctrl === true){
+			event.preventDefault()
+			if(event.originalEvent.wheelDelta /120 > 0){
+				if(webDraft.size < 250)
+					webDraft.size++;
+			}
+			else{
+				if(webDraft.size > 1)
+					webDraft.size--;
+			}
+			$("input#pointSize").val(webDraft.size)
+			$("#pointSizeValue").text("size:"+webDraft.size+"px")
+		}
 		if(webDraft.key.Alt === true){ event.preventDefault() }
 	});
 $(document)
@@ -437,10 +476,10 @@ $(document)
 				panel = bar.parent();
 			panel.find(".show_hide").slideToggle()
 			switch(icon.attr("class")){
-				case "fa fa-chevron-down toggle_visibility" :
+				case "toggle_visibility fa fa-chevron-down" :
 					icon.removeClass("fa fa-chevron-down").addClass("fa fa-chevron-up")
 				break;
-				case "fa fa-chevron-up toggle_visibility" :
+				case "toggle_visibility fa fa-chevron-up" :
 					icon.removeClass("fa fa-chevron-up").addClass("fa fa-chevron-down")
 				break;
 			}
@@ -459,7 +498,7 @@ $(document)
 			$(".paintTool").removeClass("active");
 			$(this).addClass("active")
 			var thisId = $(this).attr("id");
-			if(thisId == "common"){
+			if(thisId == "web"){
 				$("#sensitivityPoints_slider").show()
 			}else{
 				$("#sensitivityPoints_slider").hide()
@@ -482,6 +521,11 @@ $(document)
 			}else{
 				$("#fillShapeInput").hide()
 				$("input#isFillSet").attr('checked', false).change()
+			}
+			if(thisId == "text"){
+				$(".tools#textTools").show()
+			}else{
+				$(".tools#textTools").hide()
 			}
 		})
 		$("#resizeDraw").click(function(){
@@ -527,10 +571,10 @@ $(document)
 			webDraft.shadow.offsetY = $(this).val();
 			$("#ShadowOffSetYValue").text("shadow offset Y:"+$(this).val()+"px")
 		})
-		//changing sensitivity of common points
+		//changing sensitivity of web points
 		$("input[type=range]#sensitivityPoints").mousemove(function(){
 			webDraft.sensitivityPoints = $(this).val();
-			$("#sensitivityPointsValue").text("sensitivity:"+Math.floor($(this).val()/1000)+"%")
+			$("#sensitivityPointsValue").text("sensitivity:"+Math.floor($(this).val()/100)+"%")
 		})
 		//changing fill opacity
 		$("input[type=range]#fillOpacity").mousemove(function(){
@@ -542,20 +586,24 @@ $(document)
 			webDraft.selectedTool = "pencil";
 		})
 		//choosing pencil
-		$("#common").click(function(){
-			webDraft.selectedTool = "common";
+		$("#web").click(function(){
+			webDraft.selectedTool = "web";
 		})
-		//choosing pencil
+		//choosing eraser
 		$("#eraser").click(function(){
 			webDraft.selectedTool = "eraser";
 		})
-		//choosing pencil
+		//choosing shape
 		$("#rectangle").click(function(){
 			webDraft.selectedTool = "rectangle";
 		})
-		//choosing pencil
+		//choosing shape
 		$("#circle").click(function(){
 			webDraft.selectedTool = "circle";
+		})
+		//choosing text
+		$("#text").click(function(){
+			webDraft.selectedTool = "text";
 		})
 		//setting first Color
 		$("#generalColor").click(function(){
