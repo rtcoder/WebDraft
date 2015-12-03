@@ -87,12 +87,12 @@ canvas{position:absolute;cursor:crosshair;}
 	position:absolute;
 	z-index:2;
 	border:1px solid #000;
-	background:rgba(255,255,255,0.1);
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
 }
+#eraseRect{background:rgba(255,255,255,0.3)}
 /*Narzedzia*/
-#shadowColor, #shadow_slider, #sensitivityPoints_slider{display:none}
+#shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput{display:none}
 #tools_group{
 		width:200px;
 		position:absolute;
@@ -145,6 +145,7 @@ canvas{position:absolute;cursor:crosshair;}
 }
 #generalColor .color{ background:#000 }
 #shadowColor .color{ background:#232324 }
+#fillColor .color{ background:#fff }
 .colorTab{
 	width:200px;
 	height:25px;
@@ -162,7 +163,7 @@ canvas{position:absolute;cursor:crosshair;}
 	border:1px solid #ccc;
 	box-sizing:border-box
 }
-#shadowInput{
+#shadowInput, #fillShapeInput{
 	width:200px;
 	height:20px;
 	line-height:20px;
@@ -170,7 +171,7 @@ canvas{position:absolute;cursor:crosshair;}
 	padding:5px 0px;
 	font-size:12px;
 }
-#shadowInput *{
+#shadowInput *, #fillShapeInput *{
 	cursor:pointer;
 	margin:0px;
 	float:left;
