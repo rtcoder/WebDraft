@@ -42,7 +42,7 @@ var canvas,
 		fill : {
 			isSet : false,
 			color : "#ffffff",
-			opacity : 0
+			opacity : 100
 		},
 		size : 10,
 		sensitivityPoints : 1000,
@@ -98,7 +98,8 @@ var canvas,
 				
 				$("#content").perfectScrollbar()
 				ctx.putImageData(image, 0, 0)
-				$("title").text(webDraft.title+" v"+webDraft.version+" ["+webDraft.draw.width+" x "+webDraft.draw.height+"]")
+				$("title").text(webDraft.title+" v"+webDraft.version)
+				$("#layerSize").text(webDraft.draw.width+" x "+webDraft.draw.height)
 				$("html, body, #paint").css({"visibility":"visible"})
 			},
 			moveEraseRect : function(event){
@@ -402,7 +403,7 @@ $(window)
 	})
 	.bind('mousewheel DOMMouseScroll', function(event) {
 		if(webDraft.key.Ctrl === true){ event.preventDefault() } //press control - do nothing
-		if(webDraft.key.Alt === true){}
+		if(webDraft.key.Alt === true){ event.preventDefault() }
 	});
 $(document)
 	.keydown(function(event){
