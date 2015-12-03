@@ -5,13 +5,13 @@
 		<meta charset="utf-8" />
 		<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 		<script src="js/jquery-ui.min.js"></script>
-		<script src="js/html2canvas.js"></script>
+		<!-- <script src="js/html2canvas.js"></script> -->
 		<script src="js/perfect-scrollbar.js"></script>
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/perfect-scrollbar.css">
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> -->
 	</head>
 	<body onload="webDraft.func.resize();webDraft.func.drawPos()">
 		<!--all site elements-->
@@ -46,6 +46,14 @@
 							<div id="l">Shadow</div>
 						</label>
 					</div>
+					<div id="fillShapeInput" class="show_hide">
+						<input type="checkbox" id="isFillSet">
+						<label for="isFillSet">
+							<i class="fa fa-circle-o"></i>
+							<i class="fa fa-dot-circle-o"></i>
+							<div id="l">Fill</div>
+						</label>
+					</div>
 				</div>
 				<!--tools-->
 				<div class="tools">
@@ -64,8 +72,13 @@
 							<div title="set shadow color" class="color"></div>
 							Shadow color
 						</div>
+						<div id="fillColor" class="colorTab">
+							<div title="set fill color" class="color"></div>
+							Fill color
+						</div>
 						<input type="color" id="firstColor">
 						<input type="color" id="shadowColorVal" value="#232324">
+						<input type="color" id="fillColorVal" value="#ffffff">
 					</div>
 				</div>
 				<div class="tools">
@@ -83,9 +96,21 @@
 							<div class="sliderVal" id="ShadowBlurValue">shadow:1px</div>
 							<input id="ShadowBlur" type="range" min="1" max="50" value="1">
 						</div>
+						<div class="sliderContainer" id="shadow_offsetX_slider">
+							<div class="sliderVal" id="ShadowOffSetXValue">shadow offset X:0px</div>
+							<input id="ShadowOffSetX" type="range" min="-50" max="50" value="0">
+						</div>
+						<div class="sliderContainer" id="shadow_offsetY_slider">
+							<div class="sliderVal" id="ShadowOffSetYValue">shadow offset Y:0px</div>
+							<input id="ShadowOffSetY" type="range" min="-50" max="50" value="0">
+						</div>
 						<div class="sliderContainer" id="sensitivityPoints_slider">
 							<div class="sliderVal" id="sensitivityPointsValue">sensitivity:1%</div>
 							<input id="sensitivityPoints" type="range" min="1000" max="100000" value="1000">
+						</div>
+						<div class="sliderContainer" id="fillOpacity_slider">
+							<div class="sliderVal" id="fillOpacityValue">fill opacity:0%</div>
+							<input id="fillOpacity" type="range" min="0" max="100" value="0">
 						</div>
 					</div>
 				</div>
