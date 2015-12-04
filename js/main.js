@@ -76,7 +76,7 @@ var canvas,
 				})
 				$("#content").css({
 					"width"  : $(window).width(),
-					"height" : $(window).height() - 30
+					"height" : $(window).height() - $("#statusbar").height()
 				}).perfectScrollbar()
 				$("#resizer").css({
 					marginLeft : ( $("#content").width() - $("#resizer").width() )/2+"px",
