@@ -318,22 +318,24 @@ input[type=range]:focus::-ms-fill-upper { background: #ccc }
 #statusbar{
 	width:100%;
 	background:#2C2B2B;
-	height:30px;
+	height:20px;
+	line-height:20px;
 	float:left;
 	position:absolute;
 	bottom:0;
+	font-size:13px;
 	color:#ccc;
 }
 #mousePosition, #layerSize{
 	float:left;
 	width:100px;
-	height:30px;
-	line-height:30px;
+	height:inherit;
+	line-height:inherit;
 	text-align:center;
 }
 #author{
-	height:30px;
-	line-height:30px;
+	height:inherit;
+	line-height:inherit;
 	float:right;
 	right:0;
 	margin-right:20px;
