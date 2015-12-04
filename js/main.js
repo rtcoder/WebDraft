@@ -14,33 +14,7 @@ var canvas,
 			Enter : false,//press Enter
 			Esc   : false,//press Escape (Esc)
 			f11   : false,//press F11
-			f12   : false,//press F12
-			A     : false,
-			B     : false,
-			C     : false,
-			D     : false,
-			E     : false,
-			F     : false,
-			G     : false,
-			H     : false,
-			I     : false,
-			J     : false,
-			K     : false,
-			L     : false,
-			M     : false,
-			N     : false,
-			O     : false,
-			P     : false,
-			Q     : false,
-			R     : false,
-			S     : false,
-			T     : false,
-			U     : false,
-			V     : false,
-			W     : false,
-			X     : false,
-			Y     : false,
-			Z     : false
+			f12   : false //press F12
 		},
 		click : {
 			left  : false, //left mouse button
@@ -486,12 +460,7 @@ $(document)
 	.keydown(function(event){
 		if(webDraft.key.f12 === true || event.keyCode == 123){ event.preventDefault() }
 		if(webDraft.key.f11 === true || event.keyCode == 122){ event.preventDefault() }
-		if(webDraft.key.Ctrl === true || event.keyCode == 17){
-			event.preventDefault();
-			if(webDraft.key.S){
-				$("#btnSave").click()
-			}
-		}
+		if(webDraft.key.Ctrl === true || event.keyCode == 17){ event.preventDefault() }
 	})
 	.ready(function(event){
 		$("#isShadow, #isFillSet, #unfilled").button()
@@ -750,84 +719,6 @@ $(document)
 			case 123 :
 				webDraft.key.f12 = true
 			break;
-			case 65 :
-				webDraft.key.A = true
-			break;
-			case 66 :
-				webDraft.key.B = true
-			break;
-			case 67 :
-				webDraft.key.C = true
-			break;
-			case 68 :
-				webDraft.key.D = true
-			break;
-			case 69 :
-				webDraft.key.E = true
-			break;
-			case 70 :
-				webDraft.key.F = true
-			break;
-			case 71 :
-				webDraft.key.G = true
-			break;
-			case 72 :
-				webDraft.key.H = true
-			break;
-			case 73 :
-				webDraft.key.I = true
-			break;
-			case 74 :
-				webDraft.key.J = true
-			break;
-			case 75 :
-				webDraft.key.K = true
-			break;
-			case 76 :
-				webDraft.key.L = true
-			break;
-			case 77 :
-				webDraft.key.M = true
-			break;
-			case 78 :
-				webDraft.key.N = true
-			break;
-			case 79 :
-				webDraft.key.O = true
-			break;
-			case 80 :
-				webDraft.key.P = true
-			break;
-			case 81 :
-				webDraft.key.Q = true
-			break;
-			case 82 :
-				webDraft.key.R = true
-			break;
-			case 83 :
-				webDraft.key.S = true
-			break;
-			case 84 :
-				webDraft.key.T = true
-			break;
-			case 85 :
-				webDraft.key.U = true
-			break;
-			case 86 :
-				webDraft.key.V = true
-			break;
-			case 87 :
-				webDraft.key.W = true
-			break;
-			case 88 :
-				webDraft.key.X = true
-			break;
-			case 89 :
-				webDraft.key.Y = true
-			break;
-			case 90 :
-				webDraft.key.Z = true
-			break;
 		}
 	})
 	.keyup(function(e){
@@ -852,84 +743,6 @@ $(document)
 			break;
 			case 123 :
 				webDraft.key.f12 = false
-			break;
-			case 65 :
-				webDraft.key.A = false
-			break;
-			case 66 :
-				webDraft.key.B = false
-			break;
-			case 67 :
-				webDraft.key.C = false
-			break;
-			case 68 :
-				webDraft.key.D = false
-			break;
-			case 69 :
-				webDraft.key.E = false
-			break;
-			case 70 :
-				webDraft.key.F = false
-			break;
-			case 71 :
-				webDraft.key.G = false
-			break;
-			case 72 :
-				webDraft.key.H = false
-			break;
-			case 73 :
-				webDraft.key.I = false
-			break;
-			case 74 :
-				webDraft.key.J = false
-			break;
-			case 75 :
-				webDraft.key.K = false
-			break;
-			case 76 :
-				webDraft.key.L = false
-			break;
-			case 77 :
-				webDraft.key.M = false
-			break;
-			case 78 :
-				webDraft.key.N = false
-			break;
-			case 79 :
-				webDraft.key.O = false
-			break;
-			case 80 :
-				webDraft.key.P = false
-			break;
-			case 81 :
-				webDraft.key.Q = false
-			break;
-			case 82 :
-				webDraft.key.R = false
-			break;
-			case 83 :
-				webDraft.key.S = false
-			break;
-			case 84 :
-				webDraft.key.T = false
-			break;
-			case 85 :
-				webDraft.key.U = false
-			break;
-			case 86 :
-				webDraft.key.V = false
-			break;
-			case 87 :
-				webDraft.key.W = false
-			break;
-			case 88 :
-				webDraft.key.X = false
-			break;
-			case 89 :
-				webDraft.key.Y = false
-			break;
-			case 90 :
-				webDraft.key.Z = false
 			break;
 		}
 	})
