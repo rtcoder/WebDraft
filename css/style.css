@@ -158,7 +158,7 @@ canvas{position:absolute;cursor:crosshair;}
 	border:1px solid #ccc;
 	box-sizing:border-box
 }
-#shadowInput, #fillShapeInput{
+#shadowInput, #fillShapeInput, #unfilledInput{
 	width:200px;
 	height:20px;
 	line-height:20px;
@@ -166,7 +166,7 @@ canvas{position:absolute;cursor:crosshair;}
 	padding:5px 0px;
 	font-size:12px;
 }
-#shadowInput *, #fillShapeInput *{
+#shadowInput *, #fillShapeInput *, #unfilledInput *{
 	cursor:pointer;
 	margin:0px;
 	float:left;
@@ -180,29 +180,29 @@ input[type=color]{
 	padding: 0px;
 	position: absolute;
 }
-#primaryTools, #toolsBtns, #radioBtns, #colorPicker, #sliders{
+#primaryTools, #toolsBtns, #radioBtns, #alignBtns, #fontStyleBtns, #colorPicker, #sliders{
 	width:100%;
 	float:left;
 	margin:0px;
-}
+}/* 
 .paint_tools .fa{
 	vertical-align: middle;
 	margin:0px 0px 0px 10px;
 	font-size:15px;
 	width:30px;
-}
+} */
 
-.primaryTool .fa{
+.primaryTool .fa, .paint_tools .fa, .textTool .fa, .styleTool .fa{
 	font-size:15px;
 }
-.primaryTool{
+.primaryTool, .paint_tools, .textTool, .styleTool{
 	width:50px;
 	height:30px;
 	line-height:30px;
 	text-align:center;
 	float:left;
 }
-.paint_tools{
+/* {
 	float:left;
 	height:20px;
 	width:100%;
@@ -212,9 +212,9 @@ input[type=color]{
 	margin:0px;
 	padding:5px 0px;
 	line-height:20px;
-}
-.primaryTool, .paintTool{color:#666;cursor:pointer}
-.primaryTool:hover, .paintTool:hover ,.paintTool.active{color:#ffffff}
+} */
+.primaryTool, .paintTool, .textTool, .styleTool{color:#666;cursor:pointer}
+.textTool:hover, .textTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active{color:#ffffff}
 .paintTool.active, .primaryTool:active{cursor:default;color:#0052CC;background:#1C1B1B}
 .sliderContainer{
 	width:200px;
@@ -274,7 +274,8 @@ input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	border: none;
 	height: 10px;
-	width: 5px;
+	width: 10px;
+	border-radius:10px;
 	background: #0052CC;
 }
 input[type=range]::-moz-range-track {
@@ -286,9 +287,9 @@ input[type=range]::-moz-range-track {
 input[type=range]::-moz-range-thumb {
 	border: none;
 	height: 10px;
-	width: 5px;
+	width: 10px;
+	border-radius:10px;
 	background: #0052CC;
-	border-radius:0;
 }
 input[type=range]::-ms-track {
 	width: 180px;
@@ -301,7 +302,8 @@ input[type=range]::-ms-track {
 input[type=range]::-ms-thumb {
 	border: none;
 	height: 10px;
-	width: 5px;
+	width: 10px;
+	border-radius:10px;
 	background: #0052CC;
 }
 input[type=range]:focus { outline: none }
