@@ -20,7 +20,7 @@ html, body, #paint{
 	overflow:hidden;
 /*	visibility:hidden;*/
 }
-#paint{z-index:99999999999999999999999999}
+#paint{z-index:999999}
 /*płótno*/
 #content{
 	float:left;
@@ -93,20 +93,27 @@ canvas{position:absolute;cursor:crosshair;}
 #eraseRect{background:rgba(255,255,255,0.3)}
 /*Narzedzia*/
 #shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput, .tools#textTools{display:none}
-#tools_group{
+#toolsGroup, #layers{
 		width:200px;
 		position:absolute;
 		float:left;
 		z-index:4;
 }
-.tools{
+#layers{right: 0}
+.layerView{
+	width: 100px;
+	height: 100px;
+	margin: 10px 50px;
+	background: #fff
+}
+.tools, #layersBtns, #listLayers{
 	width:200px;
 	background:#2C2B2B;
 	float:left;
 	z-index:4;
 	color:#666;
 }
-.tools .title{
+.tools .title, #layers .title{
 	width:100%;
 	height:20px;
 	line-height:20px;
@@ -120,25 +127,24 @@ canvas{position:absolute;cursor:crosshair;}
 .tools .title:hover{color:#0052CC}
 .tools .title .fa{
 	position:relative;
-	height:20px;
-	line-height:20px;
+	height:inherit;
+	line-height:inherit;
 	left:0;
 	top:0;
-	margin:0px 0px 0px 10px;
-	text-align:left;
+	text-align:center;
 }
-.tools .toggle_visibility{
+.tools .toggleVisibility{
 	position:relative;
 	top:0;
 	margin:0;
 	width:30px;
 	text-align:center;
 	color:#000;
-	height:30px;
-	line-height:30px;
+	height:inherit;
+	line-height:inherit;
 }
-.tools .toggle_visibility:hover .fa{ color:#0052CC }
-.tools .toggle_visibility .fa, .tools .toggle_visibility{ cursor:pointer !important}
+.tools .toggleVisibility:hover .fa{ color:#0052CC }
+.tools .toggleVisibility .fa, .tools .toggleVisibility{ cursor:pointer !important}
 #generalColor .color{ background:#000 }
 #shadowColor .color{ background:#232324 }
 #fillColor .color{ background:#fff }
@@ -186,36 +192,25 @@ input[type=color]{
 	float:left;
 	margin:0px;
 }/* 
-.paint_tools .fa{
+.paintTools .fa{
 	vertical-align: middle;
 	margin:0px 0px 0px 10px;
 	font-size:15px;
 	width:30px;
 } */
 
-.primaryTool .fa, .paint_tools .fa, .textTool .fa, .styleTool .fa{
+.primaryTool .fa, .paintTools .fa, .textTool .fa, .styleTool .fa, .layerTool .fa{
 	font-size:15px;
 }
-.primaryTool, .paint_tools, .textTool, .styleTool{
+.primaryTool, .paintTools, .textTool, .styleTool, .layerTool{
 	width:50px;
 	height:30px;
 	line-height:30px;
 	text-align:center;
 	float:left;
 }
-/* {
-	float:left;
-	height:20px;
-	width:100%;
-	font-size:13px;
-	float:left;
-	cursor:pointer;
-	margin:0px;
-	padding:5px 0px;
-	line-height:20px;
-} */
-.primaryTool, .paintTool, .textTool, .styleTool{color:#666;cursor:pointer}
-.textTool:hover, .textTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active{color:#ffffff}
+.primaryTool, .paintTool, .textTool, .styleTool, .layerTool{color:#666;cursor:pointer}
+.textTool:hover, .textTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active, .layerTool:hover{color:#ffffff}
 .paintTool.active, .primaryTool:active{cursor:default;color:#0052CC;background:#1C1B1B}
 .sliderContainer{
 	width:200px;
