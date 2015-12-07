@@ -19,37 +19,55 @@
 			<div id="eraseRect"></div>
 			<div id="prepareRect"></div>
 			<div id="prepareCircle"></div>
+			<div id="layers">
+				<div class="title draghandler" title="Move">
+					<i class="fa fa-cogs"></i>
+					Layers
+					<i class="toggleVisibility fa fa-chevron-up"></i>
+				</div>
+				<div id="layersBtns">
+						<div id="addLayer" class="layerTool" title="Add"><i class="fa fa-plus"></i></div>
+						<div id="delLayer" class="layerTool" title="Delete"><i class="fa fa-minus"></i></div>
+						<div id="mUpLayer" class="layerTool" title="Move up"><i class="fa fa-angle-down"></i></div>
+						<div id="mDownLayer" class="layerTool" title="Move down"><i class="fa fa-angle-up"></i></div>
+				</div>
+				<div id="listLayers">
+					<div id="id" class="layerView"></div>
+					<div id="id" class="layerView"></div>
+					<div id="id" class="layerView"></div>
+					<div id="id" class="layerView"></div>
+					<div id="id" class="layerView"></div>
+				</div>
+			</div>
 			<!--tools-->
-			<div id="tools_group">
-				<!--tools-->
+			<div id="toolsGroup">
 				<div class="tools">
 					<div class="title draghandler" title="Move">
 						<i class="fa fa-cogs"></i>
 						Tools
-						<i class="toggle_visibility fa fa-chevron-up"></i>
+						<i class="toggleVisibility fa fa-chevron-up"></i>
 					</div>
-					<div id="primaryTools" class="show_hide">
+					<div id="primaryTools" class="showHide">
 						<div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
-						<div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-times-circle-o"></i></div>
+						<div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-close"></i></div>
 						<div id="btnSave" class="primaryTool" title="Save"><i class="fa fa-save"></i></div>
 					</div>
 				</div>
-				<!--tools-->
 				<div class="tools">
 					<div class="title">
 						<i class="fa fa-magic"></i>
 						Draw
-						<i class="toggle_visibility fa fa-chevron-up"></i>
+						<i class="toggleVisibility fa fa-chevron-up"></i>
 					</div>
-					<div id="toolsBtns" class="show_hide">
-						<div id="pencil" class="paint_tools paintTool active" title="Pencil"><i class="fa fa-pencil"></i></div>
-						<div id="web" class="paint_tools paintTool" title="Web"><i class="fa fa-random"></i></div>
-						<div id="eraser" class="paint_tools paintTool" title="Eraser"><i class="fa fa-eraser"></i></div>
-						<div id="rectangle" class="paint_tools paintTool" title="Rectangle"><i class="fa fa-square-o"></i></div>
-						<div id="circle" class="paint_tools paintTool" title="Circle"><i class="fa fa-circle-thin"></i></div>
-						<div id="text" class="paint_tools paintTool" title="Text"><i class="fa fa-font"></i></div>
+					<div id="toolsBtns" class="showHide">
+						<div id="pencil" class="paintTools paintTool active" title="Pencil"><i class="fa fa-pencil"></i></div>
+						<div id="web" class="paintTools paintTool" title="Web"><i class="fa fa-random"></i></div>
+						<div id="eraser" class="paintTools paintTool" title="Eraser"><i class="fa fa-eraser"></i></div>
+						<div id="rectangle" class="paintTools paintTool" title="Rectangle"><i class="fa fa-square-o"></i></div>
+						<div id="circle" class="paintTools paintTool" title="Circle"><i class="fa fa-circle-thin"></i></div>
+						<div id="text" class="paintTools paintTool" title="Text"><i class="fa fa-font"></i></div>
 					</div>
-					<div id="radioBtns" class="show_hide">
+					<div id="radioBtns" class="showHide">
 						<div id="shadowInput">
 							<input type="checkbox" id="isShadow">
 							<label for="isShadow">
@@ -109,15 +127,14 @@
 					<textarea id="textValue" style="width:200px;height:100px;resize:none;background:transparent;color:#Eee;box-sizing:border-box"></textarea>
 					<p style="float:left;width:100%;margin:0;padding:1px;font-size:10px;">Click on paint area to insert text on it</p>
 				</div>
-				<!--tools-->
 				<div class="tools">
 					<div class="title">
 						<i class="fa fa-tint"></i>
 						Colors
-						<i class="toggle_visibility fa fa-chevron-up"></i>
+						<i class="toggleVisibility fa fa-chevron-up"></i>
 					</div>
 					<!--color picker-->
-					<div id="colorPicker" class="show_hide">
+					<div id="colorPicker" class="showHide">
 						<div id="generalColor" class="colorTab">
 							<div title="set color" class="color"></div>
 							Color
@@ -139,9 +156,9 @@
 					<div class="title">
 						<i class="fa fa-sliders"></i>
 						Sliders
-						<i class="toggle_visibility fa fa-chevron-up"></i>
+						<i class="toggleVisibility fa fa-chevron-up"></i>
 					</div>
-					<div id="sliders" class="show_hide">
+					<div id="sliders" class="showHide">
 						<div class="sliderContainer" id="size_slider">
 							<div class="sliderVal" id="pointSizeValue">size:10px</div>
 							<input id="pointSize" type="range" min="1" max="250" value="10">
