@@ -57,6 +57,14 @@ var canvas,
 			}
 			
 		},
+		layers : {
+			list     : {
+				id     : new Array(5),
+				zIndex : new Array(5),
+			},
+			activeId : ""
+
+		},
 		size : 10,
 		sensitivityPoints : 1000,
 		color : "#000000",
@@ -468,7 +476,7 @@ $(document)
 		kolo;
 		webDraft.func.init();
 		//draggable .tools & #resizer
-		$("#tools_group")
+		$("#toolsGroup, #layers")
 			.draggable({
 				snap    : true,
 				handle  : ".title.draghandler",
@@ -482,16 +490,16 @@ $(document)
 			})
 			.css("position","absolute")
 		//switch tool panels visibility
-		$(".toggle_visibility").click(function(){
+		$(".toggleVisibility").click(function(){
 			var icon  = $(this),
 				bar   = $(this).parent(),
 				panel = bar.parent();
-			panel.find(".show_hide").slideToggle()
+			panel.find(".showHide").slideToggle()
 			switch(icon.attr("class")){
-				case "toggle_visibility fa fa-chevron-down" :
+				case "toggleVisibility fa fa-chevron-down" :
 					icon.removeClass("fa fa-chevron-down").addClass("fa fa-chevron-up")
 				break;
-				case "toggle_visibility fa fa-chevron-up" :
+				case "toggleVisibility fa fa-chevron-up" :
 					icon.removeClass("fa fa-chevron-up").addClass("fa fa-chevron-down")
 				break;
 			}
