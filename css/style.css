@@ -104,7 +104,16 @@ canvas{position:absolute;cursor:crosshair;}
 	width: 100px;
 	height: 100px;
 	margin: 10px 50px;
-	background: #fff
+	background: transparent;
+	border:1px solid #ccc;
+}
+.layerView:hover{border-color: #0052cc}
+.layerView.active{border:2px solid #0052cc}
+img.imgLayer{
+	float: left;
+	width: 100px;
+	height: 100px;
+	border: none;
 }
 .tools, #layersBtns, #listLayers{
 	width:200px;
@@ -187,7 +196,7 @@ input[type=color]{
 	padding: 0px;
 	position: absolute;
 }
-#primaryTools, #toolsBtns, #radioBtns, #alignBtns, #fontStyleBtns, #colorPicker, #sliders{
+#toolsBtns, #radioBtns, #alignBtns, #fontStyleBtns, #colorPicker, #sliders{
 	width:100%;
 	float:left;
 	margin:0px;
