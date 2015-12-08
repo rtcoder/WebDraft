@@ -59,8 +59,9 @@ var canvas,
 		},
 		layers : {
 			list     : {
-				id     : new Array(5),
-				zIndex : new Array(5),
+				id      : new Array(),
+				zIndex  : new Array(),
+				visible : new Array()
 			},
 			activeId : ""
 
@@ -92,7 +93,20 @@ var canvas,
 				})
 			},
 			drawPos : function(){
-				var image = ctx.getImageData(0, 0 , webDraft.draw.width, webDraft.draw.height);
+				var image = {
+					id : new Array(),
+					img : new Array()
+				}
+
+				var active = webDraft.layers.activeId
+				for (var i = 0; i < webDraft.layers.list.id.length; i++) {
+					if(typeof webDraft.layers.list.id[i] == "string"){
+						console.log(i)
+						webDraft.func.selectLayer(webDraft.layers.list.id[i])
+						image.img[i] = ctx.getImageData(0, 0 , webDraft.draw.width, webDraft.draw.height);
+						image.id[i] = webDraft.layers.list.id[i]
+					}
+				};
 				$(webDraft.draw.selectorId+","+ webDraft.draw.eventHandler).css({
 					"width"  : webDraft.draw.width,
 					"height" : webDraft.draw.height
@@ -116,12 +130,24 @@ var canvas,
 				}else{
 					$(webDraft.draw.thisParrent).css({"margin-top":($("#content").height() - webDraft.draw.height)/2})
 				}
-				
+
 				$("#content").perfectScrollbar()
-				ctx.putImageData(image, 0, 0)
+				for (var i = 0; i < webDraft.layers.list.id.length; i++) {
+					if(typeof webDraft.layers.list.id[i] == "string"){
+						console.log(i)
+						webDraft.func.selectLayer(webDraft.layers.list.id[i])
+						ctx.putImageData(image.img[i], 0, 0)
+						webDraft.func.saveLayerState()
+					}
+				};
+
+				if(active != "")
+					webDraft.func.selectLayer(active)
+
 				$("title").text(webDraft.title+" v"+webDraft.version)
 				$("#layerSize").text(webDraft.draw.width+" x "+webDraft.draw.height)
 				$("html, body, #paint").css({"visibility":"visible"})
+				console.log(image)
 			},
 			moveEraseRect : function(event){
 				$("#eraseRect").css({
@@ -345,11 +371,68 @@ var canvas,
 				webDraft.mPosition.y = event.pageY - parseInt( $(webDraft.draw.selectorId).offset().top );
 				$("#mousePosition").text(webDraft.mPosition.x+" , "+webDraft.mPosition.y)
 			},
-			init : function(){
+			initCanvas : function(){
 				randomId = webDraft.func.makeid()//generare random id for canvas selector
+				webDraft.layers.list.id[0] = randomId;
+				webDraft.layers.list.visible[0] = true;
+				
 				$(webDraft.draw.selectorId).append('<canvas id="'+randomId+'" width="'+webDraft.draw.width+'" height="'+webDraft.draw.height+'"></canvas>');
-				canvas = document.getElementById(randomId);
+				$("#listLayers").prepend('<div data-id="'+randomId+'" id="0" class="layerView"><img src="" class="imgLayer"></div>');
+				
+				canvas = document.getElementById(webDraft.layers.list.id[0]);
 				ctx = canvas.getContext('2d');
+				webDraft.layers.activeId = webDraft.layers.list.id[0];
+				$(".layerView#0").addClass("active")
+			},
+			saveLayerState : function(){
+				var imgSrc = document.getElementById(webDraft.layers.activeId).toDataURL();
+				$(".layerView[data-id="+webDraft.layers.activeId+"]").find("img").attr("src", imgSrc)
+			},
+			addLayer : function(){
+				var i = parseInt($(".layerView:first").attr("id"))
+				var countViews = $("#listLayers").children().length
+				if(countViews<5){
+					j=i+1;
+					randomId = webDraft.func.makeid()
+					$(webDraft.draw.selectorId).append('<canvas id="'+randomId+'" width="'+webDraft.draw.width+'" height="'+webDraft.draw.height+'"></canvas>');
+					$("#listLayers").prepend('<div data-id="'+randomId+'" id="'+j+'" class="layerView"><img src="" class="imgLayer"></div>');
+					webDraft.layers.list.visible[countViews+1] = true;
+					webDraft.layers.list.id[countViews +1] = randomId;
+
+					$(".layerView").click(function(){
+						$(".layerView").removeClass("active")
+						$(this).addClass("active")
+						var identifier = $(this).attr("data-id")
+						webDraft.func.selectLayer( identifier )
+					})
+
+					$(".layerView[data-id="+randomId+"]").click()
+				}
+			},
+			delLayer : function(identifier, nr){
+				var countViews = $("#listLayers").children().length
+				if(countViews>1){
+					var i = parseInt(nr)
+					$(".layerView#"+i).remove()
+					$("canvas#"+identifier).remove()
+					var j=0;
+					webDraft.layers.list.id = new Array()
+					$("canvas").each(function(){
+						webDraft.layers.list.id[j] = $(this).attr("id")
+						j++
+					})
+					$(".layerView[data-id="+webDraft.layers.list.id[webDraft.layers.list.id.length-1]+"]").click()
+				}
+			},
+			selectLayer : function(identifier){
+				canvas = document.getElementById(identifier);
+				ctx = canvas.getContext('2d');
+				webDraft.layers.activeId = identifier;
+			},
+			init : function(){
+				webDraft.func.initCanvas();
+
+				
 				//events on #draw
 				//$(webDraft.draw.selectorId).find("canvas#"+randomId)
 				$(webDraft.draw.eventHandler)
@@ -398,6 +481,7 @@ var canvas,
 								webDraft.func.drawCircle();
 							break;
 						}
+						webDraft.func.saveLayerState()
 					})
 					.mousemove(function(event){
 						webDraft.func.mousePosition(event);
@@ -504,6 +588,12 @@ $(document)
 				break;
 			}
 		})
+		$("#addLayer").click(webDraft.func.addLayer)
+		$("#delLayer").click(function(){
+			identifier = $(".layerView.active").attr("data-id")
+			nr = $(".layerView.active").attr("id")
+			webDraft.func.delLayer(identifier, nr)
+		})
 		//Save button Click event
 		$("#btnSave").click(function(){
 			/* html2canvas($(webDraft.draw.selectorId),{
@@ -568,6 +658,7 @@ $(document)
 		//Clear button Click event
 		$("#btnCLear").click(function(){
 			$(webDraft.draw.selectorId).empty()
+			$("#listLayers").empty()
 			points = [ ];
 			webDraft.func.init();
 		})
