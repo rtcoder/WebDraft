@@ -21,23 +21,17 @@
 			<div id="prepareCircle"></div>
 			<div id="layers">
 				<div class="title draghandler" title="Move">
-					<i class="fa fa-cogs"></i>
+					<i class="fa fa-object-ungroup"></i>
 					Layers
 					<i class="toggleVisibility fa fa-chevron-up"></i>
 				</div>
-				<div id="layersBtns">
+				<div id="layersBtns" class="showHide">
 						<div id="addLayer" class="layerTool" title="Add"><i class="fa fa-plus"></i></div>
 						<div id="delLayer" class="layerTool" title="Delete"><i class="fa fa-minus"></i></div>
 						<div id="mUpLayer" class="layerTool" title="Move up"><i class="fa fa-angle-down"></i></div>
 						<div id="mDownLayer" class="layerTool" title="Move down"><i class="fa fa-angle-up"></i></div>
 				</div>
-				<div id="listLayers">
-					<div id="id" class="layerView"></div>
-					<div id="id" class="layerView"></div>
-					<div id="id" class="layerView"></div>
-					<div id="id" class="layerView"></div>
-					<div id="id" class="layerView"></div>
-				</div>
+				<div id="listLayers" class="showHide"></div>
 			</div>
 			<!--tools-->
 			<div id="toolsGroup">
@@ -47,19 +41,11 @@
 						Tools
 						<i class="toggleVisibility fa fa-chevron-up"></i>
 					</div>
-					<div id="primaryTools" class="showHide">
+					<div id="toolsBtns" class="showHide">
 						<div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
 						<div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-close"></i></div>
 						<div id="btnSave" class="primaryTool" title="Save"><i class="fa fa-save"></i></div>
-					</div>
-				</div>
-				<div class="tools">
-					<div class="title">
-						<i class="fa fa-magic"></i>
-						Draw
-						<i class="toggleVisibility fa fa-chevron-up"></i>
-					</div>
-					<div id="toolsBtns" class="showHide">
+					
 						<div id="pencil" class="paintTools paintTool active" title="Pencil"><i class="fa fa-pencil"></i></div>
 						<div id="web" class="paintTools paintTool" title="Web"><i class="fa fa-random"></i></div>
 						<div id="eraser" class="paintTools paintTool" title="Eraser"><i class="fa fa-eraser"></i></div>
