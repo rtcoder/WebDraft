@@ -6,7 +6,7 @@ var canvas,
 	points = [ ],
 	webDraft = {
 		title : "WebDraft",
-		version : "1.9",
+		version : "2.0.0",
 		key : {
 			Ctrl  : false,//press Control (Ctrl)
 			Shift : false,//press Shift
