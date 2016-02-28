@@ -55,7 +55,6 @@ var canvas,
 				x : 0,
 				y : 0
 			}
-			
 		},
 		layers : {
 			list     : {
@@ -64,7 +63,6 @@ var canvas,
 				visible : new Array()
 			},
 			activeId : ""
-
 		},
 		size : 10,
 		sensitivityPoints : 1000,
@@ -119,7 +117,7 @@ var canvas,
 				$("canvas")
 					.attr("width" , webDraft.draw.width)
 					.attr("height" , webDraft.draw.height)
-					
+
 				if(webDraft.draw.width >= $("#content").width()){
 					$(webDraft.draw.thisParrent).css({"margin-left" : "0px"})
 				}else{
@@ -165,7 +163,7 @@ var canvas,
 					ctx.lineJoin = ctx.lineCap = 'round';
 				}
 				if(webDraft.fill.isSet == true){
-					ctx.fillStyle = convertHex(webDraft.fill.color, webDraft.fill.opacity)
+					ctx.fillStyle = hexToRgb(webDraft.fill.color, webDraft.fill.opacity)
 				}else{
 					ctx.fillStyle = "transparent"
 				}
@@ -190,6 +188,27 @@ var canvas,
 				webDraft.func.drawStyle();
 				ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
 				ctx.stroke();
+			},
+			colorsampler : function(event) {
+				var x = webDraft.mPosition.x;
+				var y = webDraft.mPosition.y;
+				var p = ctx.getImageData(x, y, 1, 1).data;
+				var colorCode = rgbToHex(p[0], p[1], p[2]);
+				if(colorCode != '0'){
+					var hex = "#" + ("000000" + colorCode).slice(-6);
+					$("#textColorSampler").text(hex);
+					$("#colorBoxSampler").css("background",hex);
+				}else {
+					$("#textColorSampler").text("null");
+					$("#colorBoxSampler").css("background","transparent");
+				}
+			},
+			colorsamplerSetcolor : function() {
+				if($("#textColorSampler").text() != 'null'){
+					$("#generalColor .color").css("background",$("#textColorSampler").text());
+					$("#firstColor").val($("#textColorSampler").text())
+					webDraft.color = $("#textColorSampler").text();
+				}
 			},
 			drawWeb : function(){
 				ctx.beginPath();
@@ -237,7 +256,7 @@ var canvas,
 				})
 				if(webDraft.fill.isSet){
 					$("#prepareRect").css({
-						"background" : convertHex(webDraft.fill.color, webDraft.fill.opacity)
+						"background" : hexToRgb(webDraft.fill.color, webDraft.fill.opacity)
 					})
 				}else{
 					$("#prepareRect").css({
@@ -253,7 +272,7 @@ var canvas,
 						"box-shadow" : "none"
 					})
 				}
-				
+
 			},
 			drawRect : function(){
 				if(startShapePoints[0] <= webDraft.mPosition.x){
@@ -280,7 +299,7 @@ var canvas,
 			prepareCircle : function(){
 				var x = startShapePoints[0],
 					y = startShapePoints[1];
-					
+
 				if(startShapePoints[0] <= webDraft.mPosition.x){
 					var width = webDraft.mPosition.x-startShapePoints[0];
 				}else{
@@ -305,7 +324,7 @@ var canvas,
 				})
 				if(webDraft.fill.isSet){
 					$("#prepareCircle").css({
-						"background" : convertHex(webDraft.fill.color, webDraft.fill.opacity)
+						"background" : hexToRgb(webDraft.fill.color, webDraft.fill.opacity)
 					})
 				}else{
 					$("#prepareCircle").css({
@@ -325,7 +344,7 @@ var canvas,
 			drawCircle : function(){
 				var x = startShapePoints[0],
 					y = startShapePoints[1];
-					
+
 				if(startShapePoints[0] <= webDraft.mPosition.x){
 					var width = webDraft.mPosition.x-startShapePoints[0];
 				}else{
@@ -375,10 +394,10 @@ var canvas,
 				randomId = webDraft.func.makeid()//generare random id for canvas selector
 				webDraft.layers.list.id[0] = randomId;
 				webDraft.layers.list.visible[0] = true;
-				
+
 				$(webDraft.draw.selectorId).append('<canvas id="'+randomId+'" width="'+webDraft.draw.width+'" height="'+webDraft.draw.height+'"></canvas>');
-				$("#listLayers").prepend('<div data-id="'+randomId+'" id="0" class="layerView"><img src="" class="imgLayer"></div>');
-				
+				$("#listLayers").append('<div data-id="'+randomId+'" id="0" class="layerView"><img src="" class="imgLayer"><div class="closeLayer fa fa-close" data-close-id="0" title="Delete layer"></div><div title="Hide layer" class="hideLayer fa fa-eye" data-hideLayer-id="0"></div><div title="Show layer" style="display:none" class="showLayer fa fa-eye-slash" data-showLayer-id="0"></div></div>');
+
 				canvas = document.getElementById(webDraft.layers.list.id[0]);
 				ctx = canvas.getContext('2d');
 				webDraft.layers.activeId = webDraft.layers.list.id[0];
@@ -386,26 +405,48 @@ var canvas,
 			},
 			saveLayerState : function(){
 				var imgSrc = document.getElementById(webDraft.layers.activeId).toDataURL();
-				$(".layerView[data-id="+webDraft.layers.activeId+"]").find("img").attr("src", imgSrc)
+				$(".layerView[data-id="+webDraft.layers.activeId+"]").find("img").attr("src", imgSrc).show()
 			},
 			addLayer : function(){
-				var i = parseInt($(".layerView:first").attr("id"))
+				var i = parseInt($(".layerView:last").attr("id"))
 				var countViews = $("#listLayers").children().length
 				if(countViews<5){
 					j=i+1;
 					randomId = webDraft.func.makeid()
 					$(webDraft.draw.selectorId).append('<canvas id="'+randomId+'" width="'+webDraft.draw.width+'" height="'+webDraft.draw.height+'"></canvas>');
-					$("#listLayers").prepend('<div data-id="'+randomId+'" id="'+j+'" class="layerView"><img src="" class="imgLayer"></div>');
-					webDraft.layers.list.visible[countViews+1] = true;
-					webDraft.layers.list.id[countViews +1] = randomId;
+					$("#listLayers").append('<div data-id="'+randomId+'" id="'+j+'" class="layerView"><img src="" class="imgLayer"><div class="closeLayer fa fa-close" data-close-id="'+j+'" title="Delete layer"></div><div title="Hide layer" class="hideLayer fa fa-eye" data-hideLayer-id="'+j+'"></div><div style="display:none" title="Show layer" class="showLayer fa fa-eye-slash" data-showLayer-id="'+j+'"></div></div>');
+					webDraft.layers.list.visible[j] = true;
+					webDraft.layers.list.id[j] = randomId;
 
 					$(".layerView").click(function(){
-						$(".layerView").removeClass("active")
-						$(this).addClass("active")
-						var identifier = $(this).attr("data-id")
-						webDraft.func.selectLayer( identifier )
+						if(!$(this).hasClass("hidden")){
+							$(".layerView").removeClass("active")
+							$(this).addClass("active")
+							var identifier = $(this).attr("data-id")
+							webDraft.func.selectLayer( identifier )
+						}
 					})
-
+					$(".closeLayer").click(function() {
+						identifier = $(this).parent(".layerView").attr("data-id")
+						nr = $(this).attr("data-close-id")
+						webDraft.func.delLayer(identifier, nr)
+					})
+					$(".hideLayer").click(function(){
+						identifier = $(this).parent(".layerView").attr("data-id")
+						nr = $(this).attr("data-hideLayer-id")
+						$(this).hide();
+						$(".showLayer[data-showLayer-id="+nr+"]").css("display","block")
+						webDraft.func.hideLayer(identifier, nr)
+						console.log(identifier+"    "+nr)
+					})
+					$(".showLayer").click(function(){
+						identifier = $(this).parent(".layerView").attr("data-id")
+						nr = $(this).attr("data-showLayer-id")
+						$(this).hide();
+						$(".hideLayer[data-hideLayer-id="+nr+"]").css("display","block")
+						webDraft.func.showLayer(identifier, nr)
+						console.log(identifier+"    "+nr)
+					})
 					$(".layerView[data-id="+randomId+"]").click()
 				}
 			},
@@ -424,15 +465,37 @@ var canvas,
 					$(".layerView[data-id="+webDraft.layers.list.id[webDraft.layers.list.id.length-1]+"]").click()
 				}
 			},
+			hideLayer(identifier, nr){
+console.log(identifier+"    "+nr)
+				var countViews = $("#listLayers").children().length
+				if(countViews>1){
+					var i = parseInt(nr)
+					$(".layerView#"+i).addClass("hidden")
+					$("canvas#"+webDraft.layers.list.id[i]).addClass("invisible")
+					webDraft.layers.list.visible[i] = false;
+					console.log(webDraft.layers.list.visible[i]);
+				}
+			},
+			showLayer(identifier, nr){
+				console.log(identifier+"    "+nr)
+				var i = parseInt(nr)
+				$(".layerView#"+i).removeClass("hidden")
+				$("canvas#"+webDraft.layers.list.id[i]).removeClass("invisible")
+				webDraft.layers.list.visible[i] = true;
+				console.log(webDraft.layers.list.visible[i]);
+			},
 			selectLayer : function(identifier){
-				canvas = document.getElementById(identifier);
-				ctx = canvas.getContext('2d');
-				webDraft.layers.activeId = identifier;
+				console.log(identifier)
+				if( !$(".layerView[data-id="+identifier+"]").hasClass("hidden") ){
+					canvas = document.getElementById(identifier);
+					ctx = canvas.getContext('2d');
+					webDraft.layers.activeId = identifier;
+				}
 			},
 			init : function(){
 				webDraft.func.initCanvas();
 
-				
+
 				//events on #draw
 				//$(webDraft.draw.selectorId).find("canvas#"+randomId)
 				$(webDraft.draw.eventHandler)
@@ -464,7 +527,11 @@ var canvas,
 								break;
 								case "text" :
 									webDraft.func.drawText();
-								break
+								break;
+								case "colorsampler" :
+									webDraft.func.colorsamplerSetcolor();
+									$("#pencil").click()
+								break;
 							}
 						}
 					})
@@ -485,8 +552,14 @@ var canvas,
 					})
 					.mousemove(function(event){
 						webDraft.func.mousePosition(event);
-						if(webDraft.selectedTool=="eraser")
-							webDraft.func.moveEraseRect(event)
+						switch (webDraft.selectedTool) {
+							case "eraser":
+								webDraft.func.moveEraseRect(event)
+							break;
+							case "colorsampler" :
+								webDraft.func.colorsampler();
+							break;
+						}
 						if(webDraft.click.left && !webDraft.click.right){
 							points.push({ x: webDraft.mPosition.x, y: webDraft.mPosition.y });
 							switch(webDraft.selectedTool){
@@ -509,6 +582,7 @@ var canvas,
 								break;
 							}
 						}
+
 					})
 					.mouseleave(function(){
 						$("#mousePosition").empty()
@@ -517,7 +591,7 @@ var canvas,
 			}
 		}
 	};
-function convertHex(hex,opacity){
+function hexToRgb(hex,opacity){
 	hex = hex.replace('#','');
 	r = parseInt(hex.substring(0,2), 16);
 	g = parseInt(hex.substring(2,4), 16);
@@ -526,7 +600,11 @@ function convertHex(hex,opacity){
 	result = 'rgba('+r+','+g+','+b+','+opacity/100+')';
 	return result;
 }
-
+function rgbToHex(r, g, b) {
+	if (r > 255 || g > 255 || b > 255)
+		throw "Invalid color component";
+	return ((r << 16) | (g << 8) | b).toString(16);
+}
 $(window)
 	.resize(function(){
 		webDraft.func.resize();
@@ -602,12 +680,26 @@ $(document)
 					window.open(img);
 				}
 			}); */
-			window.open(document.getElementById(randomId).toDataURL())
+
+			// TODO
+
+			for (var i = 0; i < webDraft.layers.list.id.length; i++){
+				if(typeof webDraft.layers.list.id[i] === "string" && webDraft.layers.list.visible[i] == true){
+					var imgSrc = document.getElementById(webDraft.layers.list.id[i]).toDataURL();
+					$(".layerView[data-id="+webDraft.layers.activeId+"]").find("img").attr("src", imgSrc)
+					window.open(document.getElementById(webDraft.layers.list.id[i]).toDataURL())
+				}
+			}
 		});
 		$(".paintTool").click(function(){
 			$(".paintTool").removeClass("active");
 			$(this).addClass("active")
 			var thisId = $(this).attr("id");
+			if(thisId == "colorsampler"){
+				$("#previewColorSampler").show()
+			}else {
+				$("#previewColorSampler").hide()
+			}
 			if(thisId == "web"){
 				$("#sensitivityPoints_slider").show()
 			}else{
@@ -709,6 +801,10 @@ $(document)
 		//choosing pencil
 		$("#pencil").click(function(){
 			webDraft.selectedTool = "pencil";
+		})
+		//choosing color sampler
+		$("#colorsampler").click(function(){
+			webDraft.selectedTool = "colorsampler";
 		})
 		//choosing pencil
 		$("#web").click(function(){
