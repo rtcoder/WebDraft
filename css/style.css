@@ -104,21 +104,23 @@ canvas.invisible{visibility: hidden}
 .layerView{
 	position: relative;
 	width: 100px;
-	height: 100px;
+	min-height: 100px;
 	margin: 10px 50px;
 	background: transparent;
 	border:1px solid #ccc;
+	text-align: center;
 	box-sizing: border-box;
+	text-align: center;
 }
 .layerView:hover{border-color: #0052cc}
 .layerView.active{border:2px solid #0052cc}
 
 img.imgLayer{
-	float: left;
+	float: none;
 	width: 100px;
-	height: 100px;
+	height: auto;
 	border: none;
-	display: none;
+	margin: auto;
 }
 .hideLayer, .showLayer, .closeLayer{
 	position: absolute;

@@ -14,7 +14,7 @@ var canvas,
 			Enter : false,//press Enter
 			Esc   : false,//press Escape (Esc)
 			f11   : false,//press F11
-			f12   : false //press F12
+			f12   : false,//press F12
 		},
 		click : {
 			left  : false, //left mouse button
@@ -194,14 +194,9 @@ var canvas,
 				var y = webDraft.mPosition.y;
 				var p = ctx.getImageData(x, y, 1, 1).data;
 				var colorCode = rgbToHex(p[0], p[1], p[2]);
-				if(colorCode != '0'){
-					var hex = "#" + ("000000" + colorCode).slice(-6);
-					$("#textColorSampler").text(hex);
-					$("#colorBoxSampler").css("background",hex);
-				}else {
-					$("#textColorSampler").text("null");
-					$("#colorBoxSampler").css("background","transparent");
-				}
+				var hex = "#" + ("000000" + colorCode).slice(-6);
+				$("#textColorSampler").text(hex);
+				$("#colorBoxSampler").css("background",hex);
 			},
 			colorsamplerSetcolor : function() {
 				if($("#textColorSampler").text() != 'null'){
@@ -390,28 +385,21 @@ var canvas,
 				webDraft.mPosition.y = event.pageY - parseInt( $(webDraft.draw.selectorId).offset().top );
 				$("#mousePosition").text(webDraft.mPosition.x+" , "+webDraft.mPosition.y)
 			},
-			initCanvas : function(){
-				randomId = webDraft.func.makeid()//generare random id for canvas selector
-				webDraft.layers.list.id[0] = randomId;
-				webDraft.layers.list.visible[0] = true;
-
-				$(webDraft.draw.selectorId).append('<canvas id="'+randomId+'" width="'+webDraft.draw.width+'" height="'+webDraft.draw.height+'"></canvas>');
-				$("#listLayers").append('<div data-id="'+randomId+'" id="0" class="layerView"><img src="" class="imgLayer"><div class="closeLayer fa fa-close" data-close-id="0" title="Delete layer"></div><div title="Hide layer" class="hideLayer fa fa-eye" data-hideLayer-id="0"></div><div title="Show layer" style="display:none" class="showLayer fa fa-eye-slash" data-showLayer-id="0"></div></div>');
-
-				canvas = document.getElementById(webDraft.layers.list.id[0]);
-				ctx = canvas.getContext('2d');
-				webDraft.layers.activeId = webDraft.layers.list.id[0];
-				$(".layerView#0").addClass("active")
-			},
 			saveLayerState : function(){
 				var imgSrc = document.getElementById(webDraft.layers.activeId).toDataURL();
-				$(".layerView[data-id="+webDraft.layers.activeId+"]").find("img").attr("src", imgSrc).show()
+				$(".layerView[data-id="+webDraft.layers.activeId+"]").find("img").attr("src", imgSrc)
 			},
 			addLayer : function(){
-				var i = parseInt($(".layerView:last").attr("id"))
+				if(isNaN(parseInt($(".layerView:last").attr("id"))))
+					var i = 0;
+				else
+					var i = parseInt($(".layerView:last").attr("id"));
+
 				var countViews = $("#listLayers").children().length
+				console.log(i);
 				if(countViews<5){
-					j=i+1;
+					j=parseInt(i+1);
+					console.log(j);
 					randomId = webDraft.func.makeid()
 					$(webDraft.draw.selectorId).append('<canvas id="'+randomId+'" width="'+webDraft.draw.width+'" height="'+webDraft.draw.height+'"></canvas>');
 					$("#listLayers").append('<div data-id="'+randomId+'" id="'+j+'" class="layerView"><img src="" class="imgLayer"><div class="closeLayer fa fa-close" data-close-id="'+j+'" title="Delete layer"></div><div title="Hide layer" class="hideLayer fa fa-eye" data-hideLayer-id="'+j+'"></div><div style="display:none" title="Show layer" class="showLayer fa fa-eye-slash" data-showLayer-id="'+j+'"></div></div>');
@@ -466,15 +454,15 @@ var canvas,
 				}
 			},
 			hideLayer(identifier, nr){
-console.log(identifier+"    "+nr)
-				var countViews = $("#listLayers").children().length
-				if(countViews>1){
+				console.log(identifier+"    "+nr)
+				// var countViews = $("#listLayers").children().length;
+				// if(countViews>1){
 					var i = parseInt(nr)
 					$(".layerView#"+i).addClass("hidden")
 					$("canvas#"+webDraft.layers.list.id[i]).addClass("invisible")
 					webDraft.layers.list.visible[i] = false;
 					console.log(webDraft.layers.list.visible[i]);
-				}
+				// }
 			},
 			showLayer(identifier, nr){
 				console.log(identifier+"    "+nr)
@@ -493,7 +481,7 @@ console.log(identifier+"    "+nr)
 				}
 			},
 			init : function(){
-				webDraft.func.initCanvas();
+				webDraft.func.addLayer();
 
 
 				//events on #draw
@@ -631,6 +619,7 @@ $(document)
 		if(webDraft.key.f12 === true || event.keyCode == 123){ event.preventDefault() }
 		if(webDraft.key.f11 === true || event.keyCode == 122){ event.preventDefault() }
 		if(webDraft.key.Ctrl === true || event.keyCode == 17){ event.preventDefault() }
+
 	})
 	.ready(function(event){
 		$("#isShadow, #isFillSet, #unfilled").button()
@@ -674,22 +663,21 @@ $(document)
 		})
 		//Save button Click event
 		$("#btnSave").click(function(){
-			/* html2canvas($(webDraft.draw.selectorId),{
-				onrendered: function(canvas){
-					var img = canvas.toDataURL()
-					window.open(img);
-				}
-			}); */
+			$(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="'+webDraft.draw.width+'" height="'+webDraft.draw.height+'"></canvas>');
 
-			// TODO
+			var temp_c   = document.getElementById("tmpCanvas");
+			var temp_ctx = temp_c.getContext("2d");
 
-			for (var i = 0; i < webDraft.layers.list.id.length; i++){
-				if(typeof webDraft.layers.list.id[i] === "string" && webDraft.layers.list.visible[i] == true){
-					var imgSrc = document.getElementById(webDraft.layers.list.id[i]).toDataURL();
-					$(".layerView[data-id="+webDraft.layers.activeId+"]").find("img").attr("src", imgSrc)
-					window.open(document.getElementById(webDraft.layers.list.id[i]).toDataURL())
+			for (var i = 0; i <= webDraft.layers.list.id.length; i++){
+				if(typeof webDraft.layers.list.id[i] === "string" && webDraft.layers.list.visible[i] === true){
+					var imgData = document.getElementById(webDraft.layers.list.id[i]);
+					temp_ctx.drawImage(imgData, 0, 0);
+
 				}
 			}
+
+			window.open(document.getElementById("tmpCanvas").toDataURL())
+			$("#tmpCanvas").remove()
 		});
 		$(".paintTool").click(function(){
 			$(".paintTool").removeClass("active");
@@ -906,38 +894,38 @@ $(document)
 				webDraft.key.Alt = true;
 			break;
 			case 27 :
-				webDraft.key.Esc = true
+				webDraft.key.Esc = true;
 			break;
 			case 122 :
-				webDraft.key.f11 = true
+				webDraft.key.f11 = true;
 			break;
 			case 123 :
-				webDraft.key.f12 = true
+				webDraft.key.f12 = true;
 			break;
 		}
 	})
 	.keyup(function(e){
 		switch(e.keyCode){
 			case 13 :
-				webDraft.key.Enter = false;
+				webDraft.key.Enter = false;;
 			break;
 			case 16 :
-				webDraft.key.Shift = false;
+				webDraft.key.Shift = false;;
 			break;
 			case 17 :
-				webDraft.key.Ctrl = false;
+				webDraft.key.Ctrl = false;;
 			break;
 			case 18 :
-				webDraft.key.Alt = false;
+				webDraft.key.Alt = false;;
 			break;
 			case 27 :
-				webDraft.key.Esc = false
+				webDraft.key.Esc = false;
 			break;
 			case 122 :
-				webDraft.key.f11 = false
+				webDraft.key.f11 = false;
 			break;
 			case 123 :
-				webDraft.key.f12 = false
+				webDraft.key.f12 = false;
 			break;
 		}
 	})
