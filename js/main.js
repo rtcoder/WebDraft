@@ -387,7 +387,7 @@ var canvas,
 			},
 			saveLayerState : function(){
 				var imgSrc = document.getElementById(webDraft.layers.activeId).toDataURL();
-				$(".layerView[data-id="+webDraft.layers.activeId+"]").find("img").attr("src", imgSrc)
+				$(".layerView[data-id="+webDraft.layers.activeId+"]").find("img").attr("src", imgSrc).show()
 			},
 			addLayer : function(){
 				if(isNaN(parseInt($(".layerView:last").attr("id"))))

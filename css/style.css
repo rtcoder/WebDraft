@@ -121,6 +121,7 @@ img.imgLayer{
 	height: auto;
 	border: none;
 	margin: auto;
+	display: none;
 }
 .hideLayer, .showLayer, .closeLayer{
 	position: absolute;
