@@ -6,7 +6,7 @@ var canvas,
 	points = [ ],
 	webDraft = {
 		title : "WebDraft",
-		version : "2.0.0",
+		version : "2.0.1",
 		key : {
 			Ctrl  : false,//press Control (Ctrl)
 			Shift : false,//press Shift
@@ -453,7 +453,7 @@ var canvas,
 					$(".layerView[data-id="+webDraft.layers.list.id[webDraft.layers.list.id.length-1]+"]").click()
 				}
 			},
-			hideLayer(identifier, nr){
+			hideLayer : function(identifier, nr){
 				console.log(identifier+"    "+nr)
 				// var countViews = $("#listLayers").children().length;
 				// if(countViews>1){
@@ -464,7 +464,7 @@ var canvas,
 					console.log(webDraft.layers.list.visible[i]);
 				// }
 			},
-			showLayer(identifier, nr){
+			showLayer : function(identifier, nr){
 				console.log(identifier+"    "+nr)
 				var i = parseInt(nr)
 				$(".layerView#"+i).removeClass("hidden")
