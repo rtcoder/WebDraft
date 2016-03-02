@@ -5,7 +5,7 @@ var canvas,
 	startShapePoints = [0,0],
 	points = [ ],
 	webDraft = {
-		title : "WebDraft",
+		title   : "WebDraft",
 		version : "2.0.1",
 		key : {
 			Ctrl  : false,//press Control (Ctrl)
@@ -907,16 +907,16 @@ $(document)
 	.keyup(function(e){
 		switch(e.keyCode){
 			case 13 :
-				webDraft.key.Enter = false;;
+				webDraft.key.Enter = false;
 			break;
 			case 16 :
-				webDraft.key.Shift = false;;
+				webDraft.key.Shift = false;
 			break;
 			case 17 :
-				webDraft.key.Ctrl = false;;
+				webDraft.key.Ctrl = false;
 			break;
 			case 18 :
-				webDraft.key.Alt = false;;
+				webDraft.key.Alt = false;
 			break;
 			case 27 :
 				webDraft.key.Esc = false;
