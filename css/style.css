@@ -387,6 +387,10 @@ input[type=range]:focus::-ms-fill-upper { background: #ccc }
 	font-size:13px;
 	color:#ccc;
 }
+#statusbar a{
+	color:#eee;
+	cursor: pointer;
+}
 #mousePosition, #layerSize{
 	float:left;
 	width:100px;

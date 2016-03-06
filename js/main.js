@@ -551,7 +551,9 @@ var canvas,
                             .mousedown(function(event) {
                                 webDraft.click.left = true;
                                 if (!webDraft.click.right && webDraft.click.left) {
-                                    points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+                                    if(webDraft.selectedTool !== "select")
+                                        points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+
                                     switch (webDraft.selectedTool) {
                                         case "pencil" :
                                             webDraft.func.drawing();
@@ -607,7 +609,9 @@ var canvas,
                                         break;
                                 }
                                 if (webDraft.click.left && !webDraft.click.right) {
-                                    points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+                                    if(webDraft.selectedTool !== "select")
+                                        points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+
                                     switch (webDraft.selectedTool) {
                                         case "pencil" :
                                             webDraft.func.drawStyle();
@@ -636,6 +640,12 @@ var canvas,
                             .mouseleave(function() {
                                 $("#mousePosition").empty();
                                 ctx.stroke();
+                            }).dblclick(function(){
+                                switch (webDraft.selectedTool) {
+                                    case "select" :
+                                        $("#selectRectangle").css({"top":"0px","left":"0px"}).width(0).height(0).hide()
+                                        break;
+                                }
                             });
                 }
             }
