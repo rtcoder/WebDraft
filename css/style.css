@@ -4,7 +4,6 @@
 	-webkit-user-select:none;
 	-ms-user-select:none;
 	user-select:none;
-	'unselectable='on' onselectstart='return false;'  onmousedown='return false;
 	cursor:default;
 	font-family: 'Open Sans', sans-serif
 }
@@ -83,7 +82,7 @@ canvas.invisible{visibility: hidden}
 	cursor:pointer;
 }
 .buttonAction:hover{background:#0052CC;color:#ccc}
-#eraseRect, #prepareRect, #prepareCircle{
+#eraseRect, #prepareRect, #prepareCircle, #selectRectangle{
 	display:none;
 	position:absolute;
 	z-index:2;
@@ -160,6 +159,12 @@ img.imgLayer{
 	background:#eee;
 	color:#2E3436;
 }
+#listLayers{
+	max-height: calc(100vh - 70px);
+	position: absolute;
+	overflow: hidden;
+	top: 50px;
+}
 .title.draghandler{cursor:move}
 .tools .title:hover{color:#0052CC}
 .tools .title .fa{
@@ -226,7 +231,7 @@ img.imgLayer{
 	height: 30px;
 	float: left;
 }
-#shadowInput, #fillShapeInput, #unfilledInput{
+#shadowInput, #fillShapeInput{
 	width:200px;
 	height:20px;
 	line-height:20px;
@@ -234,7 +239,7 @@ img.imgLayer{
 	padding:5px 0px;
 	font-size:12px;
 }
-#shadowInput *, #fillShapeInput *, #unfilledInput *{
+#shadowInput *, #fillShapeInput *{
 	cursor:pointer;
 	margin:0px;
 	float:left;

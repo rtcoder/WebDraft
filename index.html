@@ -19,6 +19,7 @@
 			<div id="eraseRect"></div>
 			<div id="prepareRect"></div>
 			<div id="prepareCircle"></div>
+			<div id="selectRectangle"></div>
 			<div id="layers">
 				<div class="title draghandler" title="Move">
 					<i class="fa fa-object-ungroup"></i>
@@ -46,6 +47,7 @@
 						<div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-close"></i></div>
 						<div id="btnSave" class="primaryTool" title="Save"><i class="fa fa-save"></i></div>
 
+						<div id="select" class="paintTools paintTool" title="Select part of image"><i class="fa fa-object-group"></i></div>
 						<div id="pencil" class="paintTools paintTool active" title="Pencil"><i class="fa fa-pencil"></i></div>
 						<div id="colorsampler" class="paintTools paintTool" title="Get color from draw"><i class="fa fa-magic"></i></div>
 						<div id="web" class="paintTools paintTool" title="Web"><i class="fa fa-random"></i></div>
@@ -86,14 +88,6 @@
 					<div id="fontStyleBtns">
 						<div id="bold" class="styleTool" title="Bold"><i class="fa fa-bold"></i></div>
 						<div id="italic" class="styleTool" title="Italic"><i class="fa fa-italic"></i></div>
-					</div>
-					<div id="unfilledInput">
-						<input type="checkbox" id="unfilled">
-						<label for="unfilled">
-							<i class="fa fa-circle-o"></i>
-							<i class="fa fa-dot-circle-o"></i>
-							<div id="l">Unfilled</div>
-						</label>
 					</div>
 					<select id="selectFontType">
 						<option value="Arial">Arial</option>
