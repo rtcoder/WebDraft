@@ -19,7 +19,6 @@
 			<div id="eraseRect"></div>
 			<div id="prepareRect"></div>
 			<div id="prepareCircle"></div>
-			<div id="selectRectangle"></div>
 			<div id="layers">
 				<div class="title draghandler" title="Move">
 					<i class="fa fa-object-ungroup"></i>
@@ -183,8 +182,21 @@
 			<!--content and draw field-->
 			<div id="content">
 				<div id="drawHandler">
+					<div id="selectRectangle"></div>
 					<div id="eventHandler"></div>
 					<div id="draw"></div>
+				</div>
+			</div>
+			<div id="hint">
+				<div class="hintGroup" id="select">
+					<div class="keyboardButton">Del</div>
+					<div class="describeHint">Delete selected part</div>
+					<div class="keyboardButton">Ctrl + X</div>
+					<div class="describeHint">Cut</div>
+					<div class="keyboardButton">Ctrl + C</div>
+					<div class="describeHint">Copy</div>
+					<div class="keyboardButton">Ctrl + V</div>
+					<div class="describeHint">Paste</div>
 				</div>
 			</div>
 			<!--statusbar-->

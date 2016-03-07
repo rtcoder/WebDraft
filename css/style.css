@@ -90,6 +90,7 @@ canvas.invisible{visibility: hidden}
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
 }
+#selectRectangle{cursor: move}
 #eraseRect{background:rgba(255,255,255,0.3)}
 /*Narzedzia*/
 #shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput, .tools#textTools{display:none}
@@ -293,6 +294,46 @@ input[type=color]{
 	font-size:13px;
 	float:left;
 	text-align:center;
+}
+#hint{
+	width: 100vw;
+	height: 50px;
+	position: absolute;
+	bottom: 20px;
+	left: 0;
+	background: #2C2B2B;
+	display: block;
+	display: none;
+}
+.hintGroup{
+	width: 100%;
+	height: 100%;
+	float: left;
+	display: none;
+}
+.keyboardButton{
+	float: left;
+	padding: 0 5px;
+	min-width: 30px;
+	height: 20px;
+	background: #F1F1F1;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	margin: 15px 5px;
+	color: #2C2B2B;
+	text-align: center;
+	line-height: 20px;
+	font-size: 12px;
+}
+.describeHint{
+	width: auto;
+	float: left;
+	height: 50px;
+	line-height: 50px;
+	margin: 0 5px 0 0;
+	color: #F1F1E4;
+	font-size: 12px;
 }
 input[type=checkbox] + label .fa-circle-o,input[type=checkbox] + label .fa-dot-circle-o{
 	float:left;
