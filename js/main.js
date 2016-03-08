@@ -164,7 +164,7 @@ var canvas,
                 var x = webDraft.mPosition.x;
                 var y = webDraft.mPosition.y;
                 var p = ctx.getImageData(x, y, 1, 1).data;
-                var colorCode,
+                var colorCode;
                 var r = p[0];
                 var g = p[1];
                 var b = p[2];
