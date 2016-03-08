@@ -3,17 +3,22 @@
 	<head>
 		<title>WebDraft</title>
 		<meta charset="utf-8" />
-		<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-		<script src="js/jquery-ui.min.js"></script>
+		<script src="js/jquery/jquery-2.1.4.min.js"></script>
+		<script src="js/jquery/jquery-ui.min.js"></script>
 		<!-- <script src="js/html2canvas.js"></script> -->
 		<script src="js/perfect-scrollbar.js"></script>
+		<script src="js/modules/layers.module.js"></script>
+		<script src="js/modules/keys.module.js"></script>
+		<script src="js/modules/select.module.js"></script>
+		<script src="js/modules/shapes.module.js"></script>
+		<script src="js/modules/text.module.js"></script>
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/perfect-scrollbar.css">
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.min.css">
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	</head>
-	<body onload="webDraft.func.resize();webDraft.func.drawPos()">
+	<body onload="webDraft.func.resize();webDraft.func.positionElements()">
 		<!--all site elements-->
 		<div id="paint">
 			<div id="eraseRect"></div>
