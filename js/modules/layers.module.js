@@ -174,7 +174,7 @@ var layers = {
         ctx.rotate(angle*Math.PI/180);
         ctx.drawImage(image,-image.width/2,-image.width/2);
         ctx.restore();
-
+		layers.saveState();
     },
     negative : function(){
         var destX = 0;
