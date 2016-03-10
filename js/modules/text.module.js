@@ -12,15 +12,17 @@ var text = {
     // functions
     drawText : function() {
         text.value = $("#textValue").val();
-        text.font = $("#selectFontType").val();
-        text.size = $("#selectFontSize").val();
+        text.font  = $("#selectFontType").val();
+        text.size  = $("#selectFontSize").val();
         if (text.value !== "") {
-            text.pos.x = webDraft.mPosition.x;
-            text.pos.y = webDraft.mPosition.y;
-            ctx.font = text.style + " " + text.size + "mm " + text.font;
+            text.pos.x    = webDraft.mPosition.x;
+            text.pos.y    = webDraft.mPosition.y;
+            ctx.font      = text.style + " " + text.size + "mm " + text.font;
             ctx.textAlign = text.align;
             ctx.fillStyle = webDraft.color;
+
             ctx.fillText(text.value, text.pos.x, text.pos.y);
+
             text.value = "";
         }
     }

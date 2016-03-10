@@ -50,7 +50,6 @@ $(document)
             break;
         }
 
-
         if (keys.f12 === true || event.keyCode === 123) {
             event.preventDefault();
         }

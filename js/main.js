@@ -1,7 +1,6 @@
 var canvas,
     ctx,
     randomId,
-    isDrawing = false,
     points = [],
     webDraft = {
         title : "WebDraft",
@@ -15,7 +14,7 @@ var canvas,
             y : 0
         },
         draw : {
-            width        : 600,
+            width        : 400,
             height       : 400,
             thisParrent  : "#drawHandler",
             selectorId   : "#draw",
@@ -45,23 +44,23 @@ var canvas,
             },
             resize : function() {
                 $("html, body, #paint").css({
-                    "width": $(window).width(),
-                    "height": $(window).height()
+                    "width"  : $(window).width(),
+                    "height" : $(window).height()
                 });
                 $("#content").css({
-                    "width": $(window).width(),
-                    "height": $(window).height() - $("#statusbar").height()
+                    "width"  : $(window).width(),
+                    "height" : $(window).height() - $("#statusbar").height()
                 }).perfectScrollbar();
                 $("#resizer").css({
-                    marginLeft: ($("#content").width() - $("#resizer").width()) / 2 + "px",
-                    marginTop: ($("#content").height() - $("#resizer").height()) / 2 + "px"
+                    marginLeft : ($("#content").width() - $("#resizer").width()) / 2 + "px",
+                    marginTop  : ($("#content").height() - $("#resizer").height()) / 2 + "px"
                 });
                 $("#listLayers").perfectScrollbar();
             },
             positionElements : function() {
                 var image = {
-                    id: new Array(),
-                    img: new Array()
+                    id  : new Array(),
+                    img : new Array()
                 };
 
                 var active = layers.activeId;
@@ -72,29 +71,31 @@ var canvas,
                         image.id[i] = layers.list.id[i];
                     }
                 }
-                ;
+
                 $(webDraft.draw.selectorId + "," + webDraft.draw.eventHandler).css({
-                    "width": webDraft.draw.width,
-                    "height": webDraft.draw.height
+                    "width"  : webDraft.draw.width,
+                    "height" : webDraft.draw.height
                 });
                 $(webDraft.draw.thisParrent).css({
-                    "background": webDraft.draw.bg,
-                    "width": webDraft.draw.width,
-                    "height": webDraft.draw.height
+                    "background" : webDraft.draw.bg,
+                    "width"      : webDraft.draw.width,
+                    "height"     : webDraft.draw.height
                 });
-                $("canvas")
-                    .attr("width", webDraft.draw.width)
-                    .attr("height", webDraft.draw.height);
+                $("canvas").attr({
+                    "width"  : webDraft.draw.width,
+                    "height" : webDraft.draw.height
+                });
 
                 if (webDraft.draw.width >= $("#content").width()) {
-                    $(webDraft.draw.thisParrent).css({"margin-left": "0px"});
+                    $(webDraft.draw.thisParrent).css({ "margin-left" : "0px" });
                 } else {
-                    $(webDraft.draw.thisParrent).css({"margin-left": ($("#content").width() - webDraft.draw.width) / 2});
+                    $(webDraft.draw.thisParrent).css({ "margin-left" : ($("#content").width() - webDraft.draw.width) / 2 });
                 }
+
                 if (webDraft.draw.height >= $("#content").height()) {
-                    $(webDraft.draw.thisParrent).css({"margin-top": "0px"});
+                    $(webDraft.draw.thisParrent).css({ "margin-top" : "0px" });
                 } else {
-                    $(webDraft.draw.thisParrent).css({"margin-top": ($("#content").height() - webDraft.draw.height) / 2});
+                    $(webDraft.draw.thisParrent).css({ "margin-top" : ($("#content").height() - webDraft.draw.height) / 2 });
                 }
 
                 $("#content").perfectScrollbar();
@@ -111,54 +112,21 @@ var canvas,
 
                 $("title").text(webDraft.title + " v" + webDraft.version);
                 $("#layerSize").text(webDraft.draw.width + " x " + webDraft.draw.height);
-                $("html, body, #paint").css({"visibility": "visible"});
+                $("html, body, #paint").css({ "visibility" : "visible" });
             },
             moveEraseRect : function(event) {
                 $("#eraseRect").css({
-                    "width": webDraft.size,
-                    "height": webDraft.size,
-                    "top": event.pageY - (webDraft.size / 2) + "px",
-                    "left": event.pageX - (webDraft.size / 2) + "px"
+                    "width"  : webDraft.size,
+                    "height" : webDraft.size,
+                    "top"    : event.pageY - (webDraft.size / 2) + "px",
+                    "left"   : event.pageX - (webDraft.size / 2) + "px"
                 });
-            },
-            drawStyle : function() {
-                ctx.lineWidth = webDraft.size;
-
-                if (webDraft.selectedTool === "rectangle") {
-                    ctx.lineJoin = ctx.lineCap = 'miter';
-                } else {
-                    ctx.lineJoin = ctx.lineCap = 'round';
-                }
-
-                if (shapes.fill.isSet === true) {
-                    ctx.fillStyle = hexToRgb(shapes.fill.color, shapes.fill.opacity);
-                } else {
-                    ctx.fillStyle = "transparent";
-                }
-
-                if (webDraft.shadow.isShadow === true) {
-                    ctx.shadowBlur = webDraft.shadow.blur;
-                    ctx.shadowColor = webDraft.shadow.color;
-                    ctx.shadowOffsetX = webDraft.shadow.offsetX;
-                    ctx.shadowOffsetY = webDraft.shadow.offsetY;
-                } else {
-                    ctx.shadowBlur = 0;
-                }
-
-                ctx.strokeStyle = webDraft.color;//line color
             },
             erase : function(event) {
                 webDraft.func.moveEraseRect(event);
                 ctx.clearRect(webDraft.mPosition.x - webDraft.size / 2, webDraft.mPosition.y - webDraft.size / 2, webDraft.size, webDraft.size);
 
                 points = [];
-            },
-            drawing : function() {
-                ctx.beginPath();
-                ctx.moveTo(webDraft.mPosition.x, webDraft.mPosition.y);
-                webDraft.func.drawStyle();
-                ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
-                ctx.stroke();
             },
             colorsampler : function(event) {
                 var x = webDraft.mPosition.x;
@@ -181,37 +149,19 @@ var canvas,
                     colorCode = "transparent"
 
                 $("#textColorSampler").text(colorCode);
-                $("#colorBoxSampler").css("background-color", colorCode);
+                $("#colorBoxSampler").css({ "background-color" : colorCode });
             },
             colorsamplerSetcolor : function() {
                 if ($("#textColorSampler").text() !== 'null') {
-                    $("#generalColor .color").css("background", $("#textColorSampler").text());
+                    $("#generalColor .color").css({ "background" : $("#textColorSampler").text() });
                     $("#firstColor").val($("#textColorSampler").text());
                     webDraft.color = $("#textColorSampler").text();
                 }
             },
-            drawWeb : function() {
-                ctx.beginPath();
-                webDraft.func.drawStyle();
-                ctx.moveTo(points[points.length - 2].x, points[points.length - 2].y);
-                ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
-                ctx.stroke();
-                for (var i = 0, len = points.length; i < len; i++) {
-                    dx = points[i].x - points[points.length - 1].x;
-                    dy = points[i].y - points[points.length - 1].y;
-                    d = dx * dx + dy * dy;
-                    if (d < webDraft.sensitivityPoints) {
-                        ctx.beginPath();
-                        webDraft.func.drawStyle();
-                        ctx.moveTo(points[points.length - 1].x + (dx * 0.2), points[points.length - 1].y + (dy * 0.2));
-                        ctx.lineTo(points[i].x - (dx * 0.2), points[i].y - (dy * 0.2));
-                        ctx.stroke();
-                    }
-                }
-            },
             mousePosition : function(event) {
                 webDraft.mPosition.x = event.pageX - parseInt($(webDraft.draw.selectorId).offset().left),
-                        webDraft.mPosition.y = event.pageY - parseInt($(webDraft.draw.selectorId).offset().top);
+                webDraft.mPosition.y = event.pageY - parseInt($(webDraft.draw.selectorId).offset().top);
+
                 $("#mousePosition").text(webDraft.mPosition.x + " , " + webDraft.mPosition.y);
             },
             init : function() {
@@ -219,481 +169,459 @@ var canvas,
 
                 //events on #draw
                 $(webDraft.draw.eventHandler)
-                        .hover(function() {
-                            ctx.beginPath();
-                            ctx.stroke();
-                        })
-                        .bind("contextmenu", function(event) {
-                            event.preventDefault();
-                            webDraft.click.right = true;
-                            webDraft.click.left  = false;
-                        })
-                        .mousedown(function(event) {
-                            webDraft.click.left = true;
-                            if (!webDraft.click.right && webDraft.click.left) {
-                                if(webDraft.selectedTool !== "select")
-                                    points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
-
-                                switch (webDraft.selectedTool) {
-                                    case "pencil" :
-                                        webDraft.func.drawing();
-                                    break;
-                                    case "eraser" :
-                                        webDraft.func.erase(event);
-                                    break;
-                                    case "select" :
-                                        select.initSelect();
-                                    break;
-                                    case "rectangle" :
-                                        shapes.startShape();
-                                    break;
-                                    case "circle" :
-                                        shapes.startShape();
-                                    break;
-                                    case "text" :
-                                        text.drawText();
-                                    break;
-                                    case "colorsampler" :
-                                        webDraft.func.colorsamplerSetcolor();
-                                        $("#pencil").click();
-                                    break;
-                                }
-                            }
-                        })
-                        .mouseup(function() {
-                            webDraft.click.left  = false;
-                            webDraft.click.right = false;
-
-                            ctx.beginPath();
-                            ctx.stroke();
+                    .hover(function() {
+                        ctx.beginPath();
+                        ctx.stroke();
+                    })
+                    .bind("contextmenu", function(event) {
+                        event.preventDefault();
+                        webDraft.click.right = true;
+                        webDraft.click.left  = false;
+                    })
+                    .mousedown(function(event) {
+                        webDraft.click.left = true;
+                        if (!webDraft.click.right && webDraft.click.left) {
+                            if(webDraft.selectedTool !== "select")
+                                points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
 
                             switch (webDraft.selectedTool) {
-                                case "select":
-                                    select.selectOpt();
+                                case "pencil" :
+                                    draw.drawing();
                                 break;
-                                case "rectangle":
-                                    shapes.drawRect();
+                                case "eraser" :
+                                    webDraft.func.erase(event);
                                 break;
-                                case "circle":
-                                    shapes.drawCircle();
+                                case "select" :
+                                    select.initSelect();
                                 break;
-                            }
-
-                            layers.saveState();
-                        })
-                        .mousemove(function(event) {
-                            webDraft.func.mousePosition(event);
-
-                            switch (webDraft.selectedTool) {
-                                case "eraser":
-                                    webDraft.func.moveEraseRect(event);
+                                case "rectangle" :
+                                    shapes.startShape();
+                                break;
+                                case "circle" :
+                                    shapes.startShape();
+                                break;
+                                case "text" :
+                                    text.drawText();
                                 break;
                                 case "colorsampler" :
-                                    webDraft.func.colorsampler();
-                                break;
-                                case "select" :
-                                    if(!select.isSelecting && webDraft.mPosition.x <= parseInt($("#selectRectangle").css("left")) + $("#selectRectangle").width() && webDraft.mPosition.x >= parseInt($("#selectRectangle").css("left")) && webDraft.mPosition.y <= parseInt($("#selectRectangle").css("top")) + $("#selectRectangle").height() && webDraft.mPosition.y >= parseInt($("#selectRectangle").css("top"))){
-                                        select.hoverSelectRectangle = true;
-                                        $("#selectRectangle").css("z-index",5);
-                                    }else{
-                                        select.hoverSelectRectangle = false;
-                                        $("#selectRectangle").css("z-index",3);
-                                    }
+                                    webDraft.func.colorsamplerSetcolor();
+                                    $("#pencil").click();
                                 break;
                             }
+                        }
+                    })
+                    .mouseup(function() {
+                        webDraft.click.left  = false;
+                        webDraft.click.right = false;
 
-                            if (webDraft.click.left && !webDraft.click.right) {
-                                if(webDraft.selectedTool !== "select")
-                                    points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+                        ctx.beginPath();
+                        ctx.stroke();
 
-                                switch (webDraft.selectedTool) {
-                                    case "pencil" :
-                                        webDraft.func.drawStyle();
-                                        ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
-                                        ctx.stroke();
-                                    break;
-                                    case "web" :
-                                        webDraft.func.drawWeb();
-                                    break;
-                                    case "eraser" :
-                                        webDraft.func.erase(event);
-                                    break;
-                                    case "select" :
-                                        if(!select.hoverSelectRectangle)
-                                            select.startSelect();
-                                    break;
-                                    case "rectangle" :
-                                        shapes.prepareRect();
-                                    break;
-                                    case "circle" :
-                                        shapes.prepareCircle();
-                                    break;
+                        switch (webDraft.selectedTool) {
+                            case "select" :
+                                select.selectOpt();
+                            break;
+                            case "rectangle" :
+                                shapes.drawRect();
+                            break;
+                            case "circle" :
+                                shapes.drawCircle();
+                            break;
+                        }
+
+                        layers.saveState();
+                    })
+                    .mousemove(function(event) {
+                        webDraft.func.mousePosition(event);
+
+                        switch (webDraft.selectedTool) {
+                            case "eraser" :
+                                webDraft.func.moveEraseRect(event);
+                            break;
+                            case "colorsampler" :
+                                webDraft.func.colorsampler();
+                            break;
+                            case "select" :
+                                if(
+                                    !select.isSelecting && webDraft.mPosition.x <= parseInt($("#selectRectangle").css("left")) + $("#selectRectangle").width()
+                                    && webDraft.mPosition.x >= parseInt($("#selectRectangle").css("left"))
+                                    && webDraft.mPosition.y <= parseInt($("#selectRectangle").css("top")) + $("#selectRectangle").height()
+                                    && webDraft.mPosition.y >= parseInt($("#selectRectangle").css("top"))
+                                ){
+                                    select.hoverSelectRectangle = true;
+                                    $("#selectRectangle").css({ "z-index" : 5 });
+                                }else{
+                                    select.hoverSelectRectangle = false;
+                                    $("#selectRectangle").css({ "z-index" : 3 });
                                 }
-                            }
-                        })
-                        .mouseleave(function() {
-                            $("#mousePosition").empty();
-                            ctx.stroke();
-                        }).dblclick(function(){
+                            break;
+                        }
+
+                        if (webDraft.click.left && !webDraft.click.right) {
+                            if(webDraft.selectedTool !== "select")
+                                points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+
                             switch (webDraft.selectedTool) {
+                                case "pencil" :
+                                    draw.drawStyle();
+                                    ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
+                                    ctx.stroke();
+                                break;
+                                case "web" :
+                                    draw.drawWeb();
+                                break;
+                                case "eraser" :
+                                    webDraft.func.erase(event);
+                                break;
                                 case "select" :
-                                    $("#selectRectangle")
-                                        .css({
-                                            "top" : "0px",
-                                            "left":"0px"
-                                        })
-                                        .width(0)
-                                        .height(0)
-                                        .hide();
+                                    if(!select.hoverSelectRectangle)
+                                        select.startSelect();
+                                break;
+                                case "rectangle" :
+                                    shapes.prepareRect();
+                                break;
+                                case "circle" :
+                                    shapes.prepareCircle();
                                 break;
                             }
-                        });
+                        }
+                    })
+                    .mouseleave(function() {
+                        $("#mousePosition").empty();
+                        ctx.stroke();
+                    })
+                    .dblclick(function(){
+                        switch (webDraft.selectedTool) {
+                            case "select" :
+                                $("#selectRectangle")
+                                    .css({
+                                        "top"  : "0px",
+                                        "left" : "0px"
+                                    })
+                                    .width(0)
+                                    .height(0)
+                                    .hide();
+                            break;
+                        }
+                    });
             }
         }
     };
-function hexToRgb(hex, opacity) {
+function hexToRgba(hex, opacity) {
     hex = hex.replace('#', '');
-    r = parseInt(hex.substring(0, 2), 16);
-    g = parseInt(hex.substring(2, 4), 16);
-    b = parseInt(hex.substring(4, 6), 16);
+    var r = parseInt(hex.substring(0, 2), 16);
+    var g = parseInt(hex.substring(2, 4), 16);
+    var b = parseInt(hex.substring(4, 6), 16);
+    var a = opacity / 100;
+    var result = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 
-    result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')';
     return result;
 }
-function rgbToHex(r, g, b) {
-    if (r > 255 || g > 255 || b > 255)
-        throw "Invalid color component";
-    return ((r << 16) | (g << 8) | b).toString(16);
-}
 $(window)
-        .resize(function() {
-            webDraft.func.resize();
-            webDraft.func.positionElements();
-        })
-        .bind('mousewheel DOMMouseScroll', function(event) {
-            if (keys.Ctrl === true) {
-                event.preventDefault();
+    .resize(function() {
+        webDraft.func.resize();
+        webDraft.func.positionElements();
+    })
+    .bind('mousewheel DOMMouseScroll', function(event) {
+        if (keys.Ctrl === true) {
+            event.preventDefault();
 
-                if (event.originalEvent.wheelDelta / 120 > 0) {
-                    if (webDraft.size < 250)
-                        webDraft.size++;
-                }
-                else {
-                    if (webDraft.size > 1)
-                        webDraft.size--;
-                }
-
-                $("input#pointSize").val(webDraft.size);
-                $("#pointSizeValue").text("size:" + webDraft.size + "px");
+            if (event.originalEvent.wheelDelta / 120 > 0) {
+                if (webDraft.size < 250)
+                    webDraft.size++;
+            }
+            else {
+                if (webDraft.size > 1)
+                    webDraft.size--;
             }
 
-            if (keys.Alt === true) {
-                event.preventDefault();
+            $("input#pointSize").val(webDraft.size);
+            $("#pointSizeValue").text("size:" + webDraft.size + "px");
+        }
+
+        if (keys.Alt === true) {
+            event.preventDefault();
+        }
+    });
+$(document)
+    .ready(function(event) {
+        $("#isShadow, #isFillSet").button();
+
+        webDraft.func.init();
+
+        //draggable .tools & #resizer
+        $("#toolsGroup, #layers")
+            .draggable({
+                snap    : true,
+                handle  : ".title.draghandler",
+                opacity : 0.75
+            })
+            .css({ "position" : "absolute" });
+        $("#resizer")
+            .draggable({
+                snap    : true,
+                opacity : 0.75
+            })
+            .css({ "position" : "absolute" });
+        $("#selectRectangle")
+            .draggable({snap : false})
+            .css({ "position" : "absolute" });
+
+        //switch tool panels visibility
+        $(".toggleVisibility").click(function() {
+            var icon  = $(this),
+                bar   = $(this).parent(),
+                panel = bar.parent();
+
+            panel.find(".showHide").slideToggle();
+
+            switch (icon.attr("class")) {
+                case "toggleVisibility fa fa-chevron-down" :
+                    icon.removeClass("fa fa-chevron-down").addClass("fa fa-chevron-up");
+                break;
+                case "toggleVisibility fa fa-chevron-up" :
+                    icon.removeClass("fa fa-chevron-up").addClass("fa fa-chevron-down");
+                break;
             }
         });
-$(document)
-        .ready(function(event) {
-            $("#isShadow, #isFillSet").button();
 
-            var pointStyle = "",
-                kolo;
+        $("#addLayer").click(layers.newLayer);
+        $("#delLayer").click(function() {
+            identifier = $(".layerView.active").attr("data-id");
+            nr = $(".layerView.active").attr("id");
+
+            layers.delete(identifier, nr);
+        });
+        $("#invertColors").click(layers.negative)
+        $("#rotateLeft").click(function(){
+            layers.rotate(-90);
+        })
+        $("#rotateRight").click(function(){
+            layers.rotate(90);
+        })
+        //Save button Click event
+        $("#btnSave").click(function() {
+            $(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '"></canvas>');
+
+            var temp_c   = document.getElementById("tmpCanvas");
+            var temp_ctx = temp_c.getContext("2d");
+
+            for (var i = 0; i <= layers.list.id.length; i++) {
+                if (typeof layers.list.id[i] === "string" && layers.list.visible[i] === true) {
+                    var imgData = document.getElementById(layers.list.id[i]);
+                    var top  = parseInt($("#"+layers.list.id[i]).css("top"));
+                    var left = parseInt($("#"+layers.list.id[i]).css("left"));
+                    temp_ctx.drawImage(imgData, top, left);
+                    console.log(top+"::"+left)
+                }
+            }
+            $("#tmpCanvas").width(webDraft.draw.width).height(webDraft.draw.height)
+            window.open(document.getElementById("tmpCanvas").toDataURL());
+
+            $("#tmpCanvas").remove();
+        });
+        $(".paintTool").click(function() {
+            $(".paintTool").removeClass("active");
+            $(this).addClass("active");
+
+            var thisId = $(this).attr("id");
+
+            webDraft.selectedTool = thisId;
+
+            if (thisId === "colorsampler") {
+                $("#previewColorSampler").show();
+            } else {
+                $("#previewColorSampler").hide();
+            }
+
+            if (thisId === "web") {
+                $("#sensitivityPoints_slider").show();
+            } else {
+                $("#sensitivityPoints_slider").hide();
+            }
+
+            if (thisId === "eraser") {
+                $("#eraseRect").show();
+                $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "none" });
+            } else {
+                $("#eraseRect").hide();
+                $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "crosshair" });
+            }
+
+            if (thisId !== "rectangle") {
+                $("#prepareRect").hide();
+            }
+
+            if (thisId !== "circle") {
+                $("#prepareCircle").hide();
+            }
+
+            if (thisId !== "select") {
+                $("#selectRectangle").hide();
+                $("#hint, .hintGroup#select").hide();
+            }else {
+                $("#hint, .hintGroup#select").show();
+            }
+
+            if (thisId === "rectangle" || thisId === "circle") {
+                $("#fillShapeInput").show();
+            } else {
+                $("#fillShapeInput").hide();
+                $("input#isFillSet").attr('checked', false).change();
+            }
+
+            if (thisId === "text") {
+                $(".tools#textTools").show();
+            } else {
+                $(".tools#textTools").hide();
+            }
+        });
+        $("#resizeDraw").click(function() {
+            $("#resizer").fadeIn();
+            $("input[type=number]#drawWidth").val(webDraft.draw.width);
+            $("input[type=number]#drawHeight").val(webDraft.draw.height);
+            $("#resizeinfo").html(webDraft.draw.width + " <i class='fa fa-times'></i> " + webDraft.draw.height);
+        });
+        $("#cancel").click(function() {
+            $("#resizer").fadeOut();
+            $("input[type=number]#drawWidth").val(webDraft.draw.width);
+            $("input[type=number]#drawHeight").val(webDraft.draw.height);
+        });
+        $("#apply").click(function() {
+            $("#resizer").fadeOut();
+
+            webDraft.draw.width  = $("input[type=number]#drawWidth").val();
+            webDraft.draw.height = $("input[type=number]#drawHeight").val();
+
+            webDraft.func.positionElements();
+        });
+
+        //Clear button Click event
+        $("#btnCLear").click(function() {
+            $(webDraft.draw.selectorId).empty();
+            $("#listLayers").empty();
+
+            points = [];
 
             webDraft.func.init();
-
-            //draggable .tools & #resizer
-            $("#toolsGroup, #layers")
-                    .draggable({
-                        snap: true,
-                        handle: ".title.draghandler",
-                        opacity: 0.75
-                    })
-                    .css("position", "absolute");
-            $("#resizer")
-                    .draggable({
-                        snap: true,
-                        opacity: 0.75
-                    })
-                    .css("position", "absolute");
-            $("#selectRectangle")
-                    .draggable({
-                        snap: false
-                    })
-                    .css("position", "absolute");
-
-            //switch tool panels visibility
-            $(".toggleVisibility").click(function() {
-                var icon = $(this),
-                        bar = $(this).parent(),
-                        panel = bar.parent();
-
-                panel.find(".showHide").slideToggle();
-
-                switch (icon.attr("class")) {
-                    case "toggleVisibility fa fa-chevron-down" :
-                        icon.removeClass("fa fa-chevron-down").addClass("fa fa-chevron-up");
-                    break;
-                    case "toggleVisibility fa fa-chevron-up" :
-                        icon.removeClass("fa fa-chevron-up").addClass("fa fa-chevron-down");
-                    break;
-                }
-            });
-
-            $("#addLayer").click(layers.newLayer);
-            $("#delLayer").click(function() {
-                identifier = $(".layerView.active").attr("data-id");
-                nr = $(".layerView.active").attr("id");
-
-                layers.delete(identifier, nr);
-            });
-            //Save button Click event
-            $("#btnSave").click(function() {
-                $(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '"></canvas>');
-
-                var temp_c = document.getElementById("tmpCanvas");
-                var temp_ctx = temp_c.getContext("2d");
-
-                for (var i = 0; i <= layers.list.id.length; i++) {
-                    if (typeof layers.list.id[i] === "string" && layers.list.visible[i] === true) {
-                        var imgData = document.getElementById(layers.list.id[i]);
-                        temp_ctx.drawImage(imgData, 0, 0);
-                    }
-                }
-
-                window.open(document.getElementById("tmpCanvas").toDataURL());
-
-                $("#tmpCanvas").remove();
-            });
-            $(".paintTool").click(function() {
-                $(".paintTool").removeClass("active");
-                $(this).addClass("active");
-
-                var thisId = $(this).attr("id");
-
-                if (thisId === "colorsampler") {
-                    $("#previewColorSampler").show();
-                } else {
-                    $("#previewColorSampler").hide();
-                }
-
-                if (thisId === "web") {
-                    $("#sensitivityPoints_slider").show();
-                } else {
-                    $("#sensitivityPoints_slider").hide();
-                }
-
-                if (thisId === "eraser") {
-                    $("#eraseRect").show();
-                    $("#draw, #drawHandler, #eventHandler").css("cursor", "none");
-                } else {
-                    $("#eraseRect").hide();
-                    $("#draw, #drawHandler, #eventHandler").css("cursor", "crosshair");
-                }
-
-                if (thisId !== "rectangle") {
-                    $("#prepareRect").hide();
-                }
-
-                if (thisId !== "circle") {
-                    $("#prepareCircle").hide();
-                }
-
-                if (thisId !== "select") {
-                    $("#selectRectangle").hide();
-                    $("#hint, .hintGroup#select").hide();
-                }else {
-                    $("#hint, .hintGroup#select").show();
-                }
-
-                if (thisId === "rectangle" || thisId === "circle") {
-                    $("#fillShapeInput").show();
-                } else {
-                    $("#fillShapeInput").hide();
-                    $("input#isFillSet").attr('checked', false).change();
-                }
-
-                if (thisId === "text") {
-                    $(".tools#textTools").show();
-                } else {
-                    $(".tools#textTools").hide();
-                }
-            });
-            $("#resizeDraw").click(function() {
-                $("#resizer").fadeIn();
-                $("input[type=number]#drawWidth").val(webDraft.draw.width);
-                $("input[type=number]#drawHeight").val(webDraft.draw.height);
-                $("#resizeinfo").html(webDraft.draw.width + " <i class='fa fa-times'></i> " + webDraft.draw.height);
-            });
-            $("#cancel").click(function() {
-                $("#resizer").fadeOut();
-                $("input[type=number]#drawWidth").val(webDraft.draw.width);
-                $("input[type=number]#drawHeight").val(webDraft.draw.height);
-            });
-            $("#apply").click(function() {
-                $("#resizer").fadeOut();
-
-                webDraft.draw.width = $("input[type=number]#drawWidth").val();
-                webDraft.draw.height = $("input[type=number]#drawHeight").val();
-
-                webDraft.func.positionElements();
-            });
-
-            //Clear button Click event
-            $("#btnCLear").click(function() {
-                $(webDraft.draw.selectorId).empty();
-                $("#listLayers").empty();
-
-                points = [];
-
-                webDraft.func.init();
-            });
-            $(".textTool").click(function() {
-                $(".textTool").removeClass("active");
-                $(this).addClass("active");
-
-                var id = $(this).attr("id");
-
-                text.align = id;
-            });
-            $(".styleTool").click(function() {
-                $(this).toggleClass("active");
-
-                text.style = "";
-
-                $(".styleTool.active").each(function() {
-                    var s = $(this).attr("id");
-                    text.style += s + " ";
-                });
-            });
-
-            //changing size
-            $("input[type=range]#pointSize").mousemove(function() {
-                webDraft.size = $(this).val();
-                $("#pointSizeValue").text("size:" + $(this).val() + "px");
-            });
-            //changing shadow blur
-            $("input[type=range]#ShadowBlur").mousemove(function() {
-                webDraft.shadow.blur = $(this).val();
-                $("#ShadowBlurValue").text("shadow:" + $(this).val() + "px");
-            });
-            //changing shadow offset X
-            $("input[type=range]#ShadowOffSetX").mousemove(function() {
-                webDraft.shadow.offsetX = $(this).val();
-                $("#ShadowOffSetXValue").text("shadow offset X:" + $(this).val() + "px");
-            });
-            //changing shadow offset Y
-            $("input[type=range]#ShadowOffSetY").mousemove(function() {
-                webDraft.shadow.offsetY = $(this).val();
-                $("#ShadowOffSetYValue").text("shadow offset Y:" + $(this).val() + "px");
-            });
-            //changing sensitivity of web points
-            $("input[type=range]#sensitivityPoints").mousemove(function() {
-                webDraft.sensitivityPoints = $(this).val();
-                $("#sensitivityPointsValue").text("sensitivity:" + Math.floor($(this).val() / 100) + "%");
-            });
-            //changing fill opacity
-            $("input[type=range]#fillOpacity").mousemove(function() {
-                shapes.fill.opacity = $(this).val();
-                $("#fillOpacityValue").text("fill opacity:" + Math.floor($(this).val()) + "%");
-            });
-            //choosing pencil
-            $("#pencil").click(function() {
-                webDraft.selectedTool = "pencil";
-            });
-            //choosing color sampler
-            $("#colorsampler").click(function() {
-                webDraft.selectedTool = "colorsampler";
-            });
-            //choosing pencil
-            $("#web").click(function() {
-                webDraft.selectedTool = "web";
-            });
-            //choosing eraser
-            $("#eraser").click(function() {
-                webDraft.selectedTool = "eraser";
-            });
-            //choosing shape
-            $("#rectangle").click(function() {
-                webDraft.selectedTool = "rectangle";
-            });
-            //choosing shape
-            $("#select").click(function() {
-                webDraft.selectedTool = "select";
-            });
-            //choosing shape
-            $("#circle").click(function() {
-                webDraft.selectedTool = "circle";
-            });
-            //choosing text
-            $("#text").click(function() {
-                webDraft.selectedTool = "text";
-            });
-            //setting first Color
-            $("#generalColor").click(function() {
-                $("input[type=color]#firstColor").click();
-            });
-            //setting shadow Color
-            $("#shadowColor").click(function() {
-                $("input[type=color]#shadowColorVal").click();
-            });
-            //setting fill Color
-            $("#fillColor").click(function() {
-                $("input[type=color]#fillColorVal").click();
-            });
-            //changing first color input
-            $("input[type=color]#firstColor").change(function() {
-                $("#generalColor .color").css({"background": $(this).val()});
-                webDraft.color = $(this).val();
-            });
-            //changing shadow color input
-            $("input[type=color]#shadowColorVal").change(function() {
-                $("#shadowColor .color").css({"background": $(this).val()});
-                webDraft.shadow.color = $(this).val();
-            });
-            //changing fill color input
-            $("input[type=color]#fillColorVal").change(function() {
-                $("#fillColor .color").css({"background": $(this).val()});
-                shapes.fill.color = $(this).val();
-            });
-            $("#resizer input[type=number]")
-                    .change(function() {
-                        var xSize = parseInt($("input[type=number]#drawWidth").val());
-                        var ySize = parseInt($("input[type=number]#drawHeight").val());
-                        $("#resizeinfo").html(xSize + " <i class='fa fa-times'></i> " + ySize);
-                    }).keyup(function(e) {
-                        var v = $(this).val().replace(/[^\d\.]/g, '');
-
-                        $(this).val(v);
-                        $(this).change();
-
-                        if (e.keyCode === 13) {
-                            $("#apply").click();
-                        } else if (e.keyCode === 27) {
-                            $("#cancel").click();
-                        }
-                    });
-            $("input[type=checkbox]#isShadow").change(function() {
-                webDraft.shadow.isShadow = $(this).is(":checked");//return true if is :checked or false if not
-
-                if (webDraft.shadow.isShadow) {
-                    $("#shadowColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider").show();
-                } else {
-                    $("#shadowColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider").hide();
-                }
-            });
-            $("input[type=checkbox]#isFillSet").change(function() {
-                shapes.fill.isSet = $(this).is(":checked");//return true if is :checked or false if not
-
-                if(shapes.fill.isSet) {
-                    $("#fillColor, #fillOpacity_slider").show();
-                } else {
-                    $("#fillColor, #fillOpacity_slider").hide();
-                }
-            });
-        })
-        .bind("contextmenu", function(e) {
-            e.preventDefault();
-        })
-        .mouseup(function() {
-            webDraft.click.left = false;
-            webDraft.click.right = false;
         });
+        $(".textTool").click(function() {
+            $(".textTool").removeClass("active");
+            $(this).addClass("active");
+
+            var id = $(this).attr("id");
+
+            text.align = id;
+        });
+        $(".styleTool").click(function() {
+            $(this).toggleClass("active");
+
+            text.style = "";
+
+            $(".styleTool.active").each(function() {
+                var s = $(this).attr("id");
+                text.style += s + " ";
+            });
+        });
+
+        //changing size
+        $("input[type=range]#pointSize").mousemove(function() {
+            webDraft.size = $(this).val();
+            $("#pointSizeValue").text("size:" + $(this).val() + "px");
+        });
+        //changing shadow blur
+        $("input[type=range]#ShadowBlur").mousemove(function() {
+            webDraft.shadow.blur = $(this).val();
+            $("#ShadowBlurValue").text("shadow:" + $(this).val() + "px");
+        });
+        //changing shadow offset X
+        $("input[type=range]#ShadowOffSetX").mousemove(function() {
+            webDraft.shadow.offsetX = $(this).val();
+            $("#ShadowOffSetXValue").text("shadow offset X:" + $(this).val() + "px");
+        });
+        //changing shadow offset Y
+        $("input[type=range]#ShadowOffSetY").mousemove(function() {
+            webDraft.shadow.offsetY = $(this).val();
+            $("#ShadowOffSetYValue").text("shadow offset Y:" + $(this).val() + "px");
+        });
+        //changing sensitivity of web points
+        $("input[type=range]#sensitivityPoints").mousemove(function() {
+            webDraft.sensitivityPoints = $(this).val();
+            $("#sensitivityPointsValue").text("sensitivity:" + Math.floor($(this).val() / 100) + "%");
+        });
+        //changing fill opacity
+        $("input[type=range]#fillOpacity").mousemove(function() {
+            shapes.fill.opacity = $(this).val();
+            $("#fillOpacityValue").text("fill opacity:" + Math.floor($(this).val()) + "%");
+        });
+
+        //setting first Color
+        $("#generalColor").click(function() {
+            $("input[type=color]#firstColor").click();
+        });
+        //setting shadow Color
+        $("#shadowColor").click(function() {
+            $("input[type=color]#shadowColorVal").click();
+        });
+        //setting fill Color
+        $("#fillColor").click(function() {
+            $("input[type=color]#fillColorVal").click();
+        });
+        //changing first color input
+        $("input[type=color]#firstColor").change(function() {
+            $("#generalColor .color").css({ "background" : $(this).val() });
+            webDraft.color = $(this).val();
+        });
+        //changing shadow color input
+        $("input[type=color]#shadowColorVal").change(function() {
+            $("#shadowColor .color").css({ "background" : $(this).val() });
+            webDraft.shadow.color = $(this).val();
+        });
+        //changing fill color input
+        $("input[type=color]#fillColorVal").change(function() {
+            $("#fillColor .color").css({ "background" : $(this).val() });
+            shapes.fill.color = $(this).val();
+        });
+        $("#resizer input[type=number]")
+            .change(function() {
+                var xSize = parseInt($("input[type=number]#drawWidth").val());
+                var ySize = parseInt($("input[type=number]#drawHeight").val());
+                $("#resizeinfo").html(xSize + " <i class='fa fa-times'></i> " + ySize);
+            }).keyup(function(e) {
+                var v = $(this).val().replace(/[^\d\.]/g, '');
+
+                $(this).val(v);
+                $(this).change();
+
+                if (e.keyCode === 13) {
+                    $("#apply").click();
+                } else if (e.keyCode === 27) {
+                    $("#cancel").click();
+                }
+            });
+        $("input[type=checkbox]#isShadow").change(function() {
+            webDraft.shadow.isShadow = $(this).is(":checked");//return true if is :checked or false if not
+
+            if (webDraft.shadow.isShadow) {
+                $("#shadowColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider").show();
+            } else {
+                $("#shadowColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider").hide();
+            }
+        });
+        $("input[type=checkbox]#isFillSet").change(function() {
+            shapes.fill.isSet = $(this).is(":checked");//return true if is :checked or false if not
+
+            if(shapes.fill.isSet) {
+                $("#fillColor, #fillOpacity_slider").show();
+            } else {
+                $("#fillColor, #fillOpacity_slider").hide();
+            }
+        });
+    })
+    .bind("contextmenu", function(e) {
+        e.preventDefault();
+    })
+    .mouseup(function() {
+        webDraft.click.left  = false;
+        webDraft.click.right = false;
+    });
