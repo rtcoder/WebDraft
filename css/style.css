@@ -4,7 +4,6 @@
 	-webkit-user-select:none;
 	-ms-user-select:none;
 	user-select:none;
-	'unselectable='on' onselectstart='return false;'  onmousedown='return false;
 	cursor:default;
 	font-family: 'Open Sans', sans-serif
 }
@@ -38,6 +37,7 @@ html, body, #paint{
 #eventHandler{z-index:3;position:absolute}
 #drawHandler{border:1px dotted #0052CC}
 canvas{position:absolute;cursor:crosshair;}
+canvas.invisible{visibility: hidden}
 #resizer{
 	width:300px;
 	height:180px;
@@ -82,7 +82,7 @@ canvas{position:absolute;cursor:crosshair;}
 	cursor:pointer;
 }
 .buttonAction:hover{background:#0052CC;color:#ccc}
-#eraseRect, #prepareRect, #prepareCircle{
+#eraseRect, #prepareRect, #prepareCircle, #selectRectangle{
 	display:none;
 	position:absolute;
 	z-index:2;
@@ -90,6 +90,7 @@ canvas{position:absolute;cursor:crosshair;}
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
 }
+#selectRectangle{cursor: move}
 #eraseRect{background:rgba(255,255,255,0.3)}
 /*Narzedzia*/
 #shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput, .tools#textTools{display:none}
@@ -101,19 +102,42 @@ canvas{position:absolute;cursor:crosshair;}
 }
 #layers{right: 0}
 .layerView{
+	position: relative;
 	width: 100px;
-	height: 100px;
+	min-height: 100px;
 	margin: 10px 50px;
 	background: transparent;
 	border:1px solid #ccc;
+	text-align: center;
+	box-sizing: border-box;
+	text-align: center;
 }
 .layerView:hover{border-color: #0052cc}
 .layerView.active{border:2px solid #0052cc}
+
 img.imgLayer{
-	float: left;
+	float: none;
 	width: 100px;
-	height: 100px;
+	height: auto;
 	border: none;
+	margin: auto;
+	display: none;
+}
+.hideLayer, .showLayer{
+	position: absolute;
+    width: 18px;
+    height: 18px;
+    line-height: 18px !important;
+    text-align: center;
+    cursor: pointer;
+	right: -30px;
+	top: 20px
+}
+.hideLayer:hover, .showLayer{
+	color: #C50000;
+}
+.showLayer:hover, .hideLayer{
+	color: #16c600;
 }
 .tools, #layersBtns, #listLayers{
 	width:200px;
@@ -131,6 +155,12 @@ img.imgLayer{
 	text-align:center;
 	background:#eee;
 	color:#2E3436;
+}
+#listLayers{
+	max-height: calc(100vh - 70px);
+	position: absolute;
+	overflow: hidden;
+	top: 50px;
 }
 .title.draghandler{cursor:move}
 .tools .title:hover{color:#0052CC}
@@ -174,7 +204,32 @@ img.imgLayer{
 	border:1px solid #ccc;
 	box-sizing:border-box
 }
-#shadowInput, #fillShapeInput, #unfilledInput{
+#previewColorSampler{
+	position: absolute;
+	width: 200px;
+	height: 60px;
+	background: 0 30px url('../pic/transparent.png');
+	top: 0;
+	left: 200px;
+	z-index: 1;
+	display: none;
+}
+#textColorSampler{
+	width: 100%;
+	float: left;
+	height: 30px;
+	background: #2C2B2B;
+	line-height: 30px;
+	text-align: center;
+	font-size: 13px;
+	color: #eee;
+}
+#colorBoxSampler{
+	width: 100%;
+	height: 30px;
+	float: left;
+}
+#shadowInput, #fillShapeInput{
 	width:200px;
 	height:20px;
 	line-height:20px;
@@ -182,7 +237,7 @@ img.imgLayer{
 	padding:5px 0px;
 	font-size:12px;
 }
-#shadowInput *, #fillShapeInput *, #unfilledInput *{
+#shadowInput *, #fillShapeInput *{
 	cursor:pointer;
 	margin:0px;
 	float:left;
@@ -200,13 +255,7 @@ input[type=color]{
 	width:100%;
 	float:left;
 	margin:0px;
-}/* 
-.paintTools .fa{
-	vertical-align: middle;
-	margin:0px 0px 0px 10px;
-	font-size:15px;
-	width:30px;
-} */
+}
 
 .primaryTool .fa, .paintTools .fa, .textTool .fa, .styleTool .fa, .layerTool .fa{
 	font-size:15px;
@@ -217,8 +266,9 @@ input[type=color]{
 	line-height:30px;
 	text-align:center;
 	float:left;
+	color:#666;
+	cursor:pointer;
 }
-.primaryTool, .paintTool, .textTool, .styleTool, .layerTool{color:#666;cursor:pointer}
 .textTool:hover, .textTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active, .layerTool:hover{color:#ffffff}
 .paintTool.active, .primaryTool:active{cursor:default;color:#0052CC;background:#1C1B1B}
 .sliderContainer{
@@ -236,6 +286,46 @@ input[type=color]{
 	font-size:13px;
 	float:left;
 	text-align:center;
+}
+#hint{
+	width: 100vw;
+	height: 50px;
+	position: absolute;
+	bottom: 20px;
+	left: 0;
+	background: #2C2B2B;
+	display: block;
+	display: none;
+}
+.hintGroup{
+	width: 100%;
+	height: 100%;
+	float: left;
+	display: none;
+}
+.keyboardButton{
+	float: left;
+	padding: 0 5px;
+	min-width: 30px;
+	height: 20px;
+	background: #F1F1F1;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	margin: 15px 5px;
+	color: #2C2B2B;
+	text-align: center;
+	line-height: 20px;
+	font-size: 12px;
+}
+.describeHint{
+	width: auto;
+	float: left;
+	height: 50px;
+	line-height: 50px;
+	margin: 0 5px 0 0;
+	color: #F1F1E4;
+	font-size: 12px;
 }
 input[type=checkbox] + label .fa-circle-o,input[type=checkbox] + label .fa-dot-circle-o{
 	float:left;
@@ -329,6 +419,10 @@ input[type=range]:focus::-ms-fill-upper { background: #ccc }
 	bottom:0;
 	font-size:13px;
 	color:#ccc;
+}
+#statusbar a{
+	color:#eee;
+	cursor: pointer;
 }
 #mousePosition, #layerSize{
 	float:left;
