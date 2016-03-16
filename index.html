@@ -5,6 +5,8 @@
 		<meta charset="utf-8" />
 		<script src="js/jquery/jquery-2.1.4.min.js"></script>
 		<script src="js/jquery/jquery-ui.min.js"></script>
+		<script src="js/canvas-toBlob.js"></script>
+		<script src="js/FileSaver.min.js"></script>
 		<!-- <script src="js/html2canvas.js"></script> -->
 		<script src="js/perfect-scrollbar.js"></script>
 		<script src="js/modules/layers.module.js"></script>
@@ -13,6 +15,7 @@
 		<script src="js/modules/shapes.module.js"></script>
 		<script src="js/modules/text.module.js"></script>
 		<script src="js/modules/draw.module.js"></script>
+		<script src="js/modules/file.module.js"></script>
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/perfect-scrollbar.css">
@@ -50,10 +53,14 @@
 					<div id="toolsBtns" class="showHide">
 						<div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
 						<div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-close"></i></div>
-						<div id="btnSave" class="primaryTool" title="Save"><i class="fa fa-save"></i></div>
+						<div id="btnSave" class="primaryTool" title="Save (open in new tab)"><i class="fa fa-save"></i></div>
+						<div id="btnDownload" class="primaryTool" title="Download (save to file)"><i class="fa fa-download"></i></div>
 						<div id="invertColors" class="primaryTool" title="Invert colors"><i class="fa fa-refresh"></i></div>
 						<div id="rotateLeft" class="primaryTool" title="Rotate left"><i class="fa fa-rotate-left"></i></div>
 						<div id="rotateRight" class="primaryTool" title="Rotate right"><i class="fa fa-rotate-right"></i></div>
+						<div id="mirrorV" class="primaryTool" title="Vertical mirror"><i class="fa fa-arrows-h"></i></div>
+						<div id="mirrorH" class="primaryTool" title="Horizontal mirror"><i class="fa fa-arrows-v"></i></div>
+						<div id="fileUploader" class="primaryTool" title="Upload file"><i class="fa fa-upload"></i></div>
 
 						<div id="select" class="paintTools paintTool" title="Select part of image"><i class="fa fa-object-group"></i></div>
 						<div id="pencil" class="paintTools paintTool active" title="Pencil"><i class="fa fa-pencil"></i></div>
@@ -179,6 +186,8 @@
 			<div id="resizer">
 				<input type="number" id="drawWidth" placeholder="Szerokość" min="0" max="" required>
 				<input type="number" id="drawHeight" placeholder="Wysokość" min="0" max="" required>
+				<input type="checkbox" name="allLayersResizing" id="allLayersResizing" value="">
+				<label for="allLayersResizing">Resize all layers?</label>
 				<div id="resizeinfo"></div>
 				<div id="cancel" class="buttonAction">Anuluj (Esc)</div>
 				<div id="apply" class="buttonAction">OK (Enter)</div>
@@ -188,6 +197,8 @@
 				<div id="textColorSampler"></div>
 				<div id="colorBoxSampler"></div>
 			</div>
+			<!-- file uploader -->
+			<input type="file" name="file" id="fileUploaderInput" accept="image/*" onchange="file.upload(event)">
 			<!--content and draw field-->
 			<div id="content">
 				<div id="drawHandler">

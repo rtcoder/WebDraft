@@ -9,11 +9,13 @@ var keys = {
     delete : false, //press delete
     C      : false,
     X      : false,
-    V      : false
+    V      : false,
+    O      : false
 }
 
 $(document)
     .keydown(function(event) {
+        console.log(event.keyCode)
         switch (event.keyCode) {
             case 13 :
                 keys.Enter = true;
@@ -35,6 +37,12 @@ $(document)
             break;
             case 67 :
                 keys.C = true;
+            break;
+            case 79 :
+                keys.O = true;
+            break;
+            case 83 :
+                keys.S = true;
             break;
             case 86 :
                 keys.V = true;
@@ -93,6 +101,20 @@ $(document)
                 select.pasteSelectedPart();
             }
         }
+        if (keys.O === true || event.keyCode === 79) {
+            event.preventDefault();
+
+            if(keys.Ctrl){
+                $("#fileUploader").click();
+            }
+        }
+        if (keys.S === true || event.keyCode === 83) {
+            event.preventDefault();
+
+            if(keys.Ctrl){
+                $("#btnSave").click();
+            }
+        }
 
     })
     .keyup(function(event) {
@@ -117,6 +139,12 @@ $(document)
             break;
             case 67 :
                 keys.C = false;
+            break;
+            case 79 :
+                keys.O = false;
+            break;
+            case 83 :
+                keys.S = false;
             break;
             case 86 :
                 keys.V = false;

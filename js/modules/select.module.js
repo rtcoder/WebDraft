@@ -85,7 +85,7 @@ var select = {
         var xpos = parseInt($("#selectRectangle").css("left"));
         var ypos = parseInt($("#selectRectangle").css("top"));
         var bg   = $("#selectRectangle").css("background-image").replace('url(','').replace(')','').replace('"', '').replace('"', '');
-        var img  = new Image;
+        var img  = new Image();
 
         img.onload = function(){
             ctx.drawImage(img,xpos,ypos); //save part of image when loaded

@@ -3,10 +3,60 @@ var layers = {
     activeId : "",
     list : {
         id      : new Array(),
-        zIndex  : new Array(),
         visible : new Array()
     },
     //functions
+    setLayerSize : function(layerId, width, height){
+        var image = {
+            id  : new Array(),
+            img : new Array()
+        };
+
+        var active = layers.activeId;
+        for (var i = 0; i < layers.list.id.length; i++) {
+            if (typeof layers.list.id[i] === "string") {
+                layers.select(layers.list.id[i]);
+                image.img[i] = ctx.getImageData(0, 0, webDraft.draw.width, webDraft.draw.height);
+                image.id[i] = layers.list.id[i];
+            }
+        }
+
+        if(layerId == ""){
+            webDraft.draw.width  = width;
+            webDraft.draw.height = height;
+            $("canvas").attr({
+                "width"  : webDraft.draw.width,
+                "height" : webDraft.draw.height
+            });
+        }else{
+            $("canvas#"+layerId).attr({
+                "width"  : width,
+                "height" : height
+            })
+            webDraft.draw.width = 0;
+            webDraft.draw.height = 0;
+            $("canvas").each(function(){
+                w = parseInt($(this).attr("width"));
+                h = parseInt($(this).attr("height"))
+                if(webDraft.draw.width  < w)
+                    webDraft.draw.width  = w;
+
+                if(webDraft.draw.height < h)
+                    webDraft.draw.height = h;
+            })
+        }
+
+        for (var i = 0; i < layers.list.id.length; i++) {
+            if (typeof layers.list.id[i] === "string") {
+                layers.select(layers.list.id[i]);
+                ctx.putImageData(image.img[i], 0, 0);
+                layers.saveState();
+            }
+        }
+
+        if (active !== "")
+            layers.select(active);
+    },
     saveState : function() {
         var imgSrc = document.getElementById(layers.activeId).toDataURL();
         $(".layerView[data-id=" + layers.activeId + "]").find("img").attr("src", imgSrc).show();
@@ -58,6 +108,7 @@ var layers = {
                 layers.show(nr);
             });
             $(".layerView[data-id=" + randomId + "]").click();
+
         }
     },
     delete : function(id, nr) {
@@ -75,7 +126,6 @@ var layers = {
             var j = 0;
             $("canvas").each(function() {
                 layers.list.id[j] = $(this).attr("id");
-
                 if($(this).hasClass("invisible"))
                     layers.list.visible[j] = false;
                 else
@@ -94,6 +144,18 @@ var layers = {
             });
 
             $(".layerView[data-id=" + layers.list.id[layers.list.id.length - 1] + "]").click();
+            webDraft.draw.width = 0;
+            webDraft.draw.height = 0;
+            $("canvas").each(function(){
+                w = parseInt($(this).attr("width"));
+                h = parseInt($(this).attr("height"))
+                if(webDraft.draw.width  < w)
+                    webDraft.draw.width  = w;
+
+                if(webDraft.draw.height < h)
+                    webDraft.draw.height = h;
+            })
+            webDraft.func.positionElements()
         }
     },
     hide : function(nr) {
@@ -175,6 +237,22 @@ var layers = {
         ctx.drawImage(image,-image.width/2,-image.width/2);
         ctx.restore();
 		layers.saveState();
+    },
+    mirror : function(direction) {
+        if(direction == 'horizontal' || direction == 'vertical'){
+            var image = new Image();
+            image.src = canvas.toDataURL();
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.save();
+            ctx.translate(canvas.width/2,canvas.height/2);
+            if(direction == 'vertical')
+                ctx.scale(-1,1);
+            else if (direction == 'horizontal')
+                ctx.scale(1,-1);
+            ctx.drawImage(image,-image.width/2,-image.height/2);
+            ctx.restore();
+    		layers.saveState();
+        }
     },
     negative : function(){
         var destX = 0;
