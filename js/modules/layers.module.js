@@ -95,7 +95,10 @@ var layers = {
                 var nr = $(this).parent(".layerView").attr("id");
 
                 $(this).hide();
-                $(this).parent(".layerView").find(".showLayer").css({ "display" : "block" });
+                $(this)
+                    .parent(".layerView")
+                    .find(".showLayer")
+                    .css({ "display" : "block" });
 
                 layers.hide(nr);
             });
@@ -103,7 +106,10 @@ var layers = {
                 var nr = $(this).parent(".layerView").attr("id");
 
                 $(this).hide();
-                $(this).parent(".layerView").find(".hideLayer").css({ "display" : "block" });
+                $(this)
+                    .parent(".layerView")
+                    .find(".hideLayer")
+                    .css({ "display" : "block" });
 
                 layers.show(nr);
             });
@@ -112,7 +118,7 @@ var layers = {
         }
     },
     delete : function(id, nr) {
-        var countViews = $("#listLayers").children().length;
+        var countViews = $(".layerView").length;
 
         if (countViews > 1) {
             var i = parseInt(nr);
