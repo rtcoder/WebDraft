@@ -276,7 +276,75 @@ var layers = {
         // overwrite original image
         ctx.putImageData(imageData, 0, 0);//add the function call in the imageObj.onload
         layers.saveState();
+    },
+    moveUp :function () {
+        var firstID = $(".layerView").first().attr("data-id");
+        if(firstID != layers.activeId){
+            var thisNr = $(".layerView[data-id="+layers.activeId+"]").attr("id");
+            var prevNr = parseInt(thisNr) - 1;
+            var prevId = $(".layerView#"+prevNr).attr("data-id");
+            var thisLayer = $(".layerView#"+thisNr);
+            var prevLayer = $(".layerView#"+prevNr);
+
+            thisLayer.insertBefore(".layerView#"+prevNr)
+            thisLayer.removeAttr("id").attr("id", prevNr)
+            prevLayer.removeAttr("id").attr("id", thisNr)
+
+            $("canvas#"+layers.activeId).insertBefore("canvas#"+prevId)
+
+
+            layers.list.id      = new Array();
+            layers.list.visible = new Array();
+
+            var j = 0;
+            $("canvas").each(function() {
+                layers.list.id[j] = $(this).attr("id");
+
+                if($(this).hasClass("invisible"))
+                    layers.list.visible[j] = false;
+                else
+                    layers.list.visible[j] = true;
+
+                j++;
+            });
+
+            return true;
+        }
+        return false;
+    },
+    moveDown : function () {
+        var lastID = $(".layerView").last().attr("data-id");
+        if(lastID != layers.activeId){
+            var thisNr = $(".layerView[data-id="+layers.activeId+"]").attr("id");
+            var nextNr = parseInt(thisNr) + 1;
+            var nextId = $(".layerView#"+nextNr).attr("data-id");
+            var thisLayer = $(".layerView#"+thisNr);
+            var prevLayer = $(".layerView#"+nextNr);
+
+            thisLayer.insertAfter(".layerView#"+nextNr)
+            thisLayer.removeAttr("id").attr("id", nextNr)
+            prevLayer.removeAttr("id").attr("id", thisNr)
+
+            $("canvas#"+layers.activeId).insertAfter("canvas#"+nextId)
+
+
+            layers.list.id      = new Array();
+            layers.list.visible = new Array();
+
+            var j = 0;
+            $("canvas").each(function() {
+                layers.list.id[j] = $(this).attr("id");
+
+                if($(this).hasClass("invisible"))
+                    layers.list.visible[j] = false;
+                else
+                    layers.list.visible[j] = true;
+
+                j++;
+            });
+
+            return true;
+        }
+        return false;
     }
-
-
 }

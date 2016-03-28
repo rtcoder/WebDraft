@@ -388,6 +388,8 @@ $(document)
 
             layers.delete(identifier, nr);
         });
+        $("#mUpLayer").click(layers.moveUp)
+        $("#mDownLayer").click(layers.moveDown)
         $("#invertColors").click(layers.negative)
         $("#rotateLeft").click(function(){
             layers.rotate(-90);
