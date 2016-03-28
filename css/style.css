@@ -38,9 +38,12 @@ html, body, #paint{
 #drawHandler{border:1px dotted #0052CC}
 canvas{position:absolute;cursor:crosshair;}
 canvas.invisible{visibility: hidden}
+input#fileUploaderInput{
+	display: none;
+}
 #resizer{
 	width:300px;
-	height:180px;
+	height:210px;
 	position:absolute;
 	float:left;
 	top:0;
@@ -69,6 +72,9 @@ canvas.invisible{visibility: hidden}
 	cursor:move;
 	float:left;
 	margin:0px 25px;
+}
+#allLayersResizing{
+
 }
 .buttonAction{
 	float:left;
@@ -104,7 +110,7 @@ canvas.invisible{visibility: hidden}
 .layerView{
 	position: relative;
 	width: 100px;
-	min-height: 100px;
+	height: 100px;
 	margin: 10px 50px;
 	background: transparent;
 	border:1px solid #ccc;
@@ -113,12 +119,12 @@ canvas.invisible{visibility: hidden}
 	text-align: center;
 }
 .layerView:hover{border-color: #0052cc}
-.layerView.active{border:2px solid #0052cc}
+.layerView.active{border-color: #0021cc}
 
 img.imgLayer{
 	float: none;
-	width: 100px;
-	height: auto;
+	max-width: 98px;
+	max-height: 98px;
 	border: none;
 	margin: auto;
 	display: none;

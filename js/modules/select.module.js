@@ -21,14 +21,16 @@ var select = {
             var y = webDraft.mPosition.y,
                 height = select.startSelectPoints[1] - webDraft.mPosition.y;
         }
-        $("#selectRectangle").show().css({
-            "top"        : y + "px",
-            "left"       : x + "px",
-            "width"      : width + "px",
-            "height"     : height + "px",
-            "border"     : "1px dashed #fff",
-            "background" : "transparent"
-        });
+        $("#selectRectangle")
+            .show()
+            .css({
+                "top"        : y + "px",
+                "left"       : x + "px",
+                "width"      : width + "px",
+                "height"     : height + "px",
+                "border"     : "1px dashed #fff",
+                "background" : "transparent"
+            });
         select.isSelecting = true;
     },
     selectOpt : function() {
@@ -45,6 +47,16 @@ var select = {
         }
 
         layers.saveState();
+        
+        $("#selectRectangle")
+            .css({
+                "top"        : "0px",
+                "left"       : "0px",
+                "background" : "transparent"
+            })
+            .width(0)
+            .height(0)
+            .hide();
     },
     copySelectedPart : function(){
         if($("#selectRectangle").css("background-image") === "none"){
@@ -82,19 +94,34 @@ var select = {
         layers.saveState();
     },
     pasteSelectedPart : function(){
-        var xpos = parseInt($("#selectRectangle").css("left"));
-        var ypos = parseInt($("#selectRectangle").css("top"));
-        var bg   = $("#selectRectangle").css("background-image").replace('url(','').replace(')','').replace('"', '').replace('"', '');
-        var img  = new Image;
+        if($("#selectRectangle").css("background-image") !== "none"){
+            var xpos = parseInt($("#selectRectangle").css("left"));
+            var ypos = parseInt($("#selectRectangle").css("top"));
+            var img  = new Image();
+            var bg   = $("#selectRectangle")
+                            .css("background-image")
+                            .replace('url(','')
+                            .replace(')','')
+                            .replace('"', '')
+                            .replace('"', '');
 
-        img.onload = function(){
-            ctx.drawImage(img,xpos,ypos); //save part of image when loaded
+            img.onload = function(){
+                ctx.drawImage(img,xpos,ypos); //save part of image when loaded
 
-            layers.saveState(); //and then update layer preview
-        };
+                layers.saveState(); //and then update layer preview
+            };
 
-        img.src = bg;
+            img.src = bg;
 
-        $("#selectRectangle").css({ "background" : "transparent" });
+            $("#selectRectangle")
+                .css({
+                    "top"        : "0px",
+                    "left"       : "0px",
+                    "background" : "transparent"
+                })
+                .width(0)
+                .height(0)
+                .hide();
+        }
     }
 }

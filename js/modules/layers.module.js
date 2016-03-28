@@ -3,10 +3,60 @@ var layers = {
     activeId : "",
     list : {
         id      : new Array(),
-        zIndex  : new Array(),
         visible : new Array()
     },
     //functions
+    setLayerSize : function(layerId, width, height){
+        var image = {
+            id  : new Array(),
+            img : new Array()
+        };
+
+        var active = layers.activeId;
+        for (var i = 0; i < layers.list.id.length; i++) {
+            if (typeof layers.list.id[i] === "string") {
+                layers.select(layers.list.id[i]);
+                image.img[i] = ctx.getImageData(0, 0, webDraft.draw.width, webDraft.draw.height);
+                image.id[i] = layers.list.id[i];
+            }
+        }
+
+        if(layerId == ""){
+            webDraft.draw.width  = width;
+            webDraft.draw.height = height;
+            $("canvas").attr({
+                "width"  : webDraft.draw.width,
+                "height" : webDraft.draw.height
+            });
+        }else{
+            $("canvas#"+layerId).attr({
+                "width"  : width,
+                "height" : height
+            })
+            webDraft.draw.width = 0;
+            webDraft.draw.height = 0;
+            $("canvas").each(function(){
+                w = parseInt($(this).attr("width"));
+                h = parseInt($(this).attr("height"))
+                if(webDraft.draw.width  < w)
+                    webDraft.draw.width  = w;
+
+                if(webDraft.draw.height < h)
+                    webDraft.draw.height = h;
+            })
+        }
+
+        for (var i = 0; i < layers.list.id.length; i++) {
+            if (typeof layers.list.id[i] === "string") {
+                layers.select(layers.list.id[i]);
+                ctx.putImageData(image.img[i], 0, 0);
+                layers.saveState();
+            }
+        }
+
+        if (active !== "")
+            layers.select(active);
+    },
     saveState : function() {
         var imgSrc = document.getElementById(layers.activeId).toDataURL();
         $(".layerView[data-id=" + layers.activeId + "]").find("img").attr("src", imgSrc).show();
@@ -45,7 +95,10 @@ var layers = {
                 var nr = $(this).parent(".layerView").attr("id");
 
                 $(this).hide();
-                $(this).parent(".layerView").find(".showLayer").css({ "display" : "block" });
+                $(this)
+                    .parent(".layerView")
+                    .find(".showLayer")
+                    .css({ "display" : "block" });
 
                 layers.hide(nr);
             });
@@ -53,15 +106,19 @@ var layers = {
                 var nr = $(this).parent(".layerView").attr("id");
 
                 $(this).hide();
-                $(this).parent(".layerView").find(".hideLayer").css({ "display" : "block" });
+                $(this)
+                    .parent(".layerView")
+                    .find(".hideLayer")
+                    .css({ "display" : "block" });
 
                 layers.show(nr);
             });
             $(".layerView[data-id=" + randomId + "]").click();
+
         }
     },
     delete : function(id, nr) {
-        var countViews = $("#listLayers").children().length;
+        var countViews = $(".layerView").length;
 
         if (countViews > 1) {
             var i = parseInt(nr);
@@ -75,7 +132,6 @@ var layers = {
             var j = 0;
             $("canvas").each(function() {
                 layers.list.id[j] = $(this).attr("id");
-
                 if($(this).hasClass("invisible"))
                     layers.list.visible[j] = false;
                 else
@@ -94,6 +150,18 @@ var layers = {
             });
 
             $(".layerView[data-id=" + layers.list.id[layers.list.id.length - 1] + "]").click();
+            webDraft.draw.width = 0;
+            webDraft.draw.height = 0;
+            $("canvas").each(function(){
+                w = parseInt($(this).attr("width"));
+                h = parseInt($(this).attr("height"))
+                if(webDraft.draw.width  < w)
+                    webDraft.draw.width  = w;
+
+                if(webDraft.draw.height < h)
+                    webDraft.draw.height = h;
+            })
+            webDraft.func.positionElements()
         }
     },
     hide : function(nr) {
@@ -176,6 +244,22 @@ var layers = {
         ctx.restore();
 		layers.saveState();
     },
+    mirror : function(direction) {
+        if(direction == 'horizontal' || direction == 'vertical'){
+            var image = new Image();
+            image.src = canvas.toDataURL();
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.save();
+            ctx.translate(canvas.width/2,canvas.height/2);
+            if(direction == 'vertical')
+                ctx.scale(-1,1);
+            else if (direction == 'horizontal')
+                ctx.scale(1,-1);
+            ctx.drawImage(image,-image.width/2,-image.height/2);
+            ctx.restore();
+    		layers.saveState();
+        }
+    },
     negative : function(){
         var destX = 0;
         var destY = 0;
@@ -192,7 +276,75 @@ var layers = {
         // overwrite original image
         ctx.putImageData(imageData, 0, 0);//add the function call in the imageObj.onload
         layers.saveState();
+    },
+    moveUp :function () {
+        var firstID = $(".layerView").first().attr("data-id");
+        if(firstID != layers.activeId){
+            var thisNr = $(".layerView[data-id="+layers.activeId+"]").attr("id");
+            var prevNr = parseInt(thisNr) - 1;
+            var prevId = $(".layerView#"+prevNr).attr("data-id");
+            var thisLayer = $(".layerView#"+thisNr);
+            var prevLayer = $(".layerView#"+prevNr);
+
+            thisLayer.insertBefore(".layerView#"+prevNr)
+            thisLayer.removeAttr("id").attr("id", prevNr)
+            prevLayer.removeAttr("id").attr("id", thisNr)
+
+            $("canvas#"+layers.activeId).insertBefore("canvas#"+prevId)
+
+
+            layers.list.id      = new Array();
+            layers.list.visible = new Array();
+
+            var j = 0;
+            $("canvas").each(function() {
+                layers.list.id[j] = $(this).attr("id");
+
+                if($(this).hasClass("invisible"))
+                    layers.list.visible[j] = false;
+                else
+                    layers.list.visible[j] = true;
+
+                j++;
+            });
+
+            return true;
+        }
+        return false;
+    },
+    moveDown : function () {
+        var lastID = $(".layerView").last().attr("data-id");
+        if(lastID != layers.activeId){
+            var thisNr = $(".layerView[data-id="+layers.activeId+"]").attr("id");
+            var nextNr = parseInt(thisNr) + 1;
+            var nextId = $(".layerView#"+nextNr).attr("data-id");
+            var thisLayer = $(".layerView#"+thisNr);
+            var prevLayer = $(".layerView#"+nextNr);
+
+            thisLayer.insertAfter(".layerView#"+nextNr)
+            thisLayer.removeAttr("id").attr("id", nextNr)
+            prevLayer.removeAttr("id").attr("id", thisNr)
+
+            $("canvas#"+layers.activeId).insertAfter("canvas#"+nextId)
+
+
+            layers.list.id      = new Array();
+            layers.list.visible = new Array();
+
+            var j = 0;
+            $("canvas").each(function() {
+                layers.list.id[j] = $(this).attr("id");
+
+                if($(this).hasClass("invisible"))
+                    layers.list.visible[j] = false;
+                else
+                    layers.list.visible[j] = true;
+
+                j++;
+            });
+
+            return true;
+        }
+        return false;
     }
-
-
 }

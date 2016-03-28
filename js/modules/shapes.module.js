@@ -26,13 +26,15 @@ var shapes = {
             var y = webDraft.mPosition.y,
                 height = shapes.startShapePoints[1] - webDraft.mPosition.y;
         }
-        $("#prepareRect").show().css({
-            "top"    : y + parseInt($(webDraft.draw.selectorId).offset().top) + "px",
-            "left"   : x + parseInt($(webDraft.draw.selectorId).offset().left) + "px",
-            "width"  : width + "px",
-            "height" : height + "px",
-            "border" : webDraft.size + "px solid " + webDraft.color
-        });
+        $("#prepareRect")
+            .show()
+            .css({
+                "top"    : y + parseInt($(webDraft.draw.selectorId).offset().top) + "px",
+                "left"   : x + parseInt($(webDraft.draw.selectorId).offset().left) + "px",
+                "width"  : width + "px",
+                "height" : height + "px",
+                "border" : webDraft.size + "px solid " + webDraft.color
+            });
         if (shapes.fill.isSet) {
             $("#prepareRect").css({ "background" : hexToRgba(shapes.fill.color, shapes.fill.opacity) });
         } else {
@@ -87,14 +89,16 @@ var shapes = {
         else
             var radius = height / 2;
 
-        $("#prepareCircle").show().css({
-            "top"           : y + parseInt($(webDraft.draw.selectorId).offset().top) - radius + "px",
-            "left"          : x + parseInt($(webDraft.draw.selectorId).offset().left) - radius + "px",
-            "width"         : radius * 2 + "px",
-            "height"        : radius * 2 + "px",
-            "border"        : webDraft.size + "px solid " + webDraft.color,
-            "border-radius" : "100%"
-        });
+        $("#prepareCircle")
+            .show()
+            .css({
+                "top"           : y + parseInt($(webDraft.draw.selectorId).offset().top) - radius + "px",
+                "left"          : x + parseInt($(webDraft.draw.selectorId).offset().left) - radius + "px",
+                "width"         : radius * 2 + "px",
+                "height"        : radius * 2 + "px",
+                "border"        : webDraft.size + "px solid " + webDraft.color,
+                "border-radius" : "100%"
+            });
 
         if (shapes.fill.isSet) {
             $("#prepareCircle").css({ "background" : hexToRgba(shapes.fill.color, shapes.fill.opacity) });
