@@ -1,3 +1,3 @@
 # WebDraft
 App for drawing
-Link http://rtcoder.netne.net/projects/paint/
+Link http://rtcoder.github.io/WebDraft
