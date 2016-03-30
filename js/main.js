@@ -1,11 +1,11 @@
 var canvas,
     ctx,
     randomId,
-    points = [],
+    points   = [],
     webDraft = {
-        title : "WebDraft",
-        version : "2.1.5",
-        click : {
+        title   : "WebDraft",
+        version : "2.1.6",
+        click   : {
             left  : false, //left mouse button
             right : false  //right mouse button
         },
@@ -28,13 +28,13 @@ var canvas,
             offsetY  : 0,
             color    : "#232324"
         },
-        size : 10,
         sensitivityPoints : 1000,
-        color : "#000000",
-        selectedTool : "pencil", //default is pencil
+        size              : 10,
+        color             : "#000000",
+        selectedTool      : "pencil", //default is pencil
         func : {
             makeid : function() {
-                var text = "";
+                var text     = "";
                 var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
                 for (var i = 0; i < 15; i++)
@@ -520,8 +520,8 @@ $(document)
 
             webDraft.func.init();
         });
-        $(".textTool").click(function() {
-            $(".textTool").removeClass("active");
+        $(".textPostionTool").click(function() {
+            $(".textPostionTool").removeClass("active");
             $(this).addClass("active");
 
             var id = $(this).attr("id");

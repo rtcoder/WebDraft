@@ -73,9 +73,6 @@ input#fileUploaderInput{
 	float:left;
 	margin:0px 25px;
 }
-#allLayersResizing{
-
-}
 .buttonAction{
 	float:left;
 	width:120px;
@@ -263,10 +260,10 @@ input[type=color]{
 	margin:0px;
 }
 
-.primaryTool .fa, .paintTools .fa, .textTool .fa, .styleTool .fa, .layerTool .fa{
+.primaryTool .fa, .paintTools .fa, .textPostionTool .fa, .styleTool .fa, .layerTool .fa{
 	font-size:15px;
 }
-.primaryTool, .paintTools, .textTool, .styleTool, .layerTool{
+.primaryTool, .paintTools, .textPostionTool, .styleTool, .layerTool{
 	width:50px;
 	height:30px;
 	line-height:30px;
@@ -275,7 +272,7 @@ input[type=color]{
 	color:#666;
 	cursor:pointer;
 }
-.textTool:hover, .textTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active, .layerTool:hover{color:#ffffff}
+.textPostionTool:hover, .textPostionTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active, .layerTool:hover{color:#ffffff}
 .paintTool.active, .primaryTool:active{cursor:default;color:#0052CC;background:#1C1B1B}
 .sliderContainer{
 	width:200px;
