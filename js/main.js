@@ -285,6 +285,7 @@ var canvas,
                     .mouseleave(function() {
                         $("#mousePosition").empty();
                         ctx.stroke();
+                        layers.saveState();
                     })
                     .dblclick(function(){
                         switch (webDraft.selectedTool) {
