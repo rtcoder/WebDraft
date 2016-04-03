@@ -63,11 +63,9 @@ var layers = {
     },
     newLayer : function() {
         if (isNaN(parseInt($(".layerView:last").attr("id")))){
-            var i = 0;
-            var j = i;
+            var j = 0;
         }else{
-            var i = parseInt($(".layerView:last").attr("id"));
-            var j = parseInt(i + 1);
+            var j = parseInt($(".layerView:last").attr("id")) + 1;
         }
 
         var countViews = $("#listLayers").children(".layerView").length;
@@ -346,5 +344,30 @@ var layers = {
             return true;
         }
         return false;
+    },
+    initEvents : function () {
+
+        $("#addLayer").click(layers.newLayer);
+        $("#delLayer").click(function() {
+            identifier = $(".layerView.active").attr("data-id");
+            nr = $(".layerView.active").attr("id");
+
+            layers.delete(identifier, nr);
+        });
+        $("#mUpLayer").click(layers.moveUp)
+        $("#mDownLayer").click(layers.moveDown)
+        $("#invertColors").click(layers.negative)
+        $("#rotateLeft").click(function(){
+            layers.rotate(-90);
+        })
+        $("#rotateRight").click(function(){
+            layers.rotate(90);
+        })
+        $("#mirrorV").click(function(){
+            layers.mirror('vertical');
+        })
+        $("#mirrorH").click(function(){
+            layers.mirror('horizontal');
+        })
     }
 }

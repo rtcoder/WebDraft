@@ -15,6 +15,10 @@ var keys = {
 
 $(document)
     .keydown(function(event) {
+        if(webDraft.selectedTool != 'text'){
+            event.preventDefault();
+        }
+
         console.log(event.keyCode)
         switch (event.keyCode) {
             case 13 :
@@ -57,62 +61,41 @@ $(document)
                 keys.f12 = true;
             break;
         }
-
-        if (keys.f12 === true || event.keyCode === 123) {
-            event.preventDefault();
-        }
-
-        if (keys.f11 === true || event.keyCode === 122) {
-            event.preventDefault();
-        }
-
-        if (keys.Ctrl === true || event.keyCode === 17) {
-            event.preventDefault();
-        }
-
-        if (keys.delete === true || event.keyCode === 46) {
-            event.preventDefault();
-
+        if (keys.delete) {
             if(webDraft.selectedTool === "select"){
                 select.delSelectedPart();
             }
         }
 
-        if (keys.C === true || event.keyCode === 67) {
+        if (keys.f12 || keys.f11 || keys.Ctrl || keys.delete) {
             event.preventDefault();
+        }
 
+        if (keys.C) {
             if(webDraft.selectedTool === "select" && keys.Ctrl){
                 select.copySelectedPart();
             }
         }
 
-        if (keys.X === true || event.keyCode === 88) {
-            event.preventDefault();
-
+        if (keys.X) {
             if(webDraft.selectedTool === "select" && keys.Ctrl){
                 select.cutSelectedPart();
             }
         }
 
-        if (keys.V === true || event.keyCode === 86) {
-            event.preventDefault();
-
+        if (keys.V) {
             if(webDraft.selectedTool === "select" && keys.Ctrl){
                 select.pasteSelectedPart();
             }
         }
-        if (keys.O === true || event.keyCode === 79) {
-            event.preventDefault();
-
+        if (keys.O) {
             if(keys.Ctrl){
                 $("#fileUploader").click();
             }
         }
-        if (keys.S === true || event.keyCode === 83) {
-            event.preventDefault();
-
+        if (keys.S) {
             if(keys.Ctrl){
-                $("#btnSave").click();
+                file.download()
             }
         }
 
@@ -160,3 +143,25 @@ $(document)
             break;
         }
     })
+
+$(window).bind('mousewheel DOMMouseScroll', function(event) {
+    if (keys.Ctrl === true) {
+        // event.preventDefault();
+
+        if (event.originalEvent.wheelDelta / 120 > 0) {
+            if (webDraft.size < 250)
+                webDraft.size++;
+        }
+        else {
+            if (webDraft.size > 1)
+                webDraft.size--;
+        }
+
+        $("input#pointSize").val(webDraft.size);
+        $("#pointSizeValue").text("size:" + webDraft.size + "px");
+    }
+
+    if (keys.Alt === true) {
+        // event.preventDefault();
+    }
+});

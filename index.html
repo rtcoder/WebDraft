@@ -16,6 +16,7 @@
 		<script src="js/modules/text.module.js"></script>
 		<script src="js/modules/draw.module.js"></script>
 		<script src="js/modules/file.module.js"></script>
+		<script src="js/modules/clipboard.module.js"></script>
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/perfect-scrollbar.css">
@@ -53,8 +54,7 @@
 					<div id="toolsBtns" class="showHide">
 						<div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
 						<div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-close"></i></div>
-						<div id="btnSave" class="primaryTool" title="Save (open in new tab)"><i class="fa fa-save"></i></div>
-						<div id="btnDownload" class="primaryTool" title="Download (save to file)"><i class="fa fa-download"></i></div>
+						<div id="btnSave" class="primaryTool" title="Save file"><i class="fa fa-save"></i></div>
 						<div id="invertColors" class="primaryTool" title="Invert colors"><i class="fa fa-refresh"></i></div>
 						<div id="rotateLeft" class="primaryTool" title="Rotate left"><i class="fa fa-rotate-left"></i></div>
 						<div id="rotateRight" class="primaryTool" title="Rotate right"><i class="fa fa-rotate-right"></i></div>
@@ -89,39 +89,6 @@
 							</label>
 						</div>
 					</div>
-				</div>
-				<div class="tools" id="textTools">
-					<div class="title">
-						<i class="fa fa-font"></i>
-						Text
-					</div>
-					<div id="alignBtns">
-						<div id="left" class="textPostionTool active" title="Left"><i class="fa fa-align-left"></i></div>
-						<div id="center" class="textPostionTool" title="Center"><i class="fa fa-align-center"></i></div>
-						<div id="right" class="textPostionTool" title="Right"><i class="fa fa-align-right"></i></div>
-					</div>
-					<div id="fontStyleBtns">
-						<div id="bold" class="styleTool" title="Bold"><i class="fa fa-bold"></i></div>
-						<div id="italic" class="styleTool" title="Italic"><i class="fa fa-italic"></i></div>
-					</div>
-					<select id="selectFontType">
-						<option value="Arial">Arial</option>
-						<option value="Comic Sans MS">Comic Sans MS</option>
-						<option value="Times New Roman">Times New Roman</option>
-						<option value="Verdana">Verdana</option>
-					</select>
-					<select id="selectFontSize">
-						<option value="8">8</option>
-						<option value="10">10</option>
-						<option value="12">12</option>
-						<option value="15">15</option>
-						<option value="18">18</option>
-						<option value="20">20</option>
-						<option value="25">25</option>
-						<option value="30">30</option>
-					</select>
-					<textarea id="textValue" style="width:200px;height:100px;resize:none;background:transparent;color:#Eee;box-sizing:border-box"></textarea>
-					<p style="float:left;width:100%;margin:0;padding:1px;font-size:10px;">Click on paint area to insert text on it</p>
 				</div>
 				<div class="tools">
 					<div class="title">
@@ -192,6 +159,45 @@
 				<div id="cancel" class="buttonAction">Anuluj (Esc)</div>
 				<div id="apply" class="buttonAction">OK (Enter)</div>
 			</div>
+			<!--textOptions-->
+			<div id="textOptions">
+				<div id="alignBtns">
+					<div id="left" class="textPostionTool active" title="Left"><i class="fa fa-align-left"></i></div>
+					<div id="center" class="textPostionTool" title="Center"><i class="fa fa-align-center"></i></div>
+					<div id="right" class="textPostionTool" title="Right"><i class="fa fa-align-right"></i></div>
+					<div id="justify" class="textPostionTool" title="Justify"><i class="fa fa-align-justify"></i></div>
+				</div>
+				<div id="fontStyleBtns">
+					<div id="bold" class="styleTool" title="Bold"><i class="fa fa-bold"></i></div>
+					<div id="italic" class="styleTool" title="Italic"><i class="fa fa-italic"></i></div>
+					<div id="underline" class="styleTool textDecoration" title="Underline"><i class="fa fa-underline"></i></div>
+					<div id="line-through" class="styleTool textDecoration" title="Strike"><i class="fa fa-strikethrough"></i></div>
+				</div>
+				<select id="selectFontType">
+					<option value="Arial">Arial</option>
+					<option value="Calibri">Calibri</option>
+					<option value="Century Gothic">Century Gothic</option>
+					<option value="Comic Sans MS">Comic Sans MS</option>
+					<option value="sans-serif">Sans serif</option>
+					<option value="Times New Roman">Times New Roman</option>
+					<option value="Verdana">Verdana</option>
+				</select>
+				<select id="selectFontSize">
+					<option value="8">8</option>
+					<option value="10">10</option>
+					<option value="12">12</option>
+					<option value="15">15</option>
+					<option value="18">18</option>
+					<option value="20">20</option>
+					<option value="25">25</option>
+					<option value="30">30</option>
+					<option value="35">35</option>
+					<option value="45">45</option>
+					<option value="50">50</option>
+					<option value="60">60</option>
+					<option value="70">70</option>
+				</select>
+			</div>
 			<!-- preview color sampler -->
 			<div id="previewColorSampler">
 				<div id="textColorSampler"></div>
@@ -203,6 +209,7 @@
 			<div id="content">
 				<div id="drawHandler">
 					<div id="selectRectangle"></div>
+					<div id="textRectangle" contenteditable></div>
 					<div id="eventHandler"></div>
 					<div id="draw"></div>
 				</div>

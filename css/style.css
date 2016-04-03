@@ -45,7 +45,6 @@ input#fileUploaderInput{
 	width:300px;
 	height:210px;
 	position:absolute;
-	float:left;
 	top:0;
 	left:0;
 	background:#2C2B2B;
@@ -85,7 +84,7 @@ input#fileUploaderInput{
 	cursor:pointer;
 }
 .buttonAction:hover{background:#0052CC;color:#ccc}
-#eraseRect, #prepareRect, #prepareCircle, #selectRectangle{
+#eraseRect, #prepareRect, #prepareCircle, #selectRectangle, #textRectangle{
 	display:none;
 	position:absolute;
 	z-index:2;
@@ -93,10 +92,11 @@ input#fileUploaderInput{
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
 }
-#selectRectangle{cursor: move}
+#textRectangle{font-size: 8mm}
+#selectRectangle, #textRectangle{cursor: move}
 #eraseRect{background:rgba(255,255,255,0.3)}
 /*Narzedzia*/
-#shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput, .tools#textTools{display:none}
+#shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput{display:none}
 #toolsGroup, #layers{
 		width:200px;
 		position:absolute;
@@ -206,6 +206,17 @@ img.imgLayer{
 	float:left;
 	border:1px solid #ccc;
 	box-sizing:border-box
+}
+#textOptions{
+	width:200px;
+	height:100px;
+	position:absolute;
+	top:0;
+	left:0;
+	background:#2C2B2B;
+	display:none;
+	z-index:4;
+	cursor:move;
 }
 #previewColorSampler{
 	position: absolute;
