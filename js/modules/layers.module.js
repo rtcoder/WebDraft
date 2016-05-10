@@ -6,6 +6,12 @@ var layers = {
         visible : new Array()
     },
     //functions
+    setLayerPosition : function (layerId, top, left) {
+        $("canvas#"+layerId).css({
+            "top"  : top,
+            "left" : left
+        })
+    },
     setLayerSize : function(layerId, width, height){
         var image = {
             id  : new Array(),

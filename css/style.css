@@ -215,7 +215,7 @@ img.imgLayer{
 	left:0;
 	background:#2C2B2B;
 	display:none;
-	z-index:4;
+	z-index:6;
 	cursor:move;
 }
 #previewColorSampler{
@@ -282,6 +282,12 @@ input[type=color]{
 	float:left;
 	color:#666;
 	cursor:pointer;
+}
+.layerTool#addLayer{
+	color: green;
+}
+.layerTool#delLayer{
+	color: red;
 }
 .textPostionTool:hover, .textPostionTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active, .layerTool:hover{color:#ffffff}
 .paintTool.active, .primaryTool:active{cursor:default;color:#0052CC;background:#1C1B1B}

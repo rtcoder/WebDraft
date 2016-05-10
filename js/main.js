@@ -332,16 +332,8 @@ var canvas,
                                     .hide();
                             break;
                             case "text" :
-                                $("#textOptions").hide();
-                                $("#textRectangle")
-                                    .css({
-                                        "top"  : "0px",
-                                        "left" : "0px"
-                                    })
-                                    .width(0)
-                                    .height(0)
-                                    .hide()
-                                    .empty();
+                                text.putLayer();
+
                             break;
                         }
                     });
@@ -452,6 +444,10 @@ $(document)
                 $("#hint, .hintGroup#select").show();
             }
 
+            if (thisId !== "text") {
+                $("#textRectangle, #textOptions").hide();
+            }
+
             if (thisId === "rectangle" || thisId === "circle") {
                 $("#fillShapeInput").show();
             } else {
@@ -544,6 +540,7 @@ $(document)
         $("input[type=color]#firstColor").change(function() {
             $("#generalColor .color").css({ "background" : $(this).val() });
             webDraft.color = $(this).val();
+            $("#textRectangle").css('color',$(this).val())
         });
         //changing shadow color input
         $("input[type=color]#shadowColorVal").change(function() {
