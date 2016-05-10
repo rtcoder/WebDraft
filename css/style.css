@@ -45,7 +45,6 @@ input#fileUploaderInput{
 	width:300px;
 	height:210px;
 	position:absolute;
-	float:left;
 	top:0;
 	left:0;
 	background:#2C2B2B;
@@ -73,9 +72,6 @@ input#fileUploaderInput{
 	float:left;
 	margin:0px 25px;
 }
-#allLayersResizing{
-
-}
 .buttonAction{
 	float:left;
 	width:120px;
@@ -88,7 +84,7 @@ input#fileUploaderInput{
 	cursor:pointer;
 }
 .buttonAction:hover{background:#0052CC;color:#ccc}
-#eraseRect, #prepareRect, #prepareCircle, #selectRectangle{
+#eraseRect, #prepareRect, #prepareCircle, #selectRectangle, #textRectangle{
 	display:none;
 	position:absolute;
 	z-index:2;
@@ -96,10 +92,11 @@ input#fileUploaderInput{
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
 }
-#selectRectangle{cursor: move}
+#textRectangle{font-size: 8mm}
+#selectRectangle, #textRectangle{cursor: move}
 #eraseRect{background:rgba(255,255,255,0.3)}
 /*Narzedzia*/
-#shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput, .tools#textTools{display:none}
+#shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput{display:none}
 #toolsGroup, #layers{
 		width:200px;
 		position:absolute;
@@ -210,6 +207,17 @@ img.imgLayer{
 	border:1px solid #ccc;
 	box-sizing:border-box
 }
+#textOptions{
+	width:200px;
+	height:100px;
+	position:absolute;
+	top:0;
+	left:0;
+	background:#2C2B2B;
+	display:none;
+	z-index:6;
+	cursor:move;
+}
 #previewColorSampler{
 	position: absolute;
 	width: 200px;
@@ -263,10 +271,10 @@ input[type=color]{
 	margin:0px;
 }
 
-.primaryTool .fa, .paintTools .fa, .textTool .fa, .styleTool .fa, .layerTool .fa{
+.primaryTool .fa, .paintTools .fa, .textPostionTool .fa, .styleTool .fa, .layerTool .fa{
 	font-size:15px;
 }
-.primaryTool, .paintTools, .textTool, .styleTool, .layerTool{
+.primaryTool, .paintTools, .textPostionTool, .styleTool, .layerTool{
 	width:50px;
 	height:30px;
 	line-height:30px;
@@ -275,7 +283,13 @@ input[type=color]{
 	color:#666;
 	cursor:pointer;
 }
-.textTool:hover, .textTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active, .layerTool:hover{color:#ffffff}
+.layerTool#addLayer{
+	color: green;
+}
+.layerTool#delLayer{
+	color: red;
+}
+.textPostionTool:hover, .textPostionTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active, .layerTool:hover{color:#ffffff}
 .paintTool.active, .primaryTool:active{cursor:default;color:#0052CC;background:#1C1B1B}
 .sliderContainer{
 	width:200px;

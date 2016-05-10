@@ -43,8 +43,5 @@ var file = {
         });
 
         $("#tmpCanvas").remove();
-
-
-
     }
 }
