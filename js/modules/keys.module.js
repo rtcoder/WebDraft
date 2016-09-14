@@ -15,7 +15,7 @@ var keys = {
 
 $(document)
     .keydown(function(event) {
-        if(webDraft.selectedTool != 'text'){
+        if(webDraft.selectedTool != 'text' && $('#resizer').is('hidden')){
             event.preventDefault();
         }
 
