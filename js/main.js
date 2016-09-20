@@ -159,8 +159,16 @@ var canvas,
                 }
             },
             mousePosition : function(event) {
-                webDraft.mPosition.x = event.pageX - parseInt($(webDraft.draw.selectorId).offset().left),
-                webDraft.mPosition.y = event.pageY - parseInt($(webDraft.draw.selectorId).offset().top);
+                var touch = undefined
+                
+                if (event.originalEvent.touches)
+                    touch = event.originalEvent.touches[0]
+                
+                var pos_x = event.pageX || touch.pageX
+                var pos_y = event.pageY || touch.pageY
+
+                webDraft.mPosition.x = pos_x - parseInt($(webDraft.draw.selectorId).offset().left),
+                webDraft.mPosition.y = pos_y - parseInt($(webDraft.draw.selectorId).offset().top);
 
                 $("#mousePosition").text(webDraft.mPosition.x + " , " + webDraft.mPosition.y);
             },
@@ -183,7 +191,8 @@ var canvas,
                         webDraft.click.right = true;
                         webDraft.click.left  = false;
                     })
-                    .mousedown(function(event) {
+                    .on('mousedown touchstart', function(event) {
+                        webDraft.func.mousePosition(event);
                         webDraft.click.left = true;
                         if (!webDraft.click.right && webDraft.click.left) {
                             if(webDraft.selectedTool !== "select")
@@ -215,7 +224,7 @@ var canvas,
                             }
                         }
                     })
-                    .mouseup(function() {
+                    .on('mouseup touchend', function() {
                         webDraft.click.left  = false;
                         webDraft.click.right = false;
 
@@ -239,7 +248,7 @@ var canvas,
 
                         layers.saveState();
                     })
-                    .mousemove(function(event) {
+                    .on('mousemove touchmove', function(event) {
                         webDraft.func.mousePosition(event);
 
                         switch (webDraft.selectedTool) {
@@ -357,6 +366,12 @@ $(window)
     });
 $(document)
     .ready(function(event) {
+        if (/mobile/i.test(navigator.userAgent)) {
+            webDraft.draw.width = window.innerWidth - 10;
+            webDraft.draw.height = window.innerHeight - 30;
+        }
+
+
         $("#isShadow, #isFillSet").button();
 
         webDraft.func.init();
@@ -494,32 +509,32 @@ $(document)
 
 
         //changing size
-        $("input[type=range]#pointSize").mousemove(function() {
+        $("input[type=range]#pointSize").on('mousemove touchmove', function() {
             webDraft.size = $(this).val();
             $("#pointSizeValue").text("size:" + $(this).val() + "px");
         });
         //changing shadow blur
-        $("input[type=range]#ShadowBlur").mousemove(function() {
+        $("input[type=range]#ShadowBlur").on('mousemove touchmove', function() {
             webDraft.shadow.blur = $(this).val();
             $("#ShadowBlurValue").text("shadow:" + $(this).val() + "px");
         });
         //changing shadow offset X
-        $("input[type=range]#ShadowOffSetX").mousemove(function() {
+        $("input[type=range]#ShadowOffSetX").on('mousemove touchmove', function() {
             webDraft.shadow.offsetX = $(this).val();
             $("#ShadowOffSetXValue").text("shadow offset X:" + $(this).val() + "px");
         });
         //changing shadow offset Y
-        $("input[type=range]#ShadowOffSetY").mousemove(function() {
+        $("input[type=range]#ShadowOffSetY").on('mousemove touchmove', function() {
             webDraft.shadow.offsetY = $(this).val();
             $("#ShadowOffSetYValue").text("shadow offset Y:" + $(this).val() + "px");
         });
         //changing sensitivity of web points
-        $("input[type=range]#sensitivityPoints").mousemove(function() {
+        $("input[type=range]#sensitivityPoints").on('mousemove touchmove', function() {
             webDraft.sensitivityPoints = $(this).val();
             $("#sensitivityPointsValue").text("sensitivity:" + Math.floor($(this).val() / 100) + "%");
         });
         //changing fill opacity
-        $("input[type=range]#fillOpacity").mousemove(function() {
+        $("input[type=range]#fillOpacity").on('mousemove touchmove', function() {
             shapes.fill.opacity = $(this).val();
             $("#fillOpacityValue").text("fill opacity:" + Math.floor($(this).val()) + "%");
         });
