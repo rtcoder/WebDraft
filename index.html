@@ -4,12 +4,12 @@
 		<title>WebDraft</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<script src="js/jquery/jquery-2.1.4.min.js"></script>
-		<script src="js/jquery/jquery-ui.min.js"></script>
-		<script src="js/canvas-toBlob.js"></script>
-		<script src="js/FileSaver.min.js"></script>
-		<script src="js/html2canvas.js"></script>
-		<script src="js/perfect-scrollbar.js"></script>
+		<script src="js/libs/jquery/jquery-2.1.4.min.js"></script>
+		<script src="js/libs/jquery/jquery-ui.min.js"></script>
+		<script src="js/libs/canvas-toBlob.js"></script>
+		<script src="js/libs/FileSaver.min.js"></script>
+		<script src="js/libs/html2canvas.js"></script>
+		<script src="js/libs/perfect-scrollbar.js"></script>
 		<script src="js/modules/layers.module.js"></script>
 		<script src="js/modules/keys.module.js"></script>
 		<script src="js/modules/select.module.js"></script>
@@ -30,27 +30,17 @@
 			<div id="eraseRect"></div>
 			<div id="prepareRect"></div>
 			<div id="prepareCircle"></div>
-			<div id="layers">
-				<div class="title draghandler" title="Move">
-					<i class="fa fa-object-ungroup"></i>
-					Layers
-					<i class="toggleVisibility fa fa-chevron-up"></i>
-				</div>
-				<div id="layersBtns" class="showHide">
-						<div id="addLayer" class="layerTool" title="Add"><i class="fa fa-plus"></i></div>
-						<div id="delLayer" class="layerTool" title="Delete"><i class="fa fa-minus"></i></div>
-						<div id="mUpLayer" class="layerTool" title="Move up"><i class="fa fa-angle-up"></i></div>
-						<div id="mDownLayer" class="layerTool" title="Move down"><i class="fa fa-angle-down"></i></div>
-				</div>
-				<div id="listLayers" class="showHide"></div>
-			</div>
 			<!--tools-->
 			<div id="toolsGroup">
+				<!-- preview color sampler -->
+				<div id="previewColorSampler">
+					<div id="textColorSampler"></div>
+					<div id="colorBoxSampler"></div>
+				</div>
 				<div class="tools">
-					<div class="title draghandler" title="Move">
+					<div class="title" title="Move">
 						<i class="fa fa-cogs"></i>
 						Tools
-						<i class="toggleVisibility fa fa-chevron-up"></i>
 					</div>
 					<div id="toolsBtns" class="showHide">
 						<div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
@@ -95,7 +85,6 @@
 					<div class="title">
 						<i class="fa fa-tint"></i>
 						Colors
-						<i class="toggleVisibility fa fa-chevron-up"></i>
 					</div>
 					<!--color picker-->
 					<div id="colorPicker" class="showHide">
@@ -120,7 +109,6 @@
 					<div class="title">
 						<i class="fa fa-sliders"></i>
 						Sliders
-						<i class="toggleVisibility fa fa-chevron-up"></i>
 					</div>
 					<div id="sliders" class="showHide">
 						<div class="sliderContainer" id="size_slider">
@@ -199,11 +187,6 @@
 					<option value="70">70</option>
 				</select>
 			</div>
-			<!-- preview color sampler -->
-			<div id="previewColorSampler">
-				<div id="textColorSampler"></div>
-				<div id="colorBoxSampler"></div>
-			</div>
 			<!-- file uploader -->
 			<input type="file" name="file" id="fileUploaderInput" accept="image/*" onchange="file.upload(event)">
 			<!--content and draw field-->
@@ -215,6 +198,19 @@
 					<div id="draw"></div>
 				</div>
 			</div>
+				<div id="layers">
+					<div class="title" title="Move">
+						<i class="fa fa-object-ungroup"></i>
+						Layers
+					</div>
+					<div id="layersBtns" class="showHide">
+							<div id="addLayer" class="layerTool" title="Add"><i class="fa fa-plus"></i></div>
+							<div id="delLayer" class="layerTool" title="Delete"><i class="fa fa-minus"></i></div>
+							<div id="mUpLayer" class="layerTool" title="Move up"><i class="fa fa-angle-up"></i></div>
+							<div id="mDownLayer" class="layerTool" title="Move down"><i class="fa fa-angle-down"></i></div>
+					</div>
+					<div id="listLayers" class="showHide"></div>
+				</div>
 			<div id="hint">
 				<div class="hintGroup" id="select">
 					<div class="keyboardButton">Del</div>

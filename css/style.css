@@ -5,7 +5,9 @@
 	-ms-user-select:none;
 	user-select:none;
 	cursor:default;
-	font-family: 'Open Sans', sans-serif
+	font-family: 'Open Sans', sans-serif;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 html, body, #paint{
 	margin:0;
@@ -25,7 +27,7 @@ html, body, #paint{
 	float:left;
 	background:#373636;
 	overflow:hidden;
-	position:absolute;
+	width: calc(100% - 450px);
 }
 #draw, #drawHandler, #eventHandler{
 	width:600px;
@@ -97,44 +99,56 @@ input#fileUploaderInput{
 #eraseRect{background:rgba(255,255,255,0.3)}
 /*Narzedzia*/
 #shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput{display:none}
+#layers{
+	width:200px;
+}
+#toolsGroup{
+	width:250px;
+}
 #toolsGroup, #layers{
-		width:200px;
-		position:absolute;
-		float:left;
-		z-index:4;
+	height: calc(100vh - 20px);
+	background: #2C2B2B;
+	float:left;
+	z-index:4;
 }
 #layers{right: 0}
 .layerView{
 	position: relative;
-	width: 100px;
-	height: 100px;
-	margin: 10px 50px;
+	width: 100%;
+	height: 60px;
+	margin: 10px auto;
 	background: transparent;
-	border:1px solid #ccc;
 	text-align: center;
 	box-sizing: border-box;
 	text-align: center;
+	cursor: pointer;
 }
-.layerView:hover{border-color: #0052cc}
-.layerView.active{border-color: #0021cc}
+.layerView.active {cursor: default;background-color: rgba(0,0,0,0.1)}
+.layerView:hover {background-color: rgba(0,0,0,0.3)}
+.layerView.active:hover {cursor: default;background-color: rgba(0,0,0,0.1)}
+.layerView.active .imgLayerContainer{border-color: #0021cc}
 
+.imgLayerContainer{
+	float: left;
+	border:1px solid #ccc;
+	width: 60px;
+	height: 60px;
+}
 img.imgLayer{
-	float: none;
-	max-width: 98px;
-	max-height: 98px;
-	border: none;
-	margin: auto;
-	display: none;
+	float: left;
+	max-width: 58px;
+	max-height: 58px;
+	margin: 0px;
+	/*display: none;*/
 }
 .hideLayer, .showLayer{
-	position: absolute;
+	float: left;
+	margin: 21px 5px;
     width: 18px;
     height: 18px;
     line-height: 18px !important;
     text-align: center;
     cursor: pointer;
-	right: -30px;
-	top: 20px
 }
 .hideLayer:hover, .showLayer{
 	color: #C50000;
@@ -143,7 +157,7 @@ img.imgLayer{
 	color: #16c600;
 }
 .tools, #layersBtns, #listLayers{
-	width:200px;
+	width:100%;
 	background:#2C2B2B;
 	float:left;
 	z-index:4;
@@ -161,11 +175,9 @@ img.imgLayer{
 }
 #listLayers{
 	max-height: calc(100vh - 70px);
-	position: absolute;
 	overflow: hidden;
 	top: 50px;
 }
-.title.draghandler{cursor:move}
 .tools .title:hover{color:#0052CC}
 .tools .title .fa{
 	position:relative;
@@ -191,7 +203,7 @@ img.imgLayer{
 #shadowColor .color{ background:#232324 }
 #fillColor .color{ background:#fff }
 .colorTab{
-	width:200px;
+	width:100%;
 	height:25px;
 	line-height:25px;
 	font-size:14px;
@@ -208,7 +220,7 @@ img.imgLayer{
 	box-sizing:border-box
 }
 #textOptions{
-	width:200px;
+	width:100%;
 	height:100px;
 	position:absolute;
 	top:0;
@@ -219,12 +231,9 @@ img.imgLayer{
 	cursor:move;
 }
 #previewColorSampler{
-	position: absolute;
-	width: 200px;
+	width: 100%;
 	height: 60px;
 	background: 0 30px url('../pic/transparent.png');
-	top: 0;
-	left: 200px;
 	z-index: 1;
 	display: none;
 }
@@ -244,7 +253,7 @@ img.imgLayer{
 	float: left;
 }
 #shadowInput, #fillShapeInput{
-	width:200px;
+	width:100%;
 	height:20px;
 	line-height:20px;
 	float:left;
@@ -292,13 +301,13 @@ input[type=color]{
 .textPostionTool:hover, .textPostionTool.active, .styleTool:hover, .styleTool.active, .primaryTool:hover, .paintTool:hover ,.paintTool.active, .layerTool:hover{color:#ffffff}
 .paintTool.active, .primaryTool:active{cursor:default;color:#0052CC;background:#1C1B1B}
 .sliderContainer{
-	width:200px;
+	width:100%;
 	height:45px;
 	margin:0px;
 	float:left
 }
 .sliderVal{
-	width:200px;
+	width:100%;
 	height:20px;
 	margin-top:5px;
 	line-height:20px;
@@ -367,7 +376,7 @@ input[type=checkbox]:checked + label .fa-dot-circle-o, input[type=checkbox]:hove
 input[type=checkbox] + label{
 	cursor: pointer;
 	color:#666;
-	width:200px;
+	width:100%;
 	height:20px;
 	background:transparent;
 	text-align:left;
@@ -376,11 +385,11 @@ input[type=checkbox] + label{
 }
 input[type=range] {
 	-webkit-appearance: none;
-	width: 180px;
+	width: 230px;
 	margin:0 10px;
 }
 input[type=range]::-webkit-slider-runnable-track {
-	width: 180px;
+	width: 230px;
 	height: 10px;
 	background: #ddd;
 	border: none;
@@ -394,7 +403,7 @@ input[type=range]::-webkit-slider-thumb {
 	background: #0052CC;
 }
 input[type=range]::-moz-range-track {
-	width: 180px;
+	width: 230px;
 	height: 10px;
 	background: #ddd;
 	border: none;
@@ -407,7 +416,7 @@ input[type=range]::-moz-range-thumb {
 	background: #0052CC;
 }
 input[type=range]::-ms-track {
-	width: 180px;
+	width: 230px;
 	height: 10px;
 	background: transparent;
 	border-color: transparent;

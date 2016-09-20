@@ -48,7 +48,7 @@ var canvas,
                     "height" : $(window).height()
                 });
                 $("#content").css({
-                    "width"  : $(window).width(),
+                    // "width"  : $(window).width(),
                     "height" : $(window).height() - $("#statusbar").height()
                 }).perfectScrollbar();
                 $("#resizer").css({
@@ -167,8 +167,11 @@ var canvas,
                 var pos_x = event.pageX || touch.pageX
                 var pos_y = event.pageY || touch.pageY
 
-                webDraft.mPosition.x = pos_x - parseInt($(webDraft.draw.selectorId).offset().left),
+                webDraft.mPosition.x = pos_x - parseInt($(webDraft.draw.selectorId).offset().left);
                 webDraft.mPosition.y = pos_y - parseInt($(webDraft.draw.selectorId).offset().top);
+
+                webDraft.mPosition.y = webDraft.mPosition.y - parseInt($(canvas).css('top'));
+                webDraft.mPosition.x = webDraft.mPosition.x - parseInt($(canvas).css('left'));
 
                 $("#mousePosition").text(webDraft.mPosition.x + " , " + webDraft.mPosition.y);
             },
@@ -376,14 +379,6 @@ $(document)
 
         webDraft.func.init();
 
-        //draggable .tools, #resizer...
-        $("#toolsGroup, #layers")
-            .draggable({
-                snap    : true,
-                handle  : ".title.draghandler",
-                opacity : 0.75
-            })
-            .css({ "position" : "absolute" });
         $("#resizer, #textOptions")
             .draggable({
                 snap    : true,
@@ -393,24 +388,6 @@ $(document)
         $("#selectRectangle, #textRectangle")
             .draggable({snap : false})
             .css({ "position" : "absolute" });
-
-        //switch tool panels visibility
-        $(".toggleVisibility").click(function() {
-            var icon  = $(this),
-                bar   = $(this).parent(),
-                panel = bar.parent();
-
-            panel.find(".showHide").slideToggle();
-
-            switch (icon.attr("class")) {
-                case "toggleVisibility fa fa-chevron-down" :
-                    icon.removeClass("fa fa-chevron-down").addClass("fa fa-chevron-up");
-                break;
-                case "toggleVisibility fa fa-chevron-up" :
-                    icon.removeClass("fa fa-chevron-up").addClass("fa fa-chevron-down");
-                break;
-            }
-        });
 
         //Save button Click event (save file)
         $("#btnSave").click(function() {
