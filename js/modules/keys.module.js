@@ -65,6 +65,9 @@ $(document)
             if(webDraft.selectedTool === "select"){
                 select.delSelectedPart();
             }
+            if(keys.Ctrl){
+                $("#btnCLear").click();
+            }
         }
 
         if (keys.f12 || keys.f11 || keys.Ctrl || keys.delete) {
