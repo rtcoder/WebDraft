@@ -27,7 +27,8 @@ html, body, #paint{
 	float:left;
 	background:#373636;
 	overflow:hidden;
-	width: calc(100% - 450px);
+	width: calc(100vw - 200px);
+	height: calc(100vh - 20px);
 }
 #draw, #drawHandler, #eventHandler{
 	width:600px;
@@ -53,6 +54,8 @@ input#fileUploaderInput{
 	display:none;
 	z-index:4;
 	cursor:move;
+    margin-left: calc((100vw - 300px) / 2);
+    margin-top: calc((100vh - 210px) / 2);
 }
 #resizer input[type=number]{
 	width:250px;
@@ -96,22 +99,15 @@ input#fileUploaderInput{
 }
 #textRectangle{font-size: 8mm}
 #selectRectangle, #textRectangle{cursor: move}
-#eraseRect{background:rgba(255,255,255,0.3)}
-/*Narzedzia*/
+#eraseRect{border-radius: 100%;border-color: #ccc}
+/*Tools*/
 #shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput{display:none}
-#layers{
-	width:200px;
-}
 #toolsGroup{
-	width:250px;
-}
-#toolsGroup, #layers{
+    width:200px;
 	height: calc(100vh - 20px);
 	background: #2C2B2B;
 	float:left;
-	z-index:4;
 }
-#layers{right: 0}
 .layerView{
 	position: relative;
 	width: 100%;
@@ -161,7 +157,7 @@ img.imgLayer{
 	background:#2C2B2B;
 	float:left;
 	z-index:4;
-	color:#666;
+	color:#a9a9a9;
 }
 .tools .title, #layers .title{
 	width:100%;
@@ -220,15 +216,7 @@ img.imgLayer{
 	box-sizing:border-box
 }
 #textOptions{
-	width:100%;
-	height:100px;
-	position:absolute;
-	top:0;
-	left:0;
-	background:#2C2B2B;
 	display:none;
-	z-index:6;
-	cursor:move;
 }
 #previewColorSampler{
 	width: 100%;
@@ -254,7 +242,6 @@ img.imgLayer{
 }
 #shadowInput, #fillShapeInput{
 	width:100%;
-	height:20px;
 	line-height:20px;
 	float:left;
 	padding:5px 0px;
@@ -289,7 +276,7 @@ input[type=color]{
 	line-height:30px;
 	text-align:center;
 	float:left;
-	color:#666;
+	color:#a9a9a9;
 	cursor:pointer;
 }
 .layerTool#addLayer{
@@ -375,17 +362,21 @@ input[type=checkbox]:checked + label .fa-circle-o, input[type=checkbox]:hover + 
 input[type=checkbox]:checked + label .fa-dot-circle-o, input[type=checkbox]:hover + label .fa-dot-circle-o{display:block}
 input[type=checkbox] + label{
 	cursor: pointer;
-	color:#666;
+	color:#a9a9a9;
 	width:100%;
-	height:20px;
 	background:transparent;
 	text-align:left;
 	border:none;
 	border-radius:0px;
 }
+input[type=checkbox] + label span{
+	width:100%;
+	height:20px;
+	text-align:left;
+}
 input[type=range] {
 	-webkit-appearance: none;
-	width: 230px;
+	width: calc(100% - 20px);
 	margin:0 10px;
 }
 input[type=range]::-webkit-slider-runnable-track {
@@ -393,6 +384,7 @@ input[type=range]::-webkit-slider-runnable-track {
 	height: 10px;
 	background: #ddd;
 	border: none;
+    border-radius: 10px;
 }
 input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
@@ -453,7 +445,7 @@ input[type=range]:focus::-ms-fill-upper { background: #ccc }
 	color:#eee;
 	cursor: pointer;
 }
-#mousePosition, #layerSize{
+#mousePosition{
 	float:left;
 	width:100px;
 	height:inherit;

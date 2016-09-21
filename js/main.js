@@ -43,22 +43,7 @@ var canvas,
                 return text;
             },
             resize : function() {
-                $("html, body, #paint").css({
-                    "width"  : $(window).width(),
-                    "height" : $(window).height()
-                });
-                $("#content").css({
-                    // "width"  : $(window).width(),
-                    "height" : $(window).height() - $("#statusbar").height()
-                }).perfectScrollbar();
-                $("#resizer").css({
-                    marginLeft : ($("#content").width() - $("#resizer").width()) / 2 + "px",
-                    marginTop  : ($("#content").height() - $("#resizer").height()) / 2 + "px"
-                });
-                $("#textOptions").css({
-                    marginLeft : ($("#content").width() - $("#textOptions").width()) / 2 + "px",
-                    marginTop  : ($("#content").height() - $("#textOptions").height()) / 2 + "px"
-                });
+                $("#content").perfectScrollbar();
                 $("#listLayers").perfectScrollbar();
             },
             positionElements : function() {
@@ -110,8 +95,7 @@ var canvas,
                 if (active !== "")
                     layers.select(active);
 
-                $("title").text(webDraft.title + " v" + webDraft.version);
-                $("#layerSize").text(webDraft.draw.width + " x " + webDraft.draw.height);
+                $("title").text(webDraft.title + " v" + webDraft.version + ' [' + webDraft.draw.width + " x " + webDraft.draw.height + ']');
                 $("html, body, #paint").css({ "visibility" : "visible" });
             },
             moveEraseRect : function(event) {
@@ -203,10 +187,8 @@ var canvas,
 
                             switch (webDraft.selectedTool) {
                                 case "pencil" :
-                                    draw.drawing();
-                                break;
                                 case "eraser" :
-                                    webDraft.func.erase(event);
+                                    draw.drawing();
                                 break;
                                 case "select" :
                                     select.initSelect();
@@ -297,15 +279,13 @@ var canvas,
 
                             switch (webDraft.selectedTool) {
                                 case "pencil" :
+                                case "eraser" :
                                     draw.drawStyle();
                                     ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
                                     ctx.stroke();
                                 break;
                                 case "web" :
                                     draw.drawWeb();
-                                break;
-                                case "eraser" :
-                                    webDraft.func.erase(event);
                                 break;
                                 case "select" :
                                     if(!select.hoverSelectRectangle)
@@ -379,7 +359,7 @@ $(document)
 
         webDraft.func.init();
 
-        $("#resizer, #textOptions")
+        $("#resizer")
             .draggable({
                 snap    : true,
                 opacity : 0.75
@@ -415,9 +395,11 @@ $(document)
 
             if (thisId === "eraser") {
                 $("#eraseRect").show();
+                ctx.globalCompositeOperation = "destination-out";
                 $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "none" });
             } else {
                 $("#eraseRect").hide();
+                ctx.globalCompositeOperation = "source-over";
                 $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "crosshair" });
             }
 

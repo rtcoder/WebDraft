@@ -21,8 +21,8 @@
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/perfect-scrollbar.css">
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.min.css">
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	</head>
 	<body onload="webDraft.func.resize();webDraft.func.positionElements()">
 		<!--all site elements-->
@@ -82,10 +82,6 @@
 					</div>
 				</div>
 				<div class="tools">
-					<div class="title">
-						<i class="fa fa-tint"></i>
-						Colors
-					</div>
 					<!--color picker-->
 					<div id="colorPicker" class="showHide">
 						<div id="generalColor" class="colorTab">
@@ -106,10 +102,6 @@
 					</div>
 				</div>
 				<div class="tools">
-					<div class="title">
-						<i class="fa fa-sliders"></i>
-						Sliders
-					</div>
 					<div id="sliders" class="showHide">
 						<div class="sliderContainer" id="size_slider">
 							<div class="sliderVal" id="pointSizeValue">size:10px</div>
@@ -137,6 +129,58 @@
 						</div>
 					</div>
 				</div>
+                <!--textOptions-->
+                <div id="textOptions" class="tools">
+                    <div id="alignBtns">
+                        <div id="left" class="textPostionTool active" title="Left"><i class="fa fa-align-left"></i></div>
+                        <div id="center" class="textPostionTool" title="Center"><i class="fa fa-align-center"></i></div>
+                        <div id="right" class="textPostionTool" title="Right"><i class="fa fa-align-right"></i></div>
+                        <div id="justify" class="textPostionTool" title="Justify"><i class="fa fa-align-justify"></i></div>
+                    </div>
+                    <div id="fontStyleBtns">
+                        <div id="bold" class="styleTool" title="Bold"><i class="fa fa-bold"></i></div>
+                        <div id="italic" class="styleTool" title="Italic"><i class="fa fa-italic"></i></div>
+                        <div id="underline" class="styleTool textDecoration" title="Underline"><i class="fa fa-underline"></i></div>
+                        <div id="line-through" class="styleTool textDecoration" title="Strike"><i class="fa fa-strikethrough"></i></div>
+                    </div>
+                    <select id="selectFontType">
+                        <option value="Arial">Arial</option>
+                        <option value="Calibri">Calibri</option>
+                        <option value="Century Gothic">Century Gothic</option>
+                        <option value="Comic Sans MS">Comic Sans MS</option>
+                        <option value="sans-serif">Sans serif</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Verdana">Verdana</option>
+                    </select>
+                    <select id="selectFontSize">
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="12">12</option>
+                        <option value="15">15</option>
+                        <option value="18">18</option>
+                        <option value="20">20</option>
+                        <option value="25">25</option>
+                        <option value="30">30</option>
+                        <option value="35">35</option>
+                        <option value="45">45</option>
+                        <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="70">70</option>
+                    </select>
+                </div>
+				<div id="layers" class="tools">
+                    <div class="title" title="Move">
+						<i class="fa fa-object-ungroup"></i>
+						Layers
+					</div>
+					<div id="layersBtns" class="showHide">
+							<div id="addLayer" class="layerTool" title="Add"><i class="fa fa-plus"></i></div>
+							<div id="delLayer" class="layerTool" title="Delete"><i class="fa fa-minus"></i></div>
+							<div id="mUpLayer" class="layerTool" title="Move up"><i class="fa fa-angle-up"></i></div>
+							<div id="mDownLayer" class="layerTool" title="Move down"><i class="fa fa-angle-down"></i></div>
+					</div>
+					<div id="listLayers" class="showHide"></div>
+				</div>
 			</div>
 			<!--resizer-->
 			<div id="resizer">
@@ -145,47 +189,8 @@
 				<input type="checkbox" name="allLayersResizing" id="allLayersResizing" value="">
 				<label for="allLayersResizing">Resize all layers?</label>
 				<div id="resizeinfo"></div>
-				<div id="cancel" class="buttonAction">Anuluj (Esc)</div>
+				<div id="cancel" class="buttonAction">Cancel (Esc)</div>
 				<div id="apply" class="buttonAction">OK (Enter)</div>
-			</div>
-			<!--textOptions-->
-			<div id="textOptions">
-				<div id="alignBtns">
-					<div id="left" class="textPostionTool active" title="Left"><i class="fa fa-align-left"></i></div>
-					<div id="center" class="textPostionTool" title="Center"><i class="fa fa-align-center"></i></div>
-					<div id="right" class="textPostionTool" title="Right"><i class="fa fa-align-right"></i></div>
-					<div id="justify" class="textPostionTool" title="Justify"><i class="fa fa-align-justify"></i></div>
-				</div>
-				<div id="fontStyleBtns">
-					<div id="bold" class="styleTool" title="Bold"><i class="fa fa-bold"></i></div>
-					<div id="italic" class="styleTool" title="Italic"><i class="fa fa-italic"></i></div>
-					<div id="underline" class="styleTool textDecoration" title="Underline"><i class="fa fa-underline"></i></div>
-					<div id="line-through" class="styleTool textDecoration" title="Strike"><i class="fa fa-strikethrough"></i></div>
-				</div>
-				<select id="selectFontType">
-					<option value="Arial">Arial</option>
-					<option value="Calibri">Calibri</option>
-					<option value="Century Gothic">Century Gothic</option>
-					<option value="Comic Sans MS">Comic Sans MS</option>
-					<option value="sans-serif">Sans serif</option>
-					<option value="Times New Roman">Times New Roman</option>
-					<option value="Verdana">Verdana</option>
-				</select>
-				<select id="selectFontSize">
-					<option value="8">8</option>
-					<option value="10">10</option>
-					<option value="12">12</option>
-					<option value="15">15</option>
-					<option value="18">18</option>
-					<option value="20">20</option>
-					<option value="25">25</option>
-					<option value="30">30</option>
-					<option value="35">35</option>
-					<option value="45">45</option>
-					<option value="50">50</option>
-					<option value="60">60</option>
-					<option value="70">70</option>
-				</select>
 			</div>
 			<!-- file uploader -->
 			<input type="file" name="file" id="fileUploaderInput" accept="image/*" onchange="file.upload(event)">
@@ -198,23 +203,10 @@
 					<div id="draw"></div>
 				</div>
 			</div>
-				<div id="layers">
-					<div class="title" title="Move">
-						<i class="fa fa-object-ungroup"></i>
-						Layers
-					</div>
-					<div id="layersBtns" class="showHide">
-							<div id="addLayer" class="layerTool" title="Add"><i class="fa fa-plus"></i></div>
-							<div id="delLayer" class="layerTool" title="Delete"><i class="fa fa-minus"></i></div>
-							<div id="mUpLayer" class="layerTool" title="Move up"><i class="fa fa-angle-up"></i></div>
-							<div id="mDownLayer" class="layerTool" title="Move down"><i class="fa fa-angle-down"></i></div>
-					</div>
-					<div id="listLayers" class="showHide"></div>
-				</div>
 			<div id="hint">
 				<div class="hintGroup" id="select">
 					<div class="keyboardButton">Del</div>
-					<div class="describeHint">Delete selected part</div>
+					<div class="describeHint">Delete</div>
 					<div class="keyboardButton">Ctrl + X</div>
 					<div class="describeHint">Cut</div>
 					<div class="keyboardButton">Ctrl + C</div>
