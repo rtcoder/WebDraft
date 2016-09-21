@@ -16,7 +16,7 @@ var draw = {
             ctx.fillStyle = "transparent";
         }
 
-        if (webDraft.shadow.isShadow === true) {
+        if (webDraft.shadow.isShadow === true && webDraft.selectedTool !== 'eraser') {
             ctx.shadowBlur    = webDraft.shadow.blur;
             ctx.shadowColor   = webDraft.shadow.color;
             ctx.shadowOffsetX = webDraft.shadow.offsetX;
