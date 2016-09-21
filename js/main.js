@@ -369,6 +369,10 @@ $(document)
             .draggable({snap : false})
             .css({ "position" : "absolute" });
 
+        $(".close-info").click(function(){
+            $("#info").hide();
+        });
+        
         //Save button Click event (save file)
         $("#btnSave").click(function() {
             file.download();

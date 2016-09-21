@@ -10,7 +10,8 @@ var keys = {
     C      : false,
     X      : false,
     V      : false,
-    O      : false
+    O      : false,
+    I      : false
 }
 
 $(document)
@@ -40,6 +41,9 @@ $(document)
             break;
             case 67 :
                 keys.C = true;
+            break;
+            case 73 :
+                keys.I = true;
             break;
             case 79 :
                 keys.O = true;
@@ -76,6 +80,12 @@ $(document)
         if (keys.C) {
             if(webDraft.selectedTool === "select" && keys.Ctrl){
                 select.copySelectedPart();
+            }
+        }
+        
+        if (keys.I) {
+            if(keys.Ctrl){
+                $("#info").toggle();
             }
         }
 
@@ -124,6 +134,9 @@ $(document)
             break;
             case 67 :
                 keys.C = false;
+            break;
+            case 73 :
+                keys.I = false;
             break;
             case 79 :
                 keys.O = false;
