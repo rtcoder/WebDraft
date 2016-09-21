@@ -19,7 +19,6 @@ $(document)
             event.preventDefault();
         }
 
-        console.log(event.keyCode)
         switch (event.keyCode) {
             case 13 :
                 keys.Enter = true;

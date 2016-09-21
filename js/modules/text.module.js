@@ -51,7 +51,6 @@ var text = {
             onrendered: function(canvas) {
                 var widthImg  = canvas.width;
                 var heightImg = canvas.height;
-                console.log(top+" d "+left);
                 layers.newLayer();
                 layers.setLayerSize(layers.activeId, widthImg, heightImg);
                 layers.setLayerPosition(layers.activeId, top, left);
@@ -106,7 +105,6 @@ var text = {
                     $(".textDecoration.active").each(function () {
                         textDecoration += $(this).attr("id")+" ";
                     })
-                    console.log(textDecoration);
                     if($(".textDecoration.active").length > 0)
                         $("#textRectangle").css("text-decoration", textDecoration);
                     else

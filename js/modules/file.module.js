@@ -33,7 +33,6 @@ var file = {
                 var top  = parseInt($("#"+layers.list.id[i]).css("top"));
                 var left = parseInt($("#"+layers.list.id[i]).css("left"));
                 temp_ctx.drawImage(imgData, top, left);
-                console.log(top+"::"+left)
             }
         }
 
