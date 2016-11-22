@@ -159,6 +159,132 @@ var canvas,
 
                 $("#mousePosition").text(webDraft.mPosition.x + " , " + webDraft.mPosition.y);
             },
+            _mousedown:function(event){
+                webDraft.func.mousePosition(event);
+                webDraft.click.left = true;
+                if (!webDraft.click.right && webDraft.click.left) {
+                    if(webDraft.selectedTool !== "select")
+                        points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+
+                    switch (webDraft.selectedTool) {
+                        case "pencil" :
+                        case "eraser" :
+                            draw.drawing();
+                        break;
+                        case "select" :
+                            select.initSelect();
+                        break;
+                        case "rectangle" :
+                            shapes.startShape();
+                        break;
+                        case "circle" :
+                            shapes.startShape();
+                        break;
+                        case "text" :
+                            text.initSelect();
+                        break;
+                        case "colorsampler" :
+                            webDraft.func.colorsamplerSetcolor();
+                            $("#pencil").click();
+                        break;
+                    }
+                }
+            },
+            _mouseup:function(event){
+                webDraft.click.left  = false;
+                webDraft.click.right = false;
+
+                ctx.beginPath();
+                ctx.stroke();
+
+                switch (webDraft.selectedTool) {
+                    case "select" :
+                        select.selectOpt();
+                    break;
+                    case "text" :
+                        text.showTextOptions();
+                    break;
+                    case "rectangle" :
+                        shapes.drawRect();
+                    break;
+                    case "circle" :
+                        shapes.drawCircle();
+                    break;
+                }
+
+                layers.saveState();
+            },
+            _mousemove:function(event){
+                webDraft.func.mousePosition(event);
+
+                switch (webDraft.selectedTool) {
+                    case "eraser" :
+                        webDraft.func.moveEraseRect(event);
+                    break;
+                    case "colorsampler" :
+                        webDraft.func.colorsampler();
+                    break;
+                    case "select" :
+                        if(
+                            !select.isSelecting && webDraft.mPosition.x <= parseInt($("#selectRectangle").css("left")) + $("#selectRectangle").width()
+                            && webDraft.mPosition.x >= parseInt($("#selectRectangle").css("left"))
+                            && webDraft.mPosition.y <= parseInt($("#selectRectangle").css("top")) + $("#selectRectangle").height()
+                            && webDraft.mPosition.y >= parseInt($("#selectRectangle").css("top"))
+                        ){
+                            select.hoverSelectRectangle = true;
+                            $("#selectRectangle").css({ "z-index" : 5 });
+                        }else{
+                            select.hoverSelectRectangle = false;
+                            $("#selectRectangle").css({ "z-index" : 3 });
+                        }
+                    break;
+                    case "text" :
+                        if(
+                            !text.isSelecting && webDraft.mPosition.x <= parseInt($("#textRectangle").css("left")) + $("#textRectangle").width()
+                            && webDraft.mPosition.x >= parseInt($("#textRectangle").css("left"))
+                            && webDraft.mPosition.y <= parseInt($("#textRectangle").css("top")) + $("#textRectangle").height()
+                            && webDraft.mPosition.y >= parseInt($("#textRectangle").css("top"))
+                        ){
+                            text.hoverSelectRectangle = true;
+                            $("#textRectangle").css({ "z-index" : 5 });
+                        }else{
+                            text.hoverSelectRectangle = false;
+                            $("#textRectangle").css({ "z-index" : 3 });
+                        }
+                    break;
+                }
+
+                if (webDraft.click.left && !webDraft.click.right) {
+                    if(webDraft.selectedTool !== "select")
+                        points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+
+                    switch (webDraft.selectedTool) {
+                        case "pencil" :
+                        case "eraser" :
+                            draw.drawStyle();
+                            ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
+                            ctx.stroke();
+                        break;
+                        case "web" :
+                            draw.drawWeb();
+                        break;
+                        case "select" :
+                            if(!select.hoverSelectRectangle)
+                                select.startSelect();
+                        break;
+                        case "text" :
+                            if(!text.hoverSelectRectangle)
+                                text.startSelect();
+                        break;
+                        case "rectangle" :
+                            shapes.prepareRect();
+                        break;
+                        case "circle" :
+                            shapes.prepareCircle();
+                        break;
+                    }
+                }
+            },
             init : function() {
                 text.initEvents();
                 layers.initEvents();
@@ -172,138 +298,16 @@ var canvas,
 
                         if(webDraft.selectedTool == "eraser")
                             $("#eraseRect").show();
+
                     })
                     .bind("contextmenu", function(event) {
                         event.preventDefault();
                         webDraft.click.right = true;
                         webDraft.click.left  = false;
                     })
-                    .on('mousedown touchstart', function(event) {
-                        webDraft.func.mousePosition(event);
-                        webDraft.click.left = true;
-                        if (!webDraft.click.right && webDraft.click.left) {
-                            if(webDraft.selectedTool !== "select")
-                                points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
-
-                            switch (webDraft.selectedTool) {
-                                case "pencil" :
-                                case "eraser" :
-                                    draw.drawing();
-                                break;
-                                case "select" :
-                                    select.initSelect();
-                                break;
-                                case "rectangle" :
-                                    shapes.startShape();
-                                break;
-                                case "circle" :
-                                    shapes.startShape();
-                                break;
-                                case "text" :
-                                    text.initSelect();
-                                break;
-                                case "colorsampler" :
-                                    webDraft.func.colorsamplerSetcolor();
-                                    $("#pencil").click();
-                                break;
-                            }
-                        }
-                    })
-                    .on('mouseup touchend', function() {
-                        webDraft.click.left  = false;
-                        webDraft.click.right = false;
-
-                        ctx.beginPath();
-                        ctx.stroke();
-
-                        switch (webDraft.selectedTool) {
-                            case "select" :
-                                select.selectOpt();
-                            break;
-                            case "text" :
-                                text.showTextOptions();
-                            break;
-                            case "rectangle" :
-                                shapes.drawRect();
-                            break;
-                            case "circle" :
-                                shapes.drawCircle();
-                            break;
-                        }
-
-                        layers.saveState();
-                    })
-                    .on('mousemove touchmove', function(event) {
-                        webDraft.func.mousePosition(event);
-
-                        switch (webDraft.selectedTool) {
-                            case "eraser" :
-                                webDraft.func.moveEraseRect(event);
-                            break;
-                            case "colorsampler" :
-                                webDraft.func.colorsampler();
-                            break;
-                            case "select" :
-                                if(
-                                    !select.isSelecting && webDraft.mPosition.x <= parseInt($("#selectRectangle").css("left")) + $("#selectRectangle").width()
-                                    && webDraft.mPosition.x >= parseInt($("#selectRectangle").css("left"))
-                                    && webDraft.mPosition.y <= parseInt($("#selectRectangle").css("top")) + $("#selectRectangle").height()
-                                    && webDraft.mPosition.y >= parseInt($("#selectRectangle").css("top"))
-                                ){
-                                    select.hoverSelectRectangle = true;
-                                    $("#selectRectangle").css({ "z-index" : 5 });
-                                }else{
-                                    select.hoverSelectRectangle = false;
-                                    $("#selectRectangle").css({ "z-index" : 3 });
-                                }
-                            break;
-                            case "text" :
-                                if(
-                                    !text.isSelecting && webDraft.mPosition.x <= parseInt($("#textRectangle").css("left")) + $("#textRectangle").width()
-                                    && webDraft.mPosition.x >= parseInt($("#textRectangle").css("left"))
-                                    && webDraft.mPosition.y <= parseInt($("#textRectangle").css("top")) + $("#textRectangle").height()
-                                    && webDraft.mPosition.y >= parseInt($("#textRectangle").css("top"))
-                                ){
-                                    text.hoverSelectRectangle = true;
-                                    $("#textRectangle").css({ "z-index" : 5 });
-                                }else{
-                                    text.hoverSelectRectangle = false;
-                                    $("#textRectangle").css({ "z-index" : 3 });
-                                }
-                            break;
-                        }
-
-                        if (webDraft.click.left && !webDraft.click.right) {
-                            if(webDraft.selectedTool !== "select")
-                                points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
-
-                            switch (webDraft.selectedTool) {
-                                case "pencil" :
-                                case "eraser" :
-                                    draw.drawStyle();
-                                    ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
-                                    ctx.stroke();
-                                break;
-                                case "web" :
-                                    draw.drawWeb();
-                                break;
-                                case "select" :
-                                    if(!select.hoverSelectRectangle)
-                                        select.startSelect();
-                                break;
-                                case "text" :
-                                    if(!text.hoverSelectRectangle)
-                                        text.startSelect();
-                                break;
-                                case "rectangle" :
-                                    shapes.prepareRect();
-                                break;
-                                case "circle" :
-                                    shapes.prepareCircle();
-                                break;
-                            }
-                        }
-                    })
+                    .on('mousedown touchstart', webDraft.func._mousedown)
+                    .on('mouseup touchend', webDraft.func._mouseup)
+                    .on('mousemove touchmove', webDraft.func._mousemove)
                     .mouseleave(function() {
                         $("#mousePosition").empty();
                         ctx.stroke();
@@ -470,7 +474,6 @@ $(document)
             webDraft.func.init();
         });
 
-
         //changing size
         $("input[type=range]#pointSize").on('mousemove touchmove', function() {
             webDraft.size = $(this).val();
@@ -569,7 +572,5 @@ $(document)
     .bind("contextmenu", function(e) {
         e.preventDefault();
     })
-    .mouseup(function() {
-        webDraft.click.left  = false;
-        webDraft.click.right = false;
-    });
+    .on('mouseup touchend', webDraft.func._mouseup)
+    .on('mousemove touchmove', webDraft.func._mousemove);

@@ -67,6 +67,7 @@ var shapes = {
         ctx.rect(x, y, width, height);
         ctx.fill();
         ctx.stroke();
+        shapes.startShapePoints = [];
     },
     prepareCircle : function() {
         var x = shapes.startShapePoints[0],
