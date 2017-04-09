@@ -130,7 +130,7 @@ var canvas,
                 }
 
                 if(colorCode === "0")
-                    colorCode = "transparent"
+                    colorCode = "transparent";
 
                 $("#textColorSampler").text(colorCode);
                 $("#colorBoxSampler").css({ "background-color" : colorCode });
@@ -143,18 +143,18 @@ var canvas,
                 }
             },
             mousePosition : function(event) {
-                var touch = undefined
+                var touch = undefined;
                 
                 if (event.originalEvent.touches){
-                    touch = event.originalEvent.touches[0]
+                    touch = event.originalEvent.touches[0];
                 
-                    var pos_x = event.pageX || touch.pageX
-                    var pos_y = event.pageY || touch.pageY
+                    var pos_x = event.pageX || touch.pageX;
+                    var pos_y = event.pageY || touch.pageY;
                 
                 
                 }else{
-                    var pos_x = event.pageX || touch.pageX
-                    var pos_y = event.pageY || touch.pageY
+                    var pos_x = event.pageX || touch.pageX;
+                    var pos_y = event.pageY || touch.pageY;
                 }
 
                 webDraft.mPosition.x = pos_x - parseInt($(webDraft.draw.selectorId).offset().left);
@@ -302,7 +302,7 @@ var canvas,
                         ctx.beginPath();
                         ctx.stroke();
 
-                        if(webDraft.selectedTool == "eraser")
+                        if(webDraft.selectedTool === "eraser")
                             $("#eraseRect").show();
 
                     })
@@ -318,7 +318,7 @@ var canvas,
                         $("#mousePosition").empty();
                         ctx.stroke();
                         layers.saveState();
-                        if(webDraft.selectedTool == "eraser")
+                        if(webDraft.selectedTool === "eraser")
                             $("#eraseRect").hide();
                     })
                     .dblclick(function(){
@@ -445,7 +445,7 @@ $(document)
         });
         $("#fileUploader").click(function() {
             $("input#fileUploaderInput").click();
-        })
+        });
         $("#resizeDraw").click(function() {
             $("#resizer").fadeIn();
             $("input[type=number]#drawWidth").val(webDraft.draw.width);
@@ -527,7 +527,7 @@ $(document)
         $("input[type=color]#firstColor").change(function() {
             $("#generalColor .color").css({ "background" : $(this).val() });
             webDraft.color = $(this).val();
-            $("#textRectangle").css('color',$(this).val())
+            $("#textRectangle").css('color',$(this).val());
         });
         //changing shadow color input
         $("input[type=color]#shadowColorVal").change(function() {
