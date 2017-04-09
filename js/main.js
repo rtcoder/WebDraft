@@ -145,11 +145,17 @@ var canvas,
             mousePosition : function(event) {
                 var touch = undefined
                 
-                if (event.originalEvent.touches)
+                if (event.originalEvent.touches){
                     touch = event.originalEvent.touches[0]
                 
-                var pos_x = event.pageX || touch.pageX
-                var pos_y = event.pageY || touch.pageY
+                    var pos_x = event.pageX || touch.pageX
+                    var pos_y = event.pageY || touch.pageY
+                
+                
+                }else{
+                    var pos_x = event.pageX || touch.pageX
+                    var pos_y = event.pageY || touch.pageY
+                }
 
                 webDraft.mPosition.x = pos_x - parseInt($(webDraft.draw.selectorId).offset().left);
                 webDraft.mPosition.y = pos_y - parseInt($(webDraft.draw.selectorId).offset().top);
