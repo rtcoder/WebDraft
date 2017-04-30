@@ -1,7 +1,4 @@
 var keys = {
-    Ctrl: false, //press Control (Ctrl)
-    Shift: false, //press Shift
-    Alt: false, //press Alt
     Enter: false, //press Enter
     Esc: false, //press Escape (Esc)
     f11: false, //press F11
@@ -23,15 +20,6 @@ $(document)
             switch (event.keyCode) {
                 case 13 :
                     keys.Enter = true;
-                    break;
-                case 16 :
-                    keys.Shift = true;
-                    break;
-                case 17 :
-                    keys.Ctrl = true;
-                    break;
-                case 18 :
-                    keys.Alt = true;
                     break;
                 case 27 :
                     keys.Esc = true;
@@ -68,45 +56,45 @@ $(document)
                 if (webDraft.selectedTool === "select") {
                     select.delSelectedPart();
                 }
-                if (keys.Ctrl) {
+                if (event.ctrlKey) {
                     $("#btnCLear").click();
                 }
             }
 
-            if (keys.f12 || keys.f11 || keys.Ctrl || keys.delete) {
+            if (keys.f12 || keys.f11 || event.ctrlKey || keys.delete) {
                 event.preventDefault();
             }
 
             if (keys.C) {
-                if (webDraft.selectedTool === "select" && keys.Ctrl) {
+                if (webDraft.selectedTool === "select" && event.ctrlKey) {
                     select.copySelectedPart();
                 }
             }
 
             if (keys.I) {
-                if (keys.Ctrl) {
+                if (event.ctrlKey) {
                     $("#info").toggle();
                 }
             }
 
             if (keys.X) {
-                if (webDraft.selectedTool === "select" && keys.Ctrl) {
+                if (webDraft.selectedTool === "select" && event.ctrlKey) {
                     select.cutSelectedPart();
                 }
             }
 
             if (keys.V) {
-                if (webDraft.selectedTool === "select" && keys.Ctrl) {
+                if (webDraft.selectedTool === "select" && event.ctrlKey) {
                     select.pasteSelectedPart();
                 }
             }
             if (keys.O) {
-                if (keys.Ctrl) {
+                if (event.ctrlKey) {
                     $("#fileUploader").click();
                 }
             }
             if (keys.S) {
-                if (keys.Ctrl) {
+                if (event.ctrlKey) {
                     file.download();
                 }
             }
@@ -116,15 +104,6 @@ $(document)
             switch (event.keyCode) {
                 case 13 :
                     keys.Enter = false;
-                    break;
-                case 16 :
-                    keys.Shift = false;
-                    break;
-                case 17 :
-                    keys.Ctrl = false;
-                    break;
-                case 18 :
-                    keys.Alt = false;
                     break;
                 case 27 :
                     keys.Esc = false;
@@ -160,7 +139,7 @@ $(document)
         });
 
 $(window).bind('mousewheel DOMMouseScroll', function (event) {
-    if (keys.Ctrl === true) {
+    if (event.ctrlKey === true) {
         // event.preventDefault();
 
         if (event.originalEvent.wheelDelta / 120 > 0) {
@@ -175,7 +154,7 @@ $(window).bind('mousewheel DOMMouseScroll', function (event) {
         $("#pointSizeValue").text("size:" + webDraft.size + "px");
     }
 
-    if (keys.Alt === true) {
+    if (event.altKey === true) {
         // event.preventDefault();
     }
 });

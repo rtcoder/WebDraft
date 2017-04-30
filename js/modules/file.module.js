@@ -38,7 +38,7 @@ var file = {
 
         $("#tmpCanvas").width(webDraft.draw.width).height(webDraft.draw.height)
         temp_c.toBlob(function (blob) {
-            saveAs(blob, "plik.png");
+            saveAs(blob, "image.png");
         });
 
         $("#tmpCanvas").remove();
