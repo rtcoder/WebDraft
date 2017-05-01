@@ -20,9 +20,10 @@
         <script src="js/modules/clipboard.module.js"></script>
         <script src="js/main.js"></script>
         <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/perfect-scrollbar.css">
-        <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/perfect-scrollbar.css">  
+        <link rel="stylesheet" href="css/jquery-ui.min.css"> 
+        <!--fontawesome v4.7-->
+        <link rel="stylesheet" href="css/font-awesome.min.css">
     </head>
     <body onload="webDraft.func.resize();webDraft.func.positionElements()">
         <!--all site elements-->
@@ -44,7 +45,7 @@
                     </div>
                     <div id="toolsBtns" class="showHide">
                         <div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
-                        <div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-close"></i></div>
+                        <div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-ban"></i></div>
                         <div id="btnSave" class="primaryTool" title="Save file"><i class="fa fa-save"></i></div>
                         <div id="invertColors" class="primaryTool" title="Invert colors"><i class="fa fa-refresh"></i></div>
                         <div id="rotateLeft" class="primaryTool" title="Rotate left"><i class="fa fa-rotate-left"></i></div>
@@ -68,7 +69,7 @@
                             <label for="isShadow">
                                 <i class="fa fa-circle-o"></i>
                                 <i class="fa fa-dot-circle-o"></i>
-                                <div id="l">Shadow</div>
+                                <span class="label">Shadow</span>
                             </label>
                         </div>
                         <div id="fillShapeInput">
@@ -76,7 +77,7 @@
                             <label for="isFillSet">
                                 <i class="fa fa-circle-o"></i>
                                 <i class="fa fa-dot-circle-o"></i>
-                                <div id="l">Fill</div>
+                                <span class="label">Fill</span>
                             </label>
                         </div>
                     </div>
@@ -111,13 +112,16 @@
                             <div class="sliderVal" id="ShadowBlurValue">shadow:1px</div>
                             <input id="ShadowBlur" type="range" min="1" max="50" value="1">
                         </div>
-                        <div class="sliderContainer" id="shadow_offsetX_slider">
+<!--                        <div class="sliderContainer" id="shadow_offsetX_slider">
                             <div class="sliderVal" id="ShadowOffSetXValue">shadow offset X:0px</div>
                             <input id="ShadowOffSetX" type="range" min="-50" max="50" value="0">
                         </div>
                         <div class="sliderContainer" id="shadow_offsetY_slider">
                             <div class="sliderVal" id="ShadowOffSetYValue">shadow offset Y:0px</div>
                             <input id="ShadowOffSetY" type="range" min="-50" max="50" value="0">
+                        </div>-->
+                        <div id="shadowSquare">
+                            <div id="shadowDot"></div>
                         </div>
                         <div class="sliderContainer" id="sensitivityPoints_slider">
                             <div class="sliderVal" id="sensitivityPointsValue">sensitivity:1%</div>
@@ -184,8 +188,8 @@
             </div>
             <!--resizer-->
             <div id="resizer">
-                <input type="number" id="drawWidth" placeholder="Szerokość" min="0" max="" required>
-                <input type="number" id="drawHeight" placeholder="Wysokość" min="0" max="" required>
+                <input type="number" id="drawWidth" placeholder="Width" min="0" required>
+                <input type="number" id="drawHeight" placeholder="Height" min="0" required>
                 <input type="checkbox" name="allLayersResizing" id="allLayersResizing" value="">
                 <label for="allLayersResizing">Resize all layers?</label>
                 <div id="resizeinfo"></div>
@@ -204,7 +208,7 @@
                 </div>
             </div>
             <div id="hint">
-                <div class="hintGroup" id="select">
+                <div class="hintGroup" id="selecting">
                     <div class="keyboardButton">Del</div>
                     <div class="describeHint">Delete</div>
                     <div class="keyboardButton">Ctrl + X</div>
