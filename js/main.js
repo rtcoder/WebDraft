@@ -166,6 +166,10 @@ var canvas,
                 webDraft.mPosition.x = webDraft.mPosition.x - parseInt($(canvas).css('left'));
 
                 $("#mousePosition").text(webDraft.mPosition.x + " , " + webDraft.mPosition.y);
+                if(webDraft.mPosition.x < 0 || webDraft.mPosition.x > $(webDraft.draw.selectorId).width()
+                || webDraft.mPosition.y < 0 || webDraft.mPosition.y > $(webDraft.draw.selectorId).height()){
+                    $("#mousePosition").empty();
+                }
             },
             _mousedown:function(event){
                 webDraft.func.mousePosition(event);
@@ -317,7 +321,6 @@ var canvas,
                     .on('mouseup touchend', webDraft.func._mouseup)
                     .on('mousemove touchmove', webDraft.func._mousemove)
                     .mouseleave(function() {
-                        $("#mousePosition").empty();
                         ctx.stroke();
                         layers.saveState();
                         if(webDraft.selectedTool === "eraser")
