@@ -174,7 +174,15 @@ var canvas,
             },
             _mousedown:function(event){
                 webDraft.func.mousePosition(event);
-                webDraft.click.left = true;
+                if ("buttons" in event) {
+                    if(event.buttons == 1){
+                        webDraft.click.left = true;
+                    }
+                }
+                var button = event.which || event.button;
+                if(button == 1){
+                    webDraft.click.left = true;
+                }
                 if (!webDraft.click.right && webDraft.click.left) {
                     if(webDraft.selectedTool !== "select")
                         points[layers.activeId].push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
