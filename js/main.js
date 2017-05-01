@@ -384,6 +384,31 @@ $(document)
             .draggable({snap : false})
             .css({ "position" : "absolute" });
 
+        $( "#shadowDot" ).draggable({
+            containment: "#shadowSquare",
+            scroll: false,
+            drag: function() {
+                var shadowY = parseInt($(this).css('top')) - (parseInt($(this).parent().height())/2);
+                var shadowX = parseInt($(this).css('left')) - (parseInt($(this).parent().width())/2);
+                webDraft.shadow.offsetX = shadowX;
+                webDraft.shadow.offsetY = shadowY;
+            }
+        });
+        $('#shadowSquare').click(function(e){
+            var x = e.pageX - $(this).offset().left;
+            var y = e.pageY - $(this).offset().top;
+            
+            $( "#shadowDot" ).css({
+                top: (y-5)+'px',
+                left: (x-5)+'px'
+            });
+            
+            var shadowY = parseInt($( "#shadowDot" ).css('top')) - (parseInt($( "#shadowDot" ).parent().height())/2);
+            var shadowX = parseInt($( "#shadowDot" ).css('left')) - (parseInt($( "#shadowDot" ).parent().width())/2);
+            webDraft.shadow.offsetX = shadowX;
+            webDraft.shadow.offsetY = shadowY;
+        });
+
         $(".close-info").click(function(){
             $("#info").hide();
         });
@@ -495,16 +520,6 @@ $(document)
             webDraft.shadow.blur = $(this).val();
             $("#ShadowBlurValue").text("shadow:" + $(this).val() + "px");
         });
-        //changing shadow offset X
-        $("input[type=range]#ShadowOffSetX").on('mousemove touchmove', function() {
-            webDraft.shadow.offsetX = $(this).val();
-            $("#ShadowOffSetXValue").text("shadow offset X:" + $(this).val() + "px");
-        });
-        //changing shadow offset Y
-        $("input[type=range]#ShadowOffSetY").on('mousemove touchmove', function() {
-            webDraft.shadow.offsetY = $(this).val();
-            $("#ShadowOffSetYValue").text("shadow offset Y:" + $(this).val() + "px");
-        });
         //changing sensitivity of web points
         $("input[type=range]#sensitivityPoints").on('mousemove touchmove', function() {
             webDraft.sensitivityPoints = $(this).val();
@@ -565,9 +580,9 @@ $(document)
             webDraft.shadow.isShadow = $(this).is(":checked");//return true if is :checked or false if not
 
             if (webDraft.shadow.isShadow) {
-                $("#shadowColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider").show();
+                $("#shadowColor, #shadow_slider, #shadowSquare").show();
             } else {
-                $("#shadowColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider").hide();
+                $("#shadowColor, #shadow_slider, #shadowSquare").hide();
             }
         });
         $("input[type=checkbox]#isFillSet").change(function() {
