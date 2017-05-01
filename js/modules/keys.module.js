@@ -140,7 +140,7 @@ $(document)
 
 $(window).bind('mousewheel DOMMouseScroll', function (event) {
     if (event.ctrlKey === true) {
-        // event.preventDefault();
+         event.preventDefault();
 
         if (event.originalEvent.wheelDelta / 120 > 0) {
             if (webDraft.size < 250)
