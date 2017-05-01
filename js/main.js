@@ -448,11 +448,9 @@ $(document)
 
             if (thisId === "eraser") {
                 $("#eraseRect").show();
-                ctx.globalCompositeOperation = "destination-out";
                 $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "none" });
             } else {
                 $("#eraseRect").hide();
-                ctx.globalCompositeOperation = "source-over";
                 $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "crosshair" });
             }
 
