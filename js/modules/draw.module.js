@@ -39,18 +39,18 @@ var draw = {
     drawWeb: function () {
         ctx.beginPath();
         draw.drawStyle();
-        ctx.moveTo(points[points.length - 2].x, points[points.length - 2].y);
-        ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+        ctx.moveTo(points[layers.activeId][points[layers.activeId].length - 2].x, points[layers.activeId][points[layers.activeId].length - 2].y);
+        ctx.lineTo(points[layers.activeId][points[layers.activeId].length - 1].x, points[layers.activeId][points[layers.activeId].length - 1].y);
         ctx.stroke();
-        for (var i = 0, len = points.length; i < len; i++) {
-            dx = points[i].x - points[points.length - 1].x;
-            dy = points[i].y - points[points.length - 1].y;
+        for (var i = 0, len = points[layers.activeId].length; i < len; i++) {
+            dx = points[layers.activeId][i].x - points[layers.activeId][points[layers.activeId].length - 1].x;
+            dy = points[layers.activeId][i].y - points[layers.activeId][points[layers.activeId].length - 1].y;
             d = dx * dx + dy * dy;
             if (d < webDraft.sensitivityPoints) {
                 ctx.beginPath();
                 draw.drawStyle();
-                ctx.moveTo(points[points.length - 1].x + (dx * 0.2), points[points.length - 1].y + (dy * 0.2));
-                ctx.lineTo(points[i].x - (dx * 0.2), points[i].y - (dy * 0.2));
+                ctx.moveTo(points[layers.activeId][points[layers.activeId].length - 1].x + (dx * 0.2), points[layers.activeId][points[layers.activeId].length - 1].y + (dy * 0.2));
+                ctx.lineTo(points[layers.activeId][i].x - (dx * 0.2), points[layers.activeId][i].y - (dy * 0.2));
                 ctx.stroke();
             }
         }
