@@ -23,6 +23,8 @@ var draw = {
             ctx.shadowOffsetY = webDraft.shadow.offsetY;
         } else {
             ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
         }
 
         ctx.strokeStyle = webDraft.color;//line color

@@ -108,7 +108,7 @@ input#fileUploaderInput{ display: none; }
     border-color: #ccc;
 }
 /*Tools*/
-#shadowColor, #fillColor, #shadow_slider, #shadow_offsetY_slider, #shadow_offsetX_slider, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput{ display:none }
+#shadowColor, #fillColor, #shadow_slider, #shadowSquare, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput{ display:none }
 #toolsGroup{
     width:200px;
     height: calc(100vh - 20px);
@@ -374,6 +374,9 @@ input[type=checkbox] + label span{
     height:20px;
     text-align:left;
 }
+input[type=checkbox] + label span.label{
+    width:auto;
+}
 input[type=range] {
     -webkit-appearance: none;
     width: calc(100% - 20px);
@@ -544,25 +547,26 @@ input[type=range]:focus::-ms-fill-upper { background: #ccc }
     width: 10px;
     height: 10px;
     position: absolute;
-    transform: translate(-50%, -50%);
-    top:50%;
-    left: 50%;
+    top: 95px;
+    left: 95px;
+    z-index: 2;
 }
 #shadowSquare::after{
-    position: absolute;
     width: 200px;
     height: 1px;
     top: 50%;
     left: 0px;
-    content: ' ';
-    background: #a9a9a9;
 }
 #shadowSquare::before{
-    position: absolute;
     width: 1px;
     height: 200px;
-    top: 00%;
+    top: 0%;
     left: 50%;
+}
+#shadowSquare::after,
+#shadowSquare::before{
+    position: absolute;
     content: ' ';
     background: #a9a9a9;
+    z-index: 1;
 }
