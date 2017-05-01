@@ -6,7 +6,7 @@ var canvas,
     },
     webDraft = {
         title   : "WebDraft",
-        version : "2.2.0",
+        version : "2.2.5",
         click   : {
             left  : false, //left mouse button
             right : false  //right mouse button
