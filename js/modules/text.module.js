@@ -45,6 +45,11 @@ var text = {
     putLayer: function () {
         $("#textRectangle").css('border', 'none');
 
+        if( $('#textRectangle').html() === '' ){
+            return false;
+        }
+
+
         var top = parseInt($("#textRectangle").css('top'));
         var left = parseInt($("#textRectangle").css('left'));
         html2canvas($('#textRectangle'), {

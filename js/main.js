@@ -14,9 +14,11 @@ var canvas,
             y : 0
         },
         draw : {
-            width        : 400,
-            height       : 400,
-            thisParrent  : "#drawHandler",
+            width        : $(window).width()-200,
+            height       : $(window).width()-20,
+//            width        : 400,
+//            height       : 400,
+            thisParent  : "#drawHandler",
             selectorId   : "#draw",
             eventHandler : "#eventHandler",
             bg           : "url('pic/transparent.png') repeat"
@@ -65,22 +67,22 @@ var canvas,
                     "width"  : webDraft.draw.width,
                     "height" : webDraft.draw.height
                 });
-                $(webDraft.draw.thisParrent).css({
+                $(webDraft.draw.thisParent).css({
                     "background" : webDraft.draw.bg,
                     "width"      : webDraft.draw.width,
                     "height"     : webDraft.draw.height
                 });
 
                 if (webDraft.draw.width >= $("#content").width()) {
-                    $(webDraft.draw.thisParrent).css({ "margin-left" : "0px" });
+                    $(webDraft.draw.thisParent).css({ "margin-left" : "0px" });
                 } else {
-                    $(webDraft.draw.thisParrent).css({ "margin-left" : ($("#content").width() - webDraft.draw.width) / 2 });
+                    $(webDraft.draw.thisParent).css({ "margin-left" : ($("#content").width() - webDraft.draw.width) / 2 });
                 }
 
                 if (webDraft.draw.height >= $("#content").height()) {
-                    $(webDraft.draw.thisParrent).css({ "margin-top" : "0px" });
+                    $(webDraft.draw.thisParent).css({ "margin-top" : "0px" });
                 } else {
-                    $(webDraft.draw.thisParrent).css({ "margin-top" : ($("#content").height() - webDraft.draw.height) / 2 });
+                    $(webDraft.draw.thisParent).css({ "margin-top" : ($("#content").height() - webDraft.draw.height) / 2 });
                 }
 
                 $("#content").perfectScrollbar();
@@ -153,8 +155,8 @@ var canvas,
                 
                 
                 }else{
-                    var pos_x = event.pageX || touch.pageX;
-                    var pos_y = event.pageY || touch.pageY;
+                    var pos_x = event.pageX;
+                    var pos_y = event.pageY;
                 }
 
                 webDraft.mPosition.x = pos_x - parseInt($(webDraft.draw.selectorId).offset().left);
