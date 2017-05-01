@@ -21,7 +21,6 @@
         <script src="js/main.js"></script>
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/perfect-scrollbar.css">
-        <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     </head>
     <body onload="webDraft.func.resize();webDraft.func.positionElements()">
@@ -118,6 +117,9 @@
                         <div class="sliderContainer" id="shadow_offsetY_slider">
                             <div class="sliderVal" id="ShadowOffSetYValue">shadow offset Y:0px</div>
                             <input id="ShadowOffSetY" type="range" min="-50" max="50" value="0">
+                        </div>
+                        <div id="shadowSquare">
+                            <div id="shadowDot"></div>
                         </div>
                         <div class="sliderContainer" id="sensitivityPoints_slider">
                             <div class="sliderVal" id="sensitivityPointsValue">sensitivity:1%</div>
