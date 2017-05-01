@@ -1,7 +1,9 @@
 var canvas,
     ctx,
     randomId,
-    points   = [],
+    points   = {
+        
+    },
     webDraft = {
         title   : "WebDraft",
         version : "2.2.0",
@@ -14,10 +16,8 @@ var canvas,
             y : 0
         },
         draw : {
-            width        : $(window).width()-200,
-            height       : $(window).width()-20,
-//            width        : 400,
-//            height       : 400,
+            width        : 600,
+            height       : 600,
             thisParent  : "#drawHandler",
             selectorId   : "#draw",
             eventHandler : "#eventHandler",
@@ -112,7 +112,8 @@ var canvas,
                 webDraft.func.moveEraseRect(event);
                 ctx.clearRect(webDraft.mPosition.x - webDraft.size / 2, webDraft.mPosition.y - webDraft.size / 2, webDraft.size, webDraft.size);
 
-                points = [];
+                points[layers.activeId] = [];
+//                do poprawy
             },
             colorsampler : function(event) {
                 var x = webDraft.mPosition.x;
@@ -176,7 +177,7 @@ var canvas,
                 webDraft.click.left = true;
                 if (!webDraft.click.right && webDraft.click.left) {
                     if(webDraft.selectedTool !== "select")
-                        points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+                        points[layers.activeId].push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
 
                     switch (webDraft.selectedTool) {
                         case "pencil" :
@@ -268,7 +269,7 @@ var canvas,
 
                 if (webDraft.click.left && !webDraft.click.right) {
                     if(webDraft.selectedTool !== "select")
-                        points.push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
+                        points[layers.activeId].push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
 
                     switch (webDraft.selectedTool) {
                         case "pencil" :
@@ -394,7 +395,7 @@ $(document)
                 webDraft.shadow.offsetY = shadowY;
             }
         });
-        $('#shadowSquare').click(function(e){
+        $('#shadowSquare').on('mousedown', function(e){
             var x = e.pageX - $(this).offset().left;
             var y = e.pageY - $(this).offset().top;
             
@@ -505,7 +506,7 @@ $(document)
             $(webDraft.draw.selectorId).empty();
             $("#listLayers").empty();
 
-            points = [];
+            points = {};
 
             webDraft.func.init();
         });

@@ -118,6 +118,7 @@ var layers = {
                 layers.show(nr);
             });
             $(".layerView[data-id=" + randomId + "]").click();
+            points[randomId] = [];
 
         }
     },
