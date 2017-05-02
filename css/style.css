@@ -462,16 +462,17 @@ input[type=range]:focus::-ms-fill-upper { background: #ccc }
 }
 
 #info{
-    width: 400px;
-    height: 400px;
-    margin: calc(50vh - 200px) calc(50vw - 200px);
+    width: 350px;
+    height: 100vh;
     z-index: 5;
     position: absolute;
     display: none;
     overflow: auto;
     background: #2c2b2b;
-    border: 1px solid #a9a9a9;
+    border-left: 1px solid #a9a9a9;
     color: #fff;
+    top: 0px;
+    right: 0px;
 }
 @media all and (max-width: 400px){
     #info{
@@ -508,7 +509,7 @@ input[type=range]:focus::-ms-fill-upper { background: #ccc }
     float: left;
 }
 .info-section-shortcut {
-    width: 50%;
+    width: 30%;
     float: left;
     padding: 2px 5px;
     text-align: right;
@@ -527,7 +528,7 @@ input[type=range]:focus::-ms-fill-upper { background: #ccc }
     color: #2C2B2B;
 }
 .info-section-shortcut-describe {
-    width: 50%;
+    width: 70%;
     float: left;
     padding: 2px 5px;
 }
