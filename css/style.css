@@ -22,11 +22,10 @@ html, body, #paint{
     overflow:hidden;
 }
 #paint{ z-index:999999 }
-/*płótno*/
 #content{
     float:left;
     background:#373636;
-    overflow:hidden;
+    overflow:auto;
     width: calc(100vw - 200px);
     height: calc(100vh - 20px);
 }
@@ -177,8 +176,8 @@ img.imgLayer{
     color:#2E3436;
 }
 #listLayers{
-    max-height: calc(100vh - 70px);
-    overflow: hidden;
+    max-height: calc(50vh - 170px);
+    overflow: auto;
     top: 50px;
 }
 .tools .title .fa{
