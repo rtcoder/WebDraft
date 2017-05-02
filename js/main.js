@@ -45,8 +45,7 @@ var canvas,
                 return text;
             },
             resize : function() {
-                $("#content").perfectScrollbar();
-                $("#listLayers").perfectScrollbar();
+               
             },
             positionElements : function() {
                 var image = {
@@ -85,7 +84,6 @@ var canvas,
                     $(webDraft.draw.thisParent).css({ "margin-top" : ($("#content").height() - webDraft.draw.height) / 2 });
                 }
 
-                $("#content").perfectScrollbar();
                 for (var i = 0; i < layers.list.id.length; i++) {
                     if (typeof layers.list.id[i] === "string") {
                         layers.select(layers.list.id[i]);
