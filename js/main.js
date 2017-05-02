@@ -572,9 +572,6 @@ $(document)
                 var ySize = parseInt($("input[type=number]#drawHeight").val());
                 $("#resizeinfo").html(xSize + " <i class='fa fa-times'></i> " + ySize);
             }).keyup(function(e) {
-                var v = $(this).val().replace(/[^\d\.]/g, '');
-
-                $(this).val(v);
                 $(this).change();
 
                 if (e.keyCode === 13) {
