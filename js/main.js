@@ -462,9 +462,9 @@ $(document)
 
             if (thisId !== "select") {
                 $("#selectRectangle").hide();
-                $("#hint, .hintGroup#select").hide();
+                $("#hint, .hintGroup#selecting").hide();
             }else {
-                $("#hint, .hintGroup#select").show();
+                $("#hint, .hintGroup#selecting").show();
             }
 
             if (thisId !== "text") {
