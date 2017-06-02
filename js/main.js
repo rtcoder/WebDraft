@@ -6,7 +6,7 @@ var canvas,
     },
     webDraft = {
         title   : "WebDraft",
-        version : "2.2.0",
+        version : "2.2.5",
         click   : {
             left  : false, //left mouse button
             right : false  //right mouse button
@@ -174,7 +174,15 @@ var canvas,
             },
             _mousedown:function(event){
                 webDraft.func.mousePosition(event);
-                webDraft.click.left = true;
+                if ("buttons" in event) {
+                    if(event.buttons == 1){
+                        webDraft.click.left = true;
+                    }
+                }
+                var button = event.which || event.button;
+                if(button == 1){
+                    webDraft.click.left = true;
+                }
                 if (!webDraft.click.right && webDraft.click.left) {
                     if(webDraft.selectedTool !== "select")
                         points[layers.activeId].push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
@@ -440,11 +448,9 @@ $(document)
 
             if (thisId === "eraser") {
                 $("#eraseRect").show();
-                ctx.globalCompositeOperation = "destination-out";
                 $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "none" });
             } else {
                 $("#eraseRect").hide();
-                ctx.globalCompositeOperation = "source-over";
                 $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "crosshair" });
             }
 
@@ -566,9 +572,6 @@ $(document)
                 var ySize = parseInt($("input[type=number]#drawHeight").val());
                 $("#resizeinfo").html(xSize + " <i class='fa fa-times'></i> " + ySize);
             }).keyup(function(e) {
-                var v = $(this).val().replace(/[^\d\.]/g, '');
-
-                $(this).val(v);
                 $(this).change();
 
                 if (e.keyCode === 13) {

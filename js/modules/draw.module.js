@@ -15,6 +15,12 @@ var draw = {
         } else {
             ctx.fillStyle = "transparent";
         }
+        
+        if(webDraft.selectedTool === 'eraser'){
+            ctx.globalCompositeOperation = "destination-out";
+        }else{
+            ctx.globalCompositeOperation = "source-over";
+        }
 
         if (webDraft.shadow.isShadow === true && webDraft.selectedTool !== 'eraser') {
             ctx.shadowBlur = webDraft.shadow.blur;
