@@ -6,7 +6,7 @@ var canvas,
     },
     webDraft = {
         title   : "WebDraft",
-        version : "2.2.0",
+        version : "2.2.5",
         click   : {
             left  : false, //left mouse button
             right : false  //right mouse button
@@ -45,8 +45,7 @@ var canvas,
                 return text;
             },
             resize : function() {
-                $("#content").perfectScrollbar();
-                $("#listLayers").perfectScrollbar();
+               
             },
             positionElements : function() {
                 var image = {
@@ -85,7 +84,6 @@ var canvas,
                     $(webDraft.draw.thisParent).css({ "margin-top" : ($("#content").height() - webDraft.draw.height) / 2 });
                 }
 
-                $("#content").perfectScrollbar();
                 for (var i = 0; i < layers.list.id.length; i++) {
                     if (typeof layers.list.id[i] === "string") {
                         layers.select(layers.list.id[i]);
@@ -174,7 +172,15 @@ var canvas,
             },
             _mousedown:function(event){
                 webDraft.func.mousePosition(event);
-                webDraft.click.left = true;
+                if ("buttons" in event) {
+                    if(event.buttons == 1){
+                        webDraft.click.left = true;
+                    }
+                }
+                var button = event.which || event.button;
+                if(button == 1){
+                    webDraft.click.left = true;
+                }
                 if (!webDraft.click.right && webDraft.click.left) {
                     if(webDraft.selectedTool !== "select")
                         points[layers.activeId].push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
@@ -440,11 +446,9 @@ $(document)
 
             if (thisId === "eraser") {
                 $("#eraseRect").show();
-                ctx.globalCompositeOperation = "destination-out";
                 $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "none" });
             } else {
                 $("#eraseRect").hide();
-                ctx.globalCompositeOperation = "source-over";
                 $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "crosshair" });
             }
 
@@ -458,9 +462,9 @@ $(document)
 
             if (thisId !== "select") {
                 $("#selectRectangle").hide();
-                $("#hint, .hintGroup#select").hide();
+                $("#hint, .hintGroup#selecting").hide();
             }else {
-                $("#hint, .hintGroup#select").show();
+                $("#hint, .hintGroup#selecting").show();
             }
 
             if (thisId !== "text") {
@@ -566,9 +570,6 @@ $(document)
                 var ySize = parseInt($("input[type=number]#drawHeight").val());
                 $("#resizeinfo").html(xSize + " <i class='fa fa-times'></i> " + ySize);
             }).keyup(function(e) {
-                var v = $(this).val().replace(/[^\d\.]/g, '');
-
-                $(this).val(v);
                 $(this).change();
 
                 if (e.keyCode === 13) {
