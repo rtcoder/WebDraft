@@ -3,6 +3,11 @@ var canvas,
     randomId,
     points   = {
         
+        
+        
+        
+        
+        
     },
     webDraft = {
         title   : "WebDraft",
