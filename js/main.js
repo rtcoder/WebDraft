@@ -1,6 +1,10 @@
 var canvas,
     ctx,
     randomId,
+    
+    
+    
+    
     points   = {
         
     },
