@@ -1,6 +1,7 @@
 var canvas,
     ctx,
     randomId,
+    //neew
     //index
     
     
