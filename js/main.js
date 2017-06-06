@@ -1,19 +1,7 @@
 var canvas,
     ctx,
     randomId,
-    //neew
-    //index
-    
-    
-    
-    points   = {
-        
-        
-        
-        
-        
-        
-    },
+    points   = {},
     webDraft = {
         title   : "WebDraft",
         version : "2.2.5",
