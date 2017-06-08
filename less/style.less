@@ -26,8 +26,8 @@ html, body, #paint{
     float:left;
     background:#373636;
     overflow:auto;
-    width: calc(100vw - 200px);
-    height: calc(100vh - 20px);
+    width: calc(~"100vw - 200px");
+    height: calc(~"100vh - 20px");
 }
 #drawHandler{ border:1px dotted #0052CC; }
 #draw, #drawHandler, #eventHandler{
@@ -57,8 +57,8 @@ input#fileUploaderInput{ display: none; }
     display:none;
     z-index:4;
     cursor:move;
-    margin-left: calc((100vw - 300px) / 2);
-    margin-top: calc((100vh - 210px) / 2);
+    margin-left: calc(~"(100vw - 300px) / 2");
+    margin-top: calc(~"(100vh - 210px) / 2");
 }
 #resizer input[type=number]{
     width:250px;
@@ -110,7 +110,7 @@ input#fileUploaderInput{ display: none; }
 #shadowColor, #fillColor, #shadow_slider, #shadowSquare, #sensitivityPoints_slider, #fillOpacity_slider, #fillShapeInput{ display:none }
 #toolsGroup{
     width:200px;
-    height: calc(100vh - 20px);
+    height: calc(~"100vh - 20px");
     background: #2C2B2B;
     float:left;
 }
@@ -176,7 +176,7 @@ img.imgLayer{
     color:#2E3436;
 }
 #listLayers{
-    max-height: calc(50vh - 170px);
+    max-height: calc(~"50vh - 170px");
     overflow: auto;
     top: 50px;
 }
@@ -378,7 +378,7 @@ input[type=checkbox] + label span.label{
 }
 input[type=range] {
     -webkit-appearance: none;
-    width: calc(100% - 20px);
+    width: calc(~"100% - 20px");
     margin:0 10px;
 }
 input[type=range]::-webkit-slider-runnable-track {
