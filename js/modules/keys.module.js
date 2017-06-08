@@ -144,10 +144,10 @@ $(window).bind('mousewheel DOMMouseScroll', function (event) {
 
         if (event.originalEvent.wheelDelta / 120 > 0) {
             if (webDraft.size < 250)
-                webDraft.size++;
+                webDraft.size+=2;
         } else {
             if (webDraft.size > 1)
-                webDraft.size--;
+                webDraft.size-=2;
         }
 
         $("input#pointSize").val(webDraft.size);
