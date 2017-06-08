@@ -1,0 +1,52 @@
+//text-options
+@import "variables";
+
+#textOptions{
+    display: none;
+    #alignBtns{
+        width: 100%;
+        float: left;
+        margin: 0px;
+        .textPostionTool{
+            width: 50px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            float: left;
+            color: @color9;
+            cursor: pointer;
+            .fa{
+                font-size: 15px;
+            }
+            &:hover, &.active{
+                color: @color7;
+            }
+        }
+    }
+    #fontStyleBtns{
+        width: 100%;
+        float: left;
+        margin: 0px;
+        .styleTool{
+            width: 50px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            float: left;
+            color: @color9;
+            cursor: pointer;
+            .fa{
+                font-size: 15px;
+            }
+        }
+    }
+}
+
+#textRectangle{
+    display: none;
+    position: absolute;
+    z-index: 2;
+    border: 1px solid @color5;
+    font-size: 8mm;
+    cursor: move;
+}
