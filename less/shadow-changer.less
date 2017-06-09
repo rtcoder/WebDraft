@@ -1,0 +1,41 @@
+//shadow-changer
+@import "variables";
+
+
+#shadowSquare{
+    width: 200px;
+    height: 200px;
+    position: relative;
+    background: @rgba3;
+    float: left;
+    display: none;
+    #shadowDot{
+        cursor: move;
+        background: @color7;
+        border-radius: 100%;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        top: 95px;
+        left: 95px;
+        z-index: 2;
+    }
+    &::after, &::before{
+        position: absolute;
+        content: ' ';
+        background: @color9;
+        z-index: 1;
+    }
+    &::after{
+        width: 200px;
+        height: 1px;
+        top: 50%;
+        left: 0px;
+    }
+    &::before{
+        width: 1px;
+        height: 200px;
+        top: 0%;
+        left: 50%;
+    }
+}

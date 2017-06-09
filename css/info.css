@@ -1,0 +1,63 @@
+#info {
+  width: 350px;
+  height: 100vh;
+  z-index: 5;
+  position: absolute;
+  display: none;
+  overflow: auto;
+  background: #2C2B2B;
+  border-left: 1px solid #A9A9A9;
+  color: #FFFFFF;
+  top: 0px;
+  right: 0px;
+}
+@media all and (max-width: 400px) {
+  #info {
+    width: 100vw;
+  }
+}
+#info .close-info {
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+  margin: 5px;
+}
+#info .info-section {
+  width: 100%;
+  float: left;
+  margin: 5px 0px;
+}
+#info .info-section .info-section-title {
+  width: 100%;
+  float: left;
+  text-align: center;
+}
+#info .info-section .info-section-line {
+  width: 100%;
+  float: left;
+}
+#info .info-section .info-section-line .info-section-shortcut {
+  width: 30%;
+  float: left;
+  padding: 2px 5px;
+  text-align: right;
+}
+#info .info-section .info-section-line .info-section-shortcut span {
+  padding: 0 5px;
+  min-width: 30px;
+  height: 20px;
+  border-radius: 2px;
+  margin: 15px 5px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 12px;
+  background: #F1F1F1;
+  border: 1px solid #CCCCCC;
+  color: #2C2B2B;
+}
+#info .info-section .info-section-line .info-section-shortcut-describe {
+  width: 70%;
+  float: left;
+  padding: 2px 5px;
+}
+/*# sourceMappingURL=info.css.map */
