@@ -4,11 +4,273 @@
         <title>WebDraft</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="js/libs/jquery/jquery-2.1.4.min.js"></script>
-        <script src="js/libs/jquery/jquery-ui.min.js"></script>
-        <script src="js/libs/canvas-toBlob.js"></script>
-        <script src="js/libs/FileSaver.min.js"></script>
-        <script src="js/libs/html2canvas.js"></script>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="vendor/jquery-ui/css/jquery-ui-1.12.1.min.css">
+        <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome-4.7.min.css">
+    </head>
+    <body onload="webDraft.func.resize();webDraft.func.positionElements()">
+        <!--all site elements-->
+        <div id="eraseRect"></div>
+        <div id="prepareRect"></div>
+        <div id="prepareCircle"></div>
+        <!--tools-->
+        <div id="toolsGroup">
+            <!-- preview color sampler -->
+            <div id="previewColorSampler">
+                <div id="textColorSampler"></div>
+                <div id="colorBoxSampler"></div>
+            </div>
+            <div class="tools">
+                <div class="title" title="Move">
+                    <i class="fa fa-cogs"></i>
+                    Tools
+                </div>
+                <div id="toolsBtns" class="showHide">
+                    <div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
+                    <div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-ban"></i></div>
+                    <div id="btnSave" class="primaryTool" title="Save file"><i class="fa fa-save"></i></div>
+                    <div id="invertColors" class="primaryTool" title="Invert colors"><i class="fa fa-refresh"></i></div>
+                    <div id="rotateLeft" class="primaryTool" title="Rotate left"><i class="fa fa-rotate-left"></i></div>
+                    <div id="rotateRight" class="primaryTool" title="Rotate right"><i class="fa fa-rotate-right"></i></div>
+                    <div id="mirrorV" class="primaryTool" title="Vertical mirror"><i class="fa fa-arrows-h"></i></div>
+                    <div id="mirrorH" class="primaryTool" title="Horizontal mirror"><i class="fa fa-arrows-v"></i></div>
+                    <div id="fileUploader" class="primaryTool" title="Upload file"><i class="fa fa-upload"></i></div>
+                    <div id="select" class="paintTools" title="Select part of image"><i class="fa fa-object-group"></i></div>
+                    <div id="pencil" class="paintTools active" title="Pencil"><i class="fa fa-pencil"></i></div>
+                    <div id="colorsampler" class="paintTools" title="Get color from draw"><i class="fa fa-magic"></i></div>
+                    <div id="web" class="paintTools" title="Web"><i class="fa fa-random"></i></div>
+                    <div id="eraser" class="paintTools" title="Eraser"><i class="fa fa-eraser"></i></div>
+                    <div id="rectangle" class="paintTools" title="Rectangle"><i class="fa fa-square-o"></i></div>
+                    <div id="circle" class="paintTools" title="Circle"><i class="fa fa-circle-thin"></i></div>
+                    <div id="text" class="paintTools" title="Text"><i class="fa fa-font"></i></div>
+                </div>
+                <div id="radioBtns" class="showHide">
+                    <div id="shadowInput">
+                        <input type="checkbox" id="isShadow">
+                        <label for="isShadow">
+                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
+                            <span class="label">Shadow</span>
+                        </label>
+                    </div>
+                    <div id="fillShapeInput">
+                        <input type="checkbox" id="isFillSet">
+                        <label for="isFillSet">
+                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
+                            <span class="label">Fill</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="tools">
+                <!--color picker-->
+                <div id="colorPicker" class="showHide">
+                    <div id="generalColor" class="colorTab">
+                        <div title="set color" class="color"></div>
+                        Color
+                    </div>
+                    <div id="shadowColor" class="colorTab">
+                        <div title="set shadow color" class="color"></div>
+                        Shadow color
+                    </div>
+                    <div id="fillColor" class="colorTab">
+                        <div title="set fill color" class="color"></div>
+                        Fill color
+                    </div>
+                    <input type="color" id="firstColor">
+                    <input type="color" id="shadowColorVal" value="#232324">
+                    <input type="color" id="fillColorVal" value="#ffffff">
+                </div>
+            </div>
+            <div class="tools">
+                <div id="sliders" class="showHide">
+                    <div class="sliderContainer" id="size_slider">
+                        <div class="sliderVal" id="pointSizeValue">size:10px</div>
+                        <input id="pointSize" type="range" min="1" max="250" value="10">
+                    </div>
+                    <div class="sliderContainer" id="shadow_slider">
+                        <div class="sliderVal" id="ShadowBlurValue">shadow:1px</div>
+                        <input id="ShadowBlur" type="range" min="1" max="50" value="1">
+                    </div>
+                    <div id="shadowSquare">
+                        <div id="shadowDot"></div>
+                    </div>
+                    <div class="sliderContainer" id="sensitivityPoints_slider">
+                        <div class="sliderVal" id="sensitivityPointsValue">sensitivity:10%</div>
+                        <input id="sensitivityPoints" type="range" min="100" max="10000" value="1000">
+                    </div>
+                    <div class="sliderContainer" id="fillOpacity_slider">
+                        <div class="sliderVal" id="fillOpacityValue">fill opacity:100%</div>
+                        <input id="fillOpacity" type="range" min="0" max="100" value="100">
+                    </div>
+                </div>
+            </div>
+            <!--textOptions-->
+            <div id="textOptions" class="tools">
+                <div id="alignBtns">
+                    <div id="left" class="textPostionTool active" title="Left"><i class="fa fa-align-left"></i></div>
+                    <div id="center" class="textPostionTool" title="Center"><i class="fa fa-align-center"></i></div>
+                    <div id="right" class="textPostionTool" title="Right"><i class="fa fa-align-right"></i></div>
+                    <div id="justify" class="textPostionTool" title="Justify"><i class="fa fa-align-justify"></i></div>
+                </div>
+                <div id="fontStyleBtns">
+                    <div id="bold" class="styleTool" title="Bold"><i class="fa fa-bold"></i></div>
+                    <div id="italic" class="styleTool" title="Italic"><i class="fa fa-italic"></i></div>
+                    <div id="underline" class="styleTool textDecoration" title="Underline"><i class="fa fa-underline"></i></div>
+                    <div id="line-through" class="styleTool textDecoration" title="Strike"><i class="fa fa-strikethrough"></i></div>
+                </div>
+                <select id="selectFontType">
+                    <option value="Arial">Arial</option>
+                    <option value="Calibri">Calibri</option>
+                    <option value="Century Gothic">Century Gothic</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
+                    <option value="sans-serif">Sans serif</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Verdana">Verdana</option>
+                </select>
+                <select id="selectFontSize">
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="12">12</option>
+                    <option value="15">15</option>
+                    <option value="18">18</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
+                    <option value="30">30</option>
+                    <option value="35">35</option>
+                    <option value="45">45</option>
+                    <option value="50">50</option>
+                    <option value="60">60</option>
+                    <option value="70">70</option>
+                </select>
+            </div>
+            <div id="layers" class="tools">
+                <div class="title" title="Move">
+                    <i class="fa fa-object-ungroup"></i>
+                    Layers
+                </div>
+                <div id="layersBtns" class="showHide">
+                    <div id="addLayer" class="layerTool" title="Add"><i class="fa fa-plus"></i></div>
+                    <div id="delLayer" class="layerTool" title="Delete"><i class="fa fa-minus"></i></div>
+                    <div id="mUpLayer" class="layerTool" title="Move up"><i class="fa fa-angle-up"></i></div>
+                    <div id="mDownLayer" class="layerTool" title="Move down"><i class="fa fa-angle-down"></i></div>
+                </div>
+                <div id="listLayers" class="showHide"></div>
+            </div>
+        </div>
+        <!--resizer-->
+        <div id="resizer">
+            <input type="number" id="drawWidth" placeholder="Width" min="0" required>
+            <input type="number" id="drawHeight" placeholder="Height" min="0" required>
+            <input type="checkbox" name="allLayersResizing" id="allLayersResizing" value="">
+            <label for="allLayersResizing">Resize all layers?</label>
+            <div id="resizeinfo"></div>
+            <div id="cancel" class="buttonAction">Cancel (Esc)</div>
+            <div id="apply" class="buttonAction">OK (Enter)</div>
+        </div>
+        <!-- file uploader -->
+        <input type="file" name="file" id="fileUploaderInput" accept="image/*" onchange="file.upload(event)">
+        <!--content and draw field-->
+        <div id="content">
+            <div id="drawHandler">
+                <div id="selectRectangle"></div>
+                <div id="textRectangle" contenteditable></div>
+                <div id="eventHandler"></div>
+                <div id="draw"></div>
+            </div>
+        </div>
+        <div id="hint">
+            <div class="hintGroup" id="selecting">
+                <div class="keyboardButton">Del</div>
+                <div class="describeHint">Delete</div>
+                <div class="keyboardButton">Ctrl + X</div>
+                <div class="describeHint">Cut</div>
+                <div class="keyboardButton">Ctrl + C</div>
+                <div class="describeHint">Copy</div>
+                <div class="keyboardButton">Ctrl + V</div>
+                <div class="describeHint">Paste</div>
+            </div>
+        </div>
+        <div id="info">
+            <div class="fa fa-close close-info"></div>
+            <section class="info-section">
+                <div class="info-section-title">General</div>
+                <div class="info-section-line">
+                    <div class="info-section-shortcut">
+                        <span class="key">CTRL + I</span>
+                    </div>
+                    <div class="info-section-shortcut-describe">Show/hide this info</div>
+                </div>
+                <div class="info-section-line">
+                    <div class="info-section-shortcut">
+                        <span class="key">CTRL + S</span>
+                    </div>
+                    <div class="info-section-shortcut-describe">Save image</div>
+                </div>
+                <div class="info-section-line">
+                    <div class="info-section-shortcut">
+                        <span class="key">CTRL + O</span>
+                    </div>
+                    <div class="info-section-shortcut-describe">Upload image</div>
+                </div>
+                <div class="info-section-line">
+                    <div class="info-section-shortcut">
+                        <span class="key">CTRL + DEL</span>
+                    </div>
+                    <div class="info-section-shortcut-describe">Clear image</div>
+                </div>
+                <div class="info-section-line">
+                    <div class="info-section-shortcut">
+                        <span class="key">CTRL + Scroll</span>
+                    </div>
+                    <div class="info-section-shortcut-describe">Pencil size</div>
+                </div>
+            </section>
+            <section class="info-section">
+                <div class="info-section-title">Selection</div>
+                <div class="info-section-line">
+                    <div class="info-section-shortcut">
+                        <span class="key">CTRL + X</span>
+                    </div>
+                    <div class="info-section-shortcut-describe">Cut</div>
+                </div>
+                <div class="info-section-line">
+                    <div class="info-section-shortcut">
+                        <span class="key">CTRL + C</span>
+                    </div>
+                    <div class="info-section-shortcut-describe">Copy</div>
+                </div>
+                <div class="info-section-line">
+                    <div class="info-section-shortcut">
+                        <span class="key">CTRL + V</span>
+                    </div>
+                    <div class="info-section-shortcut-describe">Paste</div>
+                </div>
+                <div class="info-section-line">
+                    <div class="info-section-shortcut">
+                        <span class="key">DEL</span>
+                    </div>
+                    <div class="info-section-shortcut-describe">Delete selection</div>
+                </div>
+            </section>
+        </div>
+        <!--statusbar-->
+        <div id="statusbar">
+            <div id="mousePosition"></div>
+            <div id="author">
+                <a class="fa fa-github" style="text-decoration:none" title="Watch WebDraft on GitHub" target="_blank" href="https://github.com/rtcoder/WebDraft"></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                Created with <i class="fa fa-heart" style="font-size:10px;color:#ff002d;"></i> by <a target="_blank" href="https://github.com/rtcoder">rtCoder</a>
+            </div>
+        </div>
+
+
+        <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+        <script src="vendor/jquery-ui/js//jquery-ui-1.12.1.min.js"></script>
+        <script src="vendor/canvas-to-blob/canvas-toBlob.js"></script>
+        <script src="vendor/file-saver/FileSaver.min.js"></script>
+        <script src="vendor/html2canvas/html2canvas.js"></script>
+
         <script src="js/modules/layers.module.js"></script>
         <script src="js/modules/keys.module.js"></script>
         <script src="js/modules/select.module.js"></script>
@@ -18,271 +280,5 @@
         <script src="js/modules/file.module.js"></script>
         <script src="js/modules/clipboard.module.js"></script>
         <script src="js/main.js"></script>
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/jquery-ui.min.css"> 
-        <!--fontawesome v4.7-->
-        <link rel="stylesheet" href="css/font-awesome.min.css">
-    </head>
-    
-    
-    
-    <body onload="webDraft.func.resize();webDraft.func.positionElements()">
-        <!--all site elements-->
-        <div id="paint">
-            <div id="eraseRect"></div>
-            <div id="prepareRect"></div>
-            <div id="prepareCircle"></div>
-            <!--tools-->
-            <div id="toolsGroup">
-                <!-- preview color sampler -->
-                <div id="previewColorSampler">
-                    <div id="textColorSampler"></div>
-                    <div id="colorBoxSampler"></div>
-                </div>
-                <div class="tools">
-                    <div class="title" title="Move">
-                        <i class="fa fa-cogs"></i>
-                        Tools
-                    </div>
-                    <div id="toolsBtns" class="showHide">
-                        <div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
-                        <div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-ban"></i></div>
-                        <div id="btnSave" class="primaryTool" title="Save file"><i class="fa fa-save"></i></div>
-                        <div id="invertColors" class="primaryTool" title="Invert colors"><i class="fa fa-refresh"></i></div>
-                        <div id="rotateLeft" class="primaryTool" title="Rotate left"><i class="fa fa-rotate-left"></i></div>
-                        <div id="rotateRight" class="primaryTool" title="Rotate right"><i class="fa fa-rotate-right"></i></div>
-                        <div id="mirrorV" class="primaryTool" title="Vertical mirror"><i class="fa fa-arrows-h"></i></div>
-                        <div id="mirrorH" class="primaryTool" title="Horizontal mirror"><i class="fa fa-arrows-v"></i></div>
-                        <div id="fileUploader" class="primaryTool" title="Upload file"><i class="fa fa-upload"></i></div>
-
-                        <div id="select" class="paintTools paintTool" title="Select part of image"><i class="fa fa-object-group"></i></div>
-                        <div id="pencil" class="paintTools paintTool active" title="Pencil"><i class="fa fa-pencil"></i></div>
-                        <div id="colorsampler" class="paintTools paintTool" title="Get color from draw"><i class="fa fa-magic"></i></div>
-                        <div id="web" class="paintTools paintTool" title="Web"><i class="fa fa-random"></i></div>
-                        <div id="eraser" class="paintTools paintTool" title="Eraser"><i class="fa fa-eraser"></i></div>
-                        <div id="rectangle" class="paintTools paintTool" title="Rectangle"><i class="fa fa-square-o"></i></div>
-                        <div id="circle" class="paintTools paintTool" title="Circle"><i class="fa fa-circle-thin"></i></div>
-                        <div id="text" class="paintTools paintTool" title="Text"><i class="fa fa-font"></i></div>
-                    </div>
-                    <div id="radioBtns" class="showHide">
-                        <div id="shadowInput">
-                            <input type="checkbox" id="isShadow">
-                            <label for="isShadow">
-                                <i class="fa fa-circle-o"></i>
-                                <i class="fa fa-dot-circle-o"></i>
-                                <span class="label">Shadow</span>
-                            </label>
-                        </div>
-                        <div id="fillShapeInput">
-                            <input type="checkbox" id="isFillSet">
-                            <label for="isFillSet">
-                                <i class="fa fa-circle-o"></i>
-                                <i class="fa fa-dot-circle-o"></i>
-                                <span class="label">Fill</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="tools">
-                    <!--color picker-->
-                    <div id="colorPicker" class="showHide">
-                        <div id="generalColor" class="colorTab">
-                            <div title="set color" class="color"></div>
-                            Color
-                        </div>
-                        <div id="shadowColor" class="colorTab">
-                            <div title="set shadow color" class="color"></div>
-                            Shadow color
-                        </div>
-                        <div id="fillColor" class="colorTab">
-                            <div title="set fill color" class="color"></div>
-                            Fill color
-                        </div>
-                        <input type="color" id="firstColor">
-                        <input type="color" id="shadowColorVal" value="#232324">
-                        <input type="color" id="fillColorVal" value="#ffffff">
-                    </div>
-                </div>
-                <div class="tools">
-                    <div id="sliders" class="showHide">
-                        <div class="sliderContainer" id="size_slider">
-                            <div class="sliderVal" id="pointSizeValue">size:10px</div>
-                            <input id="pointSize" type="range" min="1" max="250" value="10">
-                        </div>
-                        <div class="sliderContainer" id="shadow_slider">
-                            <div class="sliderVal" id="ShadowBlurValue">shadow:1px</div>
-                            <input id="ShadowBlur" type="range" min="1" max="50" value="1">
-                        </div>
-                        <div id="shadowSquare">
-                            <div id="shadowDot"></div>
-                        </div>
-                        <div class="sliderContainer" id="sensitivityPoints_slider">
-                            <div class="sliderVal" id="sensitivityPointsValue">sensitivity:10%</div>
-                            <input id="sensitivityPoints" type="range" min="100" max="10000" value="1000">
-                        </div>
-                        <div class="sliderContainer" id="fillOpacity_slider">
-                            <div class="sliderVal" id="fillOpacityValue">fill opacity:100%</div>
-                            <input id="fillOpacity" type="range" min="0" max="100" value="100">
-                        </div>
-                    </div>
-                </div>
-                <!--textOptions-->
-                <div id="textOptions" class="tools">
-                    <div id="alignBtns">
-                        <div id="left" class="textPostionTool active" title="Left"><i class="fa fa-align-left"></i></div>
-                        <div id="center" class="textPostionTool" title="Center"><i class="fa fa-align-center"></i></div>
-                        <div id="right" class="textPostionTool" title="Right"><i class="fa fa-align-right"></i></div>
-                        <div id="justify" class="textPostionTool" title="Justify"><i class="fa fa-align-justify"></i></div>
-                    </div>
-                    <div id="fontStyleBtns">
-                        <div id="bold" class="styleTool" title="Bold"><i class="fa fa-bold"></i></div>
-                        <div id="italic" class="styleTool" title="Italic"><i class="fa fa-italic"></i></div>
-                        <div id="underline" class="styleTool textDecoration" title="Underline"><i class="fa fa-underline"></i></div>
-                        <div id="line-through" class="styleTool textDecoration" title="Strike"><i class="fa fa-strikethrough"></i></div>
-                    </div>
-                    <select id="selectFontType">
-                        <option value="Arial">Arial</option>
-                        <option value="Calibri">Calibri</option>
-                        <option value="Century Gothic">Century Gothic</option>
-                        <option value="Comic Sans MS">Comic Sans MS</option>
-                        <option value="sans-serif">Sans serif</option>
-                        <option value="Times New Roman">Times New Roman</option>
-                        <option value="Verdana">Verdana</option>
-                    </select>
-                    <select id="selectFontSize">
-                        <option value="8">8</option>
-                        <option value="10">10</option>
-                        <option value="12">12</option>
-                        <option value="15">15</option>
-                        <option value="18">18</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
-                        <option value="30">30</option>
-                        <option value="35">35</option>
-                        <option value="45">45</option>
-                        <option value="50">50</option>
-                        <option value="60">60</option>
-                        <option value="70">70</option>
-                    </select>
-                </div>
-                <div id="layers" class="tools">
-                    <div class="title" title="Move">
-                        <i class="fa fa-object-ungroup"></i>
-                        Layers
-                    </div>
-                    <div id="layersBtns" class="showHide">
-                        <div id="addLayer" class="layerTool" title="Add"><i class="fa fa-plus"></i></div>
-                        <div id="delLayer" class="layerTool" title="Delete"><i class="fa fa-minus"></i></div>
-                        <div id="mUpLayer" class="layerTool" title="Move up"><i class="fa fa-angle-up"></i></div>
-                        <div id="mDownLayer" class="layerTool" title="Move down"><i class="fa fa-angle-down"></i></div>
-                    </div>
-                    <div id="listLayers" class="showHide"></div>
-                </div>
-            </div>
-            <!--resizer-->
-            <div id="resizer">
-                <input type="number" id="drawWidth" placeholder="Width" min="0" required>
-                <input type="number" id="drawHeight" placeholder="Height" min="0" required>
-                <input type="checkbox" name="allLayersResizing" id="allLayersResizing" value="">
-                <label for="allLayersResizing">Resize all layers?</label>
-                <div id="resizeinfo"></div>
-                <div id="cancel" class="buttonAction">Cancel (Esc)</div>
-                <div id="apply" class="buttonAction">OK (Enter)</div>
-            </div>
-            <!-- file uploader -->
-            <input type="file" name="file" id="fileUploaderInput" accept="image/*" onchange="file.upload(event)">
-            <!--content and draw field-->
-            <div id="content">
-                <div id="drawHandler">
-                    <div id="selectRectangle"></div>
-                    <div id="textRectangle" contenteditable></div>
-                    <div id="eventHandler"></div>
-                    <div id="draw"></div>
-                </div>
-            </div>
-            <div id="hint">
-                <div class="hintGroup" id="selecting">
-                    <div class="keyboardButton">Del</div>
-                    <div class="describeHint">Delete</div>
-                    <div class="keyboardButton">Ctrl + X</div>
-                    <div class="describeHint">Cut</div>
-                    <div class="keyboardButton">Ctrl + C</div>
-                    <div class="describeHint">Copy</div>
-                    <div class="keyboardButton">Ctrl + V</div>
-                    <div class="describeHint">Paste</div>
-                </div>
-            </div>
-            <div id="info">
-                <div class="fa fa-close close-info"></div>
-                <section class="info-section">
-                    <div class="info-section-title">General</div>
-                    <div class="info-section-line">
-                        <div class="info-section-shortcut">
-                            <span class="key">CTRL + I</span>
-                        </div>
-                        <div class="info-section-shortcut-describe">Show/hide this info</div>
-                    </div>
-                    <div class="info-section-line">
-                        <div class="info-section-shortcut">
-                            <span class="key">CTRL + S</span>
-                        </div>
-                        <div class="info-section-shortcut-describe">Save image</div>
-                    </div>
-                    <div class="info-section-line">
-                        <div class="info-section-shortcut">
-                            <span class="key">CTRL + O</span>
-                        </div>
-                        <div class="info-section-shortcut-describe">Upload image</div>
-                    </div>
-                    <div class="info-section-line">
-                        <div class="info-section-shortcut">
-                            <span class="key">CTRL + DEL</span>
-                        </div>
-                        <div class="info-section-shortcut-describe">Clear image</div>
-                    </div>
-                    <div class="info-section-line">
-                        <div class="info-section-shortcut">
-                            <span class="key">CTRL + Scroll</span>
-                        </div>
-                        <div class="info-section-shortcut-describe">Pencil size</div>
-                    </div>
-                </section>
-                <section class="info-section">
-                    <div class="info-section-title">Selection</div>
-                    <div class="info-section-line">
-                        <div class="info-section-shortcut">
-                            <span class="key">CTRL + X</span>
-                        </div>
-                        <div class="info-section-shortcut-describe">Cut</div>
-                    </div>
-                    <div class="info-section-line">
-                        <div class="info-section-shortcut">
-                            <span class="key">CTRL + C</span>
-                        </div>
-                        <div class="info-section-shortcut-describe">Copy</div>
-                    </div>
-                    <div class="info-section-line">
-                        <div class="info-section-shortcut">
-                            <span class="key">CTRL + V</span>
-                        </div>
-                        <div class="info-section-shortcut-describe">Paste</div>
-                    </div>
-                    <div class="info-section-line">
-                        <div class="info-section-shortcut">
-                            <span class="key">DEL</span>
-                        </div>
-                        <div class="info-section-shortcut-describe">Delete selection</div>
-                    </div>
-                </section>
-            </div>
-            <!--statusbar-->
-            <div id="statusbar">
-                <div id="mousePosition"></div>
-                <div id="author">
-                    <a class="fa fa-github" style="text-decoration:none" title="Watch WebDraft on GitHub" target="_blank" href="https://github.com/rtcoder/WebDraft"></a>&nbsp;&nbsp;|&nbsp;&nbsp;
-                    Created with <i class="fa fa-heart" style="font-size:10px;color:#ff002d;"></i> by <a target="_blank" href="https://github.com/rtcoder">rtCoder</a>
-                </div>
-            </div>
-        </div>
     </body>
 </html>
