@@ -1,0 +1,145 @@
+//inputs
+@import "variables";
+
+input{
+    &[type=checkbox]{
+        &+label{
+            cursor: pointer;
+            color: @color9;
+            width: 100%;
+            background: transparent;
+            text-align: left;
+            border: none;
+            border-radius: 0px;
+            .fa-circle-o, .fa-dot-circle-o{
+                float: left;
+                text-align: center;
+                width: 30px;
+                vertical-align: middle;
+                margin: 0px 0px 0px 10px;
+                font-size: 18px;
+                height: 20px;
+                line-height: 20px;
+            }
+            .fa-dot-circle-o{
+                display: none;
+            }
+            #l{
+                margin-left: 10px;
+                height: 20px;
+                line-height: 20px;
+            }
+            span{
+                width: 100%;
+                height: 20px;
+                text-align: left;
+                &.label{
+                    width: auto;
+                }
+            }
+        }
+        &:checked{
+            &+label{
+                font-weight: bold;
+                color: @color1;
+                .fa-circle-o{
+                    display: none;
+                }
+                .fa-dot-circle-o{
+                    display: block;
+                }
+            }
+        }
+        &:hover{
+            &+label{
+                color: @color7;
+                .fa-circle-o{
+                    display: none;
+                }
+                .fa-dot-circle-o{
+                    display: block;
+                }
+            }
+        }
+    }
+    &[type=range]{
+        -webkit-appearance: none;
+        width: calc(~"100% - 20px");
+        margin: 0 10px;
+        &::-webkit-slider-runnable-track{
+            width: 230px;
+            height: 10px;
+            background: @color14;
+            border: none;
+            border-radius: 0px;
+        }
+        &::-webkit-slider-thumb{
+            -webkit-appearance: none;
+            border: none;
+            height: 10px;
+            width: 10px;
+            border-radius: 0px;
+            background: @color1;
+        }
+        &::-moz-range-track{
+            width: 230px;
+            height: 10px;
+            background: @color14;
+            border: none;
+        }
+        &::-moz-range-thumb{
+            border: none;
+            height: 10px;
+            width: 10px;
+            border-radius: 0px;
+            background: @color1;
+        }
+        &::-ms-track{
+            width: 230px;
+            height: 10px;
+            background: transparent;
+            border-color: transparent;
+            border-width: 0;
+            color: transparent;
+        }
+        &::-ms-thumb{
+            border: none;
+            height: 10px;
+            width: 10px;
+            border-radius: 0px;
+            background: @color1;
+        }
+        &:-moz-focusring{
+            outline: none;
+        }
+        &::-ms-fill-lower{
+            background: @color14;
+        }
+        &::-ms-fill-upper{
+            background: @color14;
+        }
+        &:focus{
+            outline: none;
+            &::-ms-fill-lower{
+                background: @color15;
+            }
+            &::-webkit-slider-runnable-track{
+                background: @color3;
+            }
+            &::-ms-fill-upper{
+                background: @color3;
+            }
+        }
+    }
+    &[type=color]{
+        visibility: hidden;
+        width: 0px;
+        height: 0px;
+        margin: 0px;
+        padding: 0px;
+        position: absolute;
+    }
+    &#fileUploaderInput{
+        display: none;
+    }
+}
