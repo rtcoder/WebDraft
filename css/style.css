@@ -715,6 +715,7 @@ body #content {
 html #content #drawHandler,
 body #content #drawHandler {
   border: 1px dotted #0052CC;
+  position: relative;
 }
 html #content #drawHandler #draw,
 body #content #drawHandler #draw,
