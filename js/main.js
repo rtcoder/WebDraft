@@ -374,9 +374,6 @@ $(document)
             webDraft.draw.height = window.innerHeight - 30;
         }
 
-
-        $("#isShadow, #isFillSet").button();
-
         webDraft.func.init();
 
         $("#resizer")

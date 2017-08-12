@@ -133,4 +133,10 @@ input[type=color] {
 input#fileUploaderInput {
   display: none;
 }
+input#isFillSet {
+  display: none;
+}
+input#isShadow {
+  display: none;
+}
 /*# sourceMappingURL=inputs.css.map */

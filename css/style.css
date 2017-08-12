@@ -47,6 +47,7 @@ input[type=checkbox]:checked + label .fa-dot-circle-o {
 }
 input[type=checkbox]:hover + label {
   color: #FFFFFF;
+  background: transparent;
 }
 input[type=checkbox]:hover + label .fa-circle-o {
   display: none;
@@ -132,6 +133,12 @@ input[type=color] {
   position: absolute;
 }
 input#fileUploaderInput {
+  display: none;
+}
+input#isFillSet {
+  display: none;
+}
+input#isShadow {
   display: none;
 }
 #toolsGroup {
