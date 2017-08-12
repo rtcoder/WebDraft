@@ -47,26 +47,28 @@ var shapes = {
         }
     },
     drawRect: function () {
-        if (shapes.startShapePoints[0] <= webDraft.mPosition.x) {
-            var x = shapes.startShapePoints[0],
-                    width = webDraft.mPosition.x - shapes.startShapePoints[0];
-        } else {
-            var x = webDraft.mPosition.x,
-                    width = shapes.startShapePoints[0] - webDraft.mPosition.x;
+        if (typeof shapes.startShapePoints[0] !== 'undefined' && typeof shapes.startShapePoints[1] !== 'undefined') {
+            if (shapes.startShapePoints[0] <= webDraft.mPosition.x) {
+                var x = shapes.startShapePoints[0],
+                        width = webDraft.mPosition.x - shapes.startShapePoints[0];
+            } else {
+                var x = webDraft.mPosition.x,
+                        width = shapes.startShapePoints[0] - webDraft.mPosition.x;
+            }
+            if (shapes.startShapePoints[1] <= webDraft.mPosition.y) {
+                var y = shapes.startShapePoints[1],
+                        height = webDraft.mPosition.y - shapes.startShapePoints[1];
+            } else {
+                var y = webDraft.mPosition.y,
+                        height = shapes.startShapePoints[1] - webDraft.mPosition.y;
+            }
+            $("#prepareRect").hide();
+            ctx.beginPath();
+            draw.drawStyle();
+            ctx.rect(x, y, width, height);
+            ctx.fill();
+            ctx.stroke();
         }
-        if (shapes.startShapePoints[1] <= webDraft.mPosition.y) {
-            var y = shapes.startShapePoints[1],
-                    height = webDraft.mPosition.y - shapes.startShapePoints[1];
-        } else {
-            var y = webDraft.mPosition.y,
-                    height = shapes.startShapePoints[1] - webDraft.mPosition.y;
-        }
-        $("#prepareRect").hide();
-        ctx.beginPath();
-        draw.drawStyle();
-        ctx.rect(x, y, width, height);
-        ctx.fill();
-        ctx.stroke();
         shapes.startShapePoints = [];
     },
     prepareCircle: function () {
@@ -114,30 +116,33 @@ var shapes = {
         }
     },
     drawCircle: function () {
-        var x = shapes.startShapePoints[0],
-                y = shapes.startShapePoints[1];
+        if (typeof shapes.startShapePoints[0] !== 'undefined' && typeof shapes.startShapePoints[1] !== 'undefined') {
+            var x = shapes.startShapePoints[0],
+                    y = shapes.startShapePoints[1];
 
-        if (shapes.startShapePoints[0] <= webDraft.mPosition.x) {
-            var width = webDraft.mPosition.x - shapes.startShapePoints[0];
-        } else {
-            var width = shapes.startShapePoints[0] - webDraft.mPosition.x;
+            if (shapes.startShapePoints[0] <= webDraft.mPosition.x) {
+                var width = webDraft.mPosition.x - shapes.startShapePoints[0];
+            } else {
+                var width = shapes.startShapePoints[0] - webDraft.mPosition.x;
+            }
+            if (shapes.startShapePoints[1] <= webDraft.mPosition.y) {
+                var height = webDraft.mPosition.y - shapes.startShapePoints[1];
+            } else {
+                var height = shapes.startShapePoints[1] - webDraft.mPosition.y;
+            }
+            if (width > height)
+                var radius = width / 2;
+            else
+                var radius = height / 2;
+
+            $("#prepareCircle").hide();
+
+            ctx.beginPath();
+            draw.drawStyle();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+            ctx.fill();
+            ctx.stroke();
         }
-        if (shapes.startShapePoints[1] <= webDraft.mPosition.y) {
-            var height = webDraft.mPosition.y - shapes.startShapePoints[1];
-        } else {
-            var height = shapes.startShapePoints[1] - webDraft.mPosition.y;
-        }
-        if (width > height)
-            var radius = width / 2;
-        else
-            var radius = height / 2;
-
-        $("#prepareCircle").hide();
-
-        ctx.beginPath();
-        draw.drawStyle();
-        ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-        ctx.fill();
-        ctx.stroke();
+        shapes.startShapePoints = [];
     }
 };

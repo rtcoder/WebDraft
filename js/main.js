@@ -4,7 +4,7 @@ var canvas,
     points   = {},
     webDraft = {
         title   : "WebDraft",
-        version : "2.2.5",
+        version : "2.2.6",
         click   : {
             left  : false, //left mouse button
             right : false  //right mouse button
