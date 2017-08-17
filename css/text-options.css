@@ -39,6 +39,10 @@
 #textOptions #fontStyleBtns .styleTool .fa {
   font-size: 15px;
 }
+#textOptions #fontStyleBtns .styleTool:hover,
+#textOptions #fontStyleBtns .styleTool.active {
+  color: #FFFFFF;
+}
 #textRectangle {
   display: none;
   position: absolute;

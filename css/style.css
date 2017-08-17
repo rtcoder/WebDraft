@@ -47,7 +47,6 @@ input[type=checkbox]:checked + label .fa-dot-circle-o {
 }
 input[type=checkbox]:hover + label {
   color: #FFFFFF;
-  background: transparent;
 }
 input[type=checkbox]:hover + label .fa-circle-o {
   display: none;
@@ -329,6 +328,10 @@ input#isShadow {
 }
 #textOptions #fontStyleBtns .styleTool .fa {
   font-size: 15px;
+}
+#textOptions #fontStyleBtns .styleTool:hover,
+#textOptions #fontStyleBtns .styleTool.active {
+  color: #FFFFFF;
 }
 #textRectangle {
   display: none;
@@ -699,8 +702,7 @@ input#isShadow {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-html,
-body {
+html body {
   margin: 0;
   padding: 0;
   top: 0;
@@ -711,64 +713,51 @@ body {
   position: fixed;
   overflow: hidden;
 }
-html #content,
-body #content {
+html body #content {
   float: left;
   background: #373636;
   overflow: auto;
   width: calc(100vw - 200px);
   height: calc(100vh - 20px);
 }
-html #content #drawHandler,
-body #content #drawHandler {
+html body #content #drawHandler {
   border: 1px dotted #0052CC;
   position: relative;
 }
-html #content #drawHandler #draw,
-body #content #drawHandler #draw,
-html #content #drawHandler #drawHandler,
-body #content #drawHandler #drawHandler,
-html #content #drawHandler #eventHandler,
-body #content #drawHandler #eventHandler {
+html body #content #drawHandler #draw,
+html body #content #drawHandler #drawHandler,
+html body #content #drawHandler #eventHandler {
   width: 600px;
   height: 400px;
   overflow: hidden;
   position: relative;
   cursor: crosshair;
 }
-html #content #drawHandler #eventHandler,
-body #content #drawHandler #eventHandler {
+html body #content #drawHandler #eventHandler {
   z-index: 3;
   position: absolute;
 }
-html #content #drawHandler #draw canvas,
-body #content #drawHandler #draw canvas {
+html body #content #drawHandler #draw canvas {
   position: absolute;
   cursor: crosshair;
+  border: 1px dotted #0052CC;
 }
-html #content #drawHandler #draw canvas.invisible,
-body #content #drawHandler #draw canvas.invisible {
+html body #content #drawHandler #draw canvas.invisible {
   visibility: hidden;
 }
-html #eraseRect,
-body #eraseRect,
-html #prepareRect,
-body #prepareRect,
-html #prepareCircle,
-body #prepareCircle,
-html #selectRectangle,
-body #selectRectangle {
+html body #eraseRect,
+html body #prepareRect,
+html body #prepareCircle,
+html body #selectRectangle {
   display: none;
   position: absolute;
   z-index: 2;
   border: 1px solid #000000;
 }
-html #selectRectangle,
-body #selectRectangle {
+html body #selectRectangle {
   cursor: move;
 }
-html #eraseRect,
-body #eraseRect {
+html body #eraseRect {
   border-radius: 100%;
   border-color: #CCCCCC;
 }
