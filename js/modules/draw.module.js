@@ -15,10 +15,10 @@ var draw = {
         } else {
             ctx.fillStyle = "transparent";
         }
-        
-        if(webDraft.selectedTool === 'eraser'){
+
+        if (webDraft.selectedTool === 'eraser') {
             ctx.globalCompositeOperation = "destination-out";
-        }else{
+        } else {
             ctx.globalCompositeOperation = "source-over";
         }
 

@@ -495,7 +495,7 @@ $(document)
                 var w = $("input[type=number]#drawWidth").val(),
                     h = $("input[type=number]#drawHeight").val();
 
-                layers.setLayerSize(layers.activeId, w, h)
+                layers.setLayerSize(layers.activeId, w, h);
             }
             webDraft.func.positionElements();
         });
