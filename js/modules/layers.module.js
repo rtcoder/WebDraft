@@ -1,10 +1,7 @@
 var layers = {
     //variables
     activeId: "",
-    list: {
-        id: new Array(),
-        visible: new Array()
-    },
+    list: [],
     //functions
     setLayerPosition: function (layerId, top, left) {
         $("canvas#" + layerId).css({
@@ -19,11 +16,11 @@ var layers = {
         };
 
         var active = layers.activeId;
-        for (var i = 0; i < layers.list.id.length; i++) {
-            if (typeof layers.list.id[i] === "string") {
-                layers.select(layers.list.id[i]);
+        for (var i = 0; i < layers.list.length; i++) {
+            if (typeof layers.list[i].id === "string") {
+                layers.select(layers.list[i].id);
                 image.img[i] = ctx.getImageData(0, 0, webDraft.draw.width, webDraft.draw.height);
-                image.id[i] = layers.list.id[i];
+                image.id[i] = layers.list[i].id;
             }
         }
 
@@ -38,7 +35,7 @@ var layers = {
             $("canvas#" + layerId).attr({
                 "width": width,
                 "height": height
-            })
+            });
             webDraft.draw.width = 0;
             webDraft.draw.height = 0;
             $("canvas").each(function () {
@@ -52,9 +49,9 @@ var layers = {
             });
         }
 
-        for (var i = 0; i < layers.list.id.length; i++) {
-            if (typeof layers.list.id[i] === "string") {
-                layers.select(layers.list.id[i]);
+        for (var i = 0; i < layers.list.length; i++) {
+            if (typeof layers.list[i].id === "string") {
+                layers.select(layers.list[i].id);
                 ctx.putImageData(image.img[i], 0, 0);
                 layers.saveState();
             }
@@ -82,8 +79,13 @@ var layers = {
             $(webDraft.draw.selectorId).append('<canvas id="' + randomId + '" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '" style="top:0;left:0"></canvas>');
             $("#listLayers").append('<div data-id="' + randomId + '" id="' + j + '" class="layerView"><div class="imgLayerContainer"><img src="" class="imgLayer"></div><div title="Hide layer" class="hideLayer fa fa-eye"></div><div style="display:none" title="Show layer" class="showLayer fa fa-eye-slash"></div></div>');
 
-            layers.list.visible[j] = true;
-            layers.list.id[j] = randomId;
+            var new_layer = {
+                visible: true,
+                id: randomId,
+                top: 0,
+                left: 0
+            };
+            layers.list.push(new_layer);
 
             $(".layerView").click(function () {
                 if (!$(this).hasClass("hidden")) {
@@ -127,34 +129,23 @@ var layers = {
 
         if (countViews > 1) {
             var i = parseInt(nr);
-
             $(".layerView#" + i).remove();
             $("canvas#" + id).remove();
-
-            layers.list.id = new Array();
-            layers.list.visible = new Array();
+            for (i in layers.list) {
+                if (!$('canvas#' + layers.list[i].id).length) {
+                    layers.list.splice(i, 1);
+                }
+            }
 
             var j = 0;
-            $("canvas").each(function () {
-                layers.list.id[j] = $(this).attr("id");
-                if ($(this).hasClass("invisible"))
-                    layers.list.visible[j] = false;
-                else
-                    layers.list.visible[j] = true;
-
-                j++;
-            });
-
-            j = 0;
             $(".layerView").each(function () {
                 $(this).attr({
                     "id": j,
-                    "data-id": layers.list.id[j]}
+                    "data-id": layers.list[j].id}
                 );
                 j++;
             });
 
-            $(".layerView[data-id=" + layers.list.id[layers.list.id.length - 1] + "]").click();
             webDraft.draw.width = 0;
             webDraft.draw.height = 0;
             $("canvas").each(function () {
@@ -166,6 +157,7 @@ var layers = {
                 if (webDraft.draw.height < h)
                     webDraft.draw.height = h;
             });
+            $(".layerView").first().click();
             webDraft.func.positionElements();
         }
     },
@@ -173,19 +165,16 @@ var layers = {
         var i = parseInt(nr);
 
         $(".layerView#" + i).addClass("hidden");
-        $("canvas#" + layers.list.id[i]).addClass("invisible");
-
-        layers.list.id = new Array();
-        layers.list.visible = new Array();
+        $("canvas#" + layers.list[i].id).addClass("invisible");
 
         var j = 0;
         $("canvas").each(function () {
-            layers.list.id[j] = $(this).attr("id");
+            layers.list[j].id = $(this).attr("id");
 
             if ($(this).hasClass("invisible"))
-                layers.list.visible[j] = false;
+                layers.list[j].visible = false;
             else
-                layers.list.visible[j] = true;
+                layers.list[j].visible = true;
 
             j++;
         });
@@ -194,7 +183,7 @@ var layers = {
         $(".layerView").each(function () {
             $(this).attr({
                 "id": j,
-                "data-id": layers.list.id[j]}
+                "data-id": layers.list[j].id}
             );
             j++;
         });
@@ -204,19 +193,16 @@ var layers = {
         var i = parseInt(nr);
 
         $(".layerView#" + i).removeClass("hidden");
-        $("canvas#" + layers.list.id[i]).removeClass("invisible");
-
-        layers.list.id = new Array();
-        layers.list.visible = new Array();
+        $("canvas#" + layers.list[i].id).removeClass("invisible");
 
         var j = 0;
         $("canvas").each(function () {
-            layers.list.id[j] = $(this).attr("id");
+            layers.list[j].id = $(this).attr("id");
 
             if ($(this).hasClass("invisible"))
-                layers.list.visible[j] = false;
+                layers.list[j].visible = false;
             else
-                layers.list.visible[j] = true;
+                layers.list[j].visible = true;
 
             j++;
         });
@@ -225,7 +211,7 @@ var layers = {
         $(".layerView").each(function () {
             $(this).attr({
                 "id": j,
-                "data-id": layers.list.id[j]}
+                "data-id": layers.list[j].id}
             );
             j++;
         });
@@ -297,18 +283,14 @@ var layers = {
 
             $("canvas#" + layers.activeId).insertBefore("canvas#" + prevId);
 
-
-            layers.list.id = new Array();
-            layers.list.visible = new Array();
-
             var j = 0;
             $("canvas").each(function () {
-                layers.list.id[j] = $(this).attr("id");
+                layers.list[j].id = $(this).attr("id");
 
                 if ($(this).hasClass("invisible"))
-                    layers.list.visible[j] = false;
+                    layers.list[j].visible = false;
                 else
-                    layers.list.visible[j] = true;
+                    layers.list[j].visible = true;
 
                 j++;
             });
@@ -331,19 +313,14 @@ var layers = {
             prevLayer.removeAttr("id").attr("id", thisNr);
 
             $("canvas#" + layers.activeId).insertAfter("canvas#" + nextId);
-
-
-            layers.list.id = new Array();
-            layers.list.visible = new Array();
-
             var j = 0;
             $("canvas").each(function () {
-                layers.list.id[j] = $(this).attr("id");
+                layers.list[j].id = $(this).attr("id");
 
                 if ($(this).hasClass("invisible"))
-                    layers.list.visible[j] = false;
+                    layers.list[j].visible = false;
                 else
-                    layers.list.visible[j] = true;
+                    layers.list[j].visible = true;
 
                 j++;
             });

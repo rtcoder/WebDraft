@@ -52,11 +52,11 @@ var canvas,
                 };
 
                 var active = layers.activeId;
-                for (var i = 0; i < layers.list.id.length; i++) {
-                    if (typeof layers.list.id[i] === "string") {
-                        layers.select(layers.list.id[i]);
+                for (var i = 0; i < layers.list.length; i++) {
+                    if (typeof layers.list[i].id === "string") {
+                        layers.select(layers.list[i].id);
                         image.img[i] = ctx.getImageData(0, 0, webDraft.draw.width, webDraft.draw.height);
-                        image.id[i] = layers.list.id[i];
+                        image.id[i] = layers.list[i].id;
                     }
                 }
 
@@ -82,9 +82,9 @@ var canvas,
                     $(webDraft.draw.thisParent).css({ "margin-top" : ($("#content").height() - webDraft.draw.height) / 2 });
                 }
 
-                for (var i = 0; i < layers.list.id.length; i++) {
-                    if (typeof layers.list.id[i] === "string") {
-                        layers.select(layers.list.id[i]);
+                for (var i = 0; i < layers.list.length; i++) {
+                    if (typeof layers.list[i].id === "string") {
+                        layers.select(layers.list[i].id);
                         ctx.putImageData(image.img[i], 0, 0);
                         layers.saveState();
                     }

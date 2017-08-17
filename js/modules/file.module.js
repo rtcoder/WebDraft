@@ -28,11 +28,11 @@ var file = {
         var temp_c = document.getElementById("tmpCanvas");
         var temp_ctx = temp_c.getContext("2d");
 
-        for (var i = 0; i <= layers.list.id.length; i++) {
-            if (typeof layers.list.id[i] === "string" && layers.list.visible[i] === true) {
-                var imgData = document.getElementById(layers.list.id[i]);
-                var top = parseInt($("#" + layers.list.id[i]).css("top"));
-                var left = parseInt($("#" + layers.list.id[i]).css("left"));
+        for (var i = 0; i <= layers.list.length; i++) {
+            if (typeof layers.list[i].id === "string" && layers.list[i].visible === true) {
+                var imgData = document.getElementById(layers.list[i].id);
+                var top = parseInt($("#" + layers.list[i].id).css("top"));
+                var left = parseInt($("#" + layers.list[i].id).css("left"));
                 temp_ctx.drawImage(imgData, top, left);
             }
         }
