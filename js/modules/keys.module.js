@@ -143,11 +143,17 @@ $(window).bind('mousewheel DOMMouseScroll', function (event) {
         event.preventDefault();
 
         if (event.originalEvent.wheelDelta / 120 > 0) {
-            if (webDraft.size < 250)
+            if (webDraft.size < 250) {
                 webDraft.size += 2;
+            } else {
+                webDraft.size = 250;
+            }
         } else {
-            if (webDraft.size > 1)
+            if (webDraft.size > 1) {
                 webDraft.size -= 2;
+            } else {
+                webDraft.size = 1;
+            }
         }
 
         $("input#pointSize").val(webDraft.size);
