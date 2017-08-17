@@ -19,6 +19,7 @@ var file = {
             ctx.drawImage(output, 0, 0);
 
             layers.saveState();
+            keys.O = false;
         };
     },
     download: function () {
