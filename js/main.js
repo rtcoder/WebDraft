@@ -3,6 +3,8 @@ var canvas,
     randomId,
     points   = {},
     webDraft = {
+        
+        isLoaded : false,
         title   : "WebDraft",
         version : "2.2.6",
         click   : {
@@ -302,8 +304,38 @@ var canvas,
                     }
                 }
             },
+            loadParts: function(){
+                $.get('parts/buttons.part.html', function (data){
+                    $('[data-id=buttons]').html(data);
+                    events.buttons();
+                });
+                $.get('parts/info.part.html', function (data){
+                    $('#info').html(data);
+                    events.info();
+                });
+                $.get('parts/color-picker.part.html', function (data){
+                    $('[data-id=color-picker]').html(data);
+                    events.color();
+                });
+                $.get('parts/text-options.part.html', function (data){
+                    $('#textOptions').html(data);
+                    events.textOptions();
+                });
+                $.get('parts/sliders.part.html', function (data){
+                    $('[data-id=sliders]').html(data);
+                    events.sliders();
+                });
+                $.get('parts/resizer.part.html', function (data){
+                    $('#resizer').html(data);
+                    events.resizer();
+                });
+                webDraft.isLoaded = true;
+            },
             init : function() {
-                text.initEvents();
+                if(!webDraft.isLoaded){
+                    webDraft.func.loadParts();
+                }
+                
                 layers.initEvents();
                 layers.newLayer();
 
@@ -411,186 +443,7 @@ $(document)
             webDraft.shadow.offsetY = shadowY;
         });
 
-        $(".close-info").click(function(){
-            $("#info").hide();
-        });
-        
-        //Save button Click event (save file)
-        $("#btnSave").click(function() {
-            file.download();
-        });
-        $(".paintTool").click(function() {
-            $(".paintTool").removeClass("active");
-            $(this).addClass("active");
 
-            var thisId = $(this).attr("id");
-
-            webDraft.selectedTool = thisId;
-
-            if (thisId === "colorsampler") {
-                $("#previewColorSampler").show();
-            } else {
-                $("#previewColorSampler").hide();
-            }
-
-            if (thisId === "web") {
-                $("#sensitivityPoints_slider").show();
-            } else {
-                $("#sensitivityPoints_slider").hide();
-            }
-
-            if (thisId === "eraser") {
-                $("#eraseRect").show();
-                $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "none" });
-            } else {
-                $("#eraseRect").hide();
-                $("#draw, #drawHandler, #eventHandler").css({ "cursor" : "crosshair" });
-            }
-
-            if (thisId !== "rectangle") {
-                $("#prepareRect").hide();
-            }
-
-            if (thisId !== "circle") {
-                $("#prepareCircle").hide();
-            }
-
-            if (thisId !== "select") {
-                $("#selectRectangle").hide();
-                $("#hint, .hintGroup#selecting").hide();
-            }else {
-                $("#hint, .hintGroup#selecting").show();
-            }
-
-            if (thisId !== "text") {
-                $("#textRectangle, #textOptions").hide();
-            }
-
-            if (thisId === "rectangle" || thisId === "circle") {
-                $("#fillShapeInput").show();
-            } else {
-                $("#fillShapeInput").hide();
-                $("input#isFillSet").attr('checked', false).change();
-            }
-        });
-        $("#fileUploader").click(function() {
-            $("input#fileUploaderInput").click();
-        });
-        $("#resizeDraw").click(function() {
-            $("#resizer").fadeIn();
-            $("input[type=number]#drawWidth").val(webDraft.draw.width);
-            $("input[type=number]#drawHeight").val(webDraft.draw.height);
-            $("#resizeinfo").html(webDraft.draw.width + " <i class='fa fa-times'></i> " + webDraft.draw.height);
-        });
-        $("#cancel").click(function() {
-            $("#resizer").fadeOut();
-            $("input[type=number]#drawWidth").val(webDraft.draw.width);
-            $("input[type=number]#drawHeight").val(webDraft.draw.height);
-        });
-        $("#apply").click(function() {
-            $("#resizer").fadeOut();
-            if($("#allLayersResizing").is(":checked")){
-                layers.setLayerSize("",webDraft.draw.width, webDraft.draw.height)
-            }else {
-                var w = $("input[type=number]#drawWidth").val(),
-                    h = $("input[type=number]#drawHeight").val();
-
-                layers.setLayerSize(layers.activeId, w, h);
-            }
-            webDraft.func.positionElements();
-        });
-
-        //Clear button Click event
-        $("#btnCLear").click(function() {
-            $(webDraft.draw.selectorId).empty();
-            $("#listLayers").empty();
-
-            points = {};
-
-            webDraft.func.init();
-        });
-
-        //changing size
-        $("input[type=range]#pointSize").on('mousemove touchmove', function() {
-            webDraft.size = $(this).val();
-            $("#pointSizeValue").text("size:" + $(this).val() + "px");
-        });
-        //changing shadow blur
-        $("input[type=range]#ShadowBlur").on('mousemove touchmove', function() {
-            webDraft.shadow.blur = $(this).val();
-            $("#ShadowBlurValue").text("shadow:" + $(this).val() + "px");
-        });
-        //changing sensitivity of web points
-        $("input[type=range]#sensitivityPoints").on('mousemove touchmove', function() {
-            webDraft.sensitivityPoints = $(this).val();
-            $("#sensitivityPointsValue").text("sensitivity:" + Math.floor($(this).val() / 100) + "%");
-        });
-        //changing fill opacity
-        $("input[type=range]#fillOpacity").on('mousemove touchmove', function() {
-            shapes.fill.opacity = $(this).val();
-            $("#fillOpacityValue").text("fill opacity:" + Math.floor($(this).val()) + "%");
-        });
-
-        //setting first Color
-        $("#generalColor").click(function() {
-            $("input[type=color]#firstColor").click();
-        });
-        //setting shadow Color
-        $("#shadowColor").click(function() {
-            $("input[type=color]#shadowColorVal").click();
-        });
-        //setting fill Color
-        $("#fillColor").click(function() {
-            $("input[type=color]#fillColorVal").click();
-        });
-        //changing first color input
-        $("input[type=color]#firstColor").change(function() {
-            $("#generalColor .color").css({ "background" : $(this).val() });
-            webDraft.color = $(this).val();
-            $("#textRectangle").css('color',$(this).val());
-        });
-        //changing shadow color input
-        $("input[type=color]#shadowColorVal").change(function() {
-            $("#shadowColor .color").css({ "background" : $(this).val() });
-            webDraft.shadow.color = $(this).val();
-        });
-        //changing fill color input
-        $("input[type=color]#fillColorVal").change(function() {
-            $("#fillColor .color").css({ "background" : $(this).val() });
-            shapes.fill.color = $(this).val();
-        });
-        $("#resizer input[type=number]")
-            .change(function() {
-                var xSize = parseInt($("input[type=number]#drawWidth").val());
-                var ySize = parseInt($("input[type=number]#drawHeight").val());
-                $("#resizeinfo").html(xSize + " <i class='fa fa-times'></i> " + ySize);
-            }).keyup(function(e) {
-                $(this).change();
-
-                if (e.keyCode === 13) {
-                    $("#apply").click();
-                } else if (e.keyCode === 27) {
-                    $("#cancel").click();
-                }
-            });
-        $("input[type=checkbox]#isShadow").change(function() {
-            webDraft.shadow.isShadow = $(this).is(":checked");//return true if is :checked or false if not
-
-            if (webDraft.shadow.isShadow) {
-                $("#shadowColor, #shadow_slider, #shadowSquare").show();
-            } else {
-                $("#shadowColor, #shadow_slider, #shadowSquare").hide();
-            }
-        });
-        $("input[type=checkbox]#isFillSet").change(function() {
-            shapes.fill.isSet = $(this).is(":checked");//return true if is :checked or false if not
-
-            if(shapes.fill.isSet) {
-                $("#fillColor, #fillOpacity_slider").show();
-            } else {
-                $("#fillColor, #fillOpacity_slider").hide();
-            }
-        });
     })
     .bind("contextmenu", function(e) {
         e.preventDefault();

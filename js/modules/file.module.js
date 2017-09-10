@@ -28,7 +28,7 @@ var file = {
         var temp_c = document.getElementById("tmpCanvas");
         var temp_ctx = temp_c.getContext("2d");
 
-        for (var i = 0; i <= layers.list.length; i++) {
+        for (var i = 0; i < layers.list.length; i++) {
             if (typeof layers.list[i].id === "string" && layers.list[i].visible === true) {
                 var imgData = document.getElementById(layers.list[i].id);
                 var top = parseInt($("#" + layers.list[i].id).css("top"));

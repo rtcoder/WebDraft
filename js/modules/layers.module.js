@@ -340,18 +340,5 @@ var layers = {
         });
         $("#mUpLayer").click(layers.moveUp);
         $("#mDownLayer").click(layers.moveDown);
-        $("#invertColors").click(layers.negative);
-        $("#rotateLeft").click(function () {
-            layers.rotate(-90);
-        });
-        $("#rotateRight").click(function () {
-            layers.rotate(90);
-        });
-        $("#mirrorV").click(function () {
-            layers.mirror('vertical');
-        });
-        $("#mirrorH").click(function () {
-            layers.mirror('horizontal');
-        });
     }
 };

@@ -76,49 +76,5 @@ var text = {
                         .empty();
             }
         });
-    },
-    initEvents: function () {
-        $("#selectFontType").change(function () {
-            $("#textRectangle").css("font-family", $(this).val());
-        });
-        $("#selectFontSize").change(function () {
-            $("#textRectangle").css("font-size", $(this).val() + "px");
-        });
-        $(".textPostionTool").click(function () {
-            $(".textPostionTool").removeClass("active");
-            $(this).addClass("active");
-            $("#textRectangle").css("text-align", $(this).attr('id'));
-        });
-        $(".styleTool").click(function () {
-            $(this).toggleClass("active");
-            switch ($(this).attr("id")) {
-                case 'bold':
-                    if ($(this).hasClass('active'))
-                        $("#textRectangle").css("font-weight", 'bold');
-                    else
-                        $("#textRectangle").css("font-weight", 'normal');
-                    break;
-                case 'italic':
-                    if ($(this).hasClass('active'))
-                        $("#textRectangle").css("font-style", 'italic');
-                    else
-                        $("#textRectangle").css("font-style", 'normal');
-                    break;
-                case 'underline':
-                case 'line-through':
-                    var textDecoration = "";
-                    $(".textDecoration.active").each(function () {
-                        textDecoration += $(this).attr("id") + " ";
-                    });
-                    if ($(".textDecoration.active").length > 0)
-                        $("#textRectangle").css("text-decoration", textDecoration);
-                    else
-                        $("#textRectangle").css("text-decoration", 'none');
-                    break;
-                default:
-
-            }
-        });
-
     }
 };
