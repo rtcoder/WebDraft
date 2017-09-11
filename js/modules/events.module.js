@@ -200,7 +200,7 @@ var events = {
         //changing shadow blur
         $("input[type=range]#ShadowBlur").on('mousemove touchmove', function () {
             webDraft.shadow.blur = $(this).val();
-            $("#ShadowBlurValue").text("shadow:" + $(this).val() + "px");
+            $("#ShadowBlurValue").text("blur:" + $(this).val() + "px");
         });
         //changing sensitivity of web points
         $("input[type=range]#sensitivityPoints").on('mousemove touchmove', function () {
