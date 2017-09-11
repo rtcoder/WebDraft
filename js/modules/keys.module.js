@@ -155,7 +155,12 @@ $(window).bind('mousewheel DOMMouseScroll', function (event) {
                 webDraft.size = 1;
             }
         }
-
+        $("#eraseRect").css({
+            "width": webDraft.size,
+            "height": webDraft.size,
+            "top": event.pageY - (webDraft.size / 2) + "px",
+            "left": event.pageX - (webDraft.size / 2) + "px"
+        });
         $("input#pointSize").val(webDraft.size);
         $("#pointSizeValue").text("size:" + webDraft.size + "px");
     }
