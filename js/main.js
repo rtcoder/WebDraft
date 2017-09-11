@@ -418,13 +418,6 @@ $(document)
         }
 
         webDraft.func.init();
-
-        $("#resizer")
-            .draggable({
-                snap    : true,
-                opacity : 0.75
-            })
-            .css({ "position" : "absolute" });
         $("#selectRectangle, #textRectangle")
             .draggable({snap : false})
             .css({ "position" : "absolute" });
