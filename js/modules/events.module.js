@@ -79,9 +79,7 @@ var events = {
     },
     buttons: function () {
         //Save button Click event (save file)
-        $("#btnSave").click(function () {
-            file.download();
-        });
+        $("#btnSave").click(file.download);
 
         $("#invertColors").click(layers.negative);
 
@@ -146,19 +144,19 @@ var events = {
 
             webDraft.selectedTool = thisId;
 
-            if (thisId === "colorsampler") {
+            if (thisId === COLORSAMPLER) {
                 $("#previewColorSampler").show();
             } else {
                 $("#previewColorSampler").hide();
             }
 
-            if (thisId === "web") {
+            if (thisId === WEB) {
                 $("#sensitivityPoints_slider").show();
             } else {
                 $("#sensitivityPoints_slider").hide();
             }
 
-            if (thisId === "eraser") {
+            if (thisId === ERASER) {
                 $("#eraseRect").show();
                 $("#draw, #drawHandler, #eventHandler").css({"cursor": "none"});
             } else {
@@ -166,26 +164,26 @@ var events = {
                 $("#draw, #drawHandler, #eventHandler").css({"cursor": "crosshair"});
             }
 
-            if (thisId !== "rectangle") {
+            if (thisId !== RECTANGLE) {
                 $("#prepareRect").hide();
             }
 
-            if (thisId !== "circle") {
+            if (thisId !== CIRCLE) {
                 $("#prepareCircle").hide();
             }
 
-            if (thisId !== "select") {
+            if (thisId !== SELECT) {
                 $("#selectRectangle").hide();
                 $("#hint, .hintGroup#selecting").hide();
             } else {
                 $("#hint, .hintGroup#selecting").show();
             }
 
-            if (thisId !== "text") {
+            if (thisId !== TEXT) {
                 $("#textRectangle, #textOptions").hide();
             }
 
-            if (thisId === "rectangle" || thisId === "circle") {
+            if (thisId === RECTANGLE || thisId === CIRCLE) {
                 $("#fillShapeInput").show();
             } else {
                 $("#fillShapeInput").hide();
@@ -194,7 +192,6 @@ var events = {
         });
     },
     sliders: function () {
-
         //changing size
         $("input[type=range]#pointSize").on('mousemove touchmove', function () {
             webDraft.size = $(this).val();
@@ -217,7 +214,6 @@ var events = {
         });
     },
     resizer: function () {
-
         $("#resizer input[type=number]").change(function () {
             var xSize = parseInt($("input[type=number]#drawWidth").val());
             var ySize = parseInt($("input[type=number]#drawHeight").val());

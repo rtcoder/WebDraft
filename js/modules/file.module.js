@@ -1,5 +1,4 @@
 var file = {
-
     upload: function (event) {
         var input = event.target;
         var widthImg;

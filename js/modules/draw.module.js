@@ -4,7 +4,7 @@ var draw = {
     drawStyle: function () {
         ctx.lineWidth = webDraft.size;
 
-        if (webDraft.selectedTool === "rectangle") {
+        if (webDraft.selectedTool === RECTANGLE) {
             ctx.lineJoin = ctx.lineCap = 'miter';
         } else {
             ctx.lineJoin = ctx.lineCap = 'round';
@@ -16,13 +16,13 @@ var draw = {
             ctx.fillStyle = "transparent";
         }
 
-        if (webDraft.selectedTool === 'eraser') {
+        if (webDraft.selectedTool === ERASER) {
             ctx.globalCompositeOperation = "destination-out";
         } else {
             ctx.globalCompositeOperation = "source-over";
         }
 
-        if (webDraft.shadow.isShadow === true && webDraft.selectedTool !== 'eraser') {
+        if (webDraft.shadow.isShadow === true && webDraft.selectedTool !== ERASER) {
             ctx.shadowBlur = webDraft.shadow.blur;
             ctx.shadowColor = webDraft.shadow.color;
             ctx.shadowOffsetX = webDraft.shadow.offsetX;

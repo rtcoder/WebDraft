@@ -13,7 +13,7 @@ var keys = {
 
 $(document)
         .keydown(function (event) {
-            if (webDraft.selectedTool != 'text' && $('#resizer').is('hidden')) {
+            if (webDraft.selectedTool !== TEXT && $('#resizer').is('hidden')) {
                 event.preventDefault();
             }
 
@@ -53,7 +53,7 @@ $(document)
                     break;
             }
             if (keys.delete) {
-                if (webDraft.selectedTool === "select") {
+                if (webDraft.selectedTool === SELECT) {
                     select.delSelectedPart();
                 }
                 if (event.ctrlKey) {
@@ -66,7 +66,7 @@ $(document)
             }
 
             if (keys.C) {
-                if (webDraft.selectedTool === "select" && event.ctrlKey) {
+                if (webDraft.selectedTool === SELECT && event.ctrlKey) {
                     select.copySelectedPart();
                 }
             }
@@ -78,13 +78,13 @@ $(document)
             }
 
             if (keys.X) {
-                if (webDraft.selectedTool === "select" && event.ctrlKey) {
+                if (webDraft.selectedTool === SELECT && event.ctrlKey) {
                     select.cutSelectedPart();
                 }
             }
 
             if (keys.V) {
-                if (webDraft.selectedTool === "select" && event.ctrlKey) {
+                if (webDraft.selectedTool === SELECT && event.ctrlKey) {
                     select.pasteSelectedPart();
                 }
             }

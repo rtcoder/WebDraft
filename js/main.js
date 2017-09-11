@@ -1,3 +1,11 @@
+const PENCIL = 'pencil';
+const SELECT = 'select';
+const ERASER = 'eraser';
+const WEB = 'web';
+const TEXT = 'text';
+const RECTANGLE = 'rectangle';
+const CIRCLE = 'circle';
+const COLORSAMPLER = 'colorsampler';
 var canvas,
     ctx,
     randomId,
@@ -33,8 +41,9 @@ var canvas,
         sensitivityPoints : 1000,
         size              : 10,
         color             : "#000000",
-        selectedTool      : "pencil", //default is pencil
+        selectedTool      : PENCIL,
         func : {
+            resize: function (){},
             makeid : function() {
                 var text     = "";
                 var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -43,9 +52,6 @@ var canvas,
                     text += possible.charAt(Math.floor(Math.random() * possible.length));
 
                 return text;
-            },
-            resize : function() {
-               
             },
             positionElements : function() {
                 var image = {
@@ -182,27 +188,27 @@ var canvas,
                     webDraft.click.left = true;
                 }
                 if (!webDraft.click.right && webDraft.click.left) {
-                    if(webDraft.selectedTool !== "select")
+                    if(webDraft.selectedTool !== SELECT)
                         points[layers.activeId].push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
 
                     switch (webDraft.selectedTool) {
-                        case "pencil" :
-                        case "eraser" :
+                        case PENCIL :
+                        case ERASER :
                             draw.drawing();
                         break;
-                        case "select" :
+                        case SELECT :
                             select.initSelect();
                         break;
-                        case "rectangle" :
+                        case RECTANGLE :
                             shapes.startShape();
                         break;
-                        case "circle" :
+                        case CIRCLE :
                             shapes.startShape();
                         break;
-                        case "text" :
+                        case TEXT :
                             text.initSelect();
                         break;
-                        case "colorsampler" :
+                        case COLORSAMPLER :
                             webDraft.func.colorsamplerSetcolor();
                             $("#pencil").click();
                         break;
@@ -217,16 +223,16 @@ var canvas,
                 ctx.stroke();
 
                 switch (webDraft.selectedTool) {
-                    case "select" :
+                    case SELECT :
                         select.selectOpt();
                     break;
-                    case "text" :
+                    case TEXT :
                         text.showTextOptions();
                     break;
-                    case "rectangle" :
+                    case RECTANGLE :
                         shapes.drawRect();
                     break;
-                    case "circle" :
+                    case CIRCLE :
                         shapes.drawCircle();
                     break;
                 }
@@ -237,13 +243,13 @@ var canvas,
                 webDraft.func.mousePosition(event);
 
                 switch (webDraft.selectedTool) {
-                    case "eraser" :
+                    case ERASER :
                         webDraft.func.moveEraseRect(event);
                     break;
-                    case "colorsampler" :
+                    case COLORSAMPLER :
                         webDraft.func.colorsampler();
                     break;
-                    case "select" :
+                    case SELECT :
                         if(
                             !select.isSelecting && webDraft.mPosition.x <= parseInt($("#selectRectangle").css("left")) + $("#selectRectangle").width()
                             && webDraft.mPosition.x >= parseInt($("#selectRectangle").css("left"))
@@ -257,7 +263,7 @@ var canvas,
                             $("#selectRectangle").css({ "z-index" : 3 });
                         }
                     break;
-                    case "text" :
+                    case TEXT :
                         if(
                             !text.isSelecting && webDraft.mPosition.x <= parseInt($("#textRectangle").css("left")) + $("#textRectangle").width()
                             && webDraft.mPosition.x >= parseInt($("#textRectangle").css("left"))
@@ -274,31 +280,31 @@ var canvas,
                 }
 
                 if (webDraft.click.left && !webDraft.click.right) {
-                    if(webDraft.selectedTool !== "select")
+                    if(webDraft.selectedTool !== SELECT)
                         points[layers.activeId].push({x: webDraft.mPosition.x, y: webDraft.mPosition.y});
 
                     switch (webDraft.selectedTool) {
-                        case "pencil" :
-                        case "eraser" :
+                        case PENCIL :
+                        case ERASER :
                             draw.drawStyle();
                             ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
                             ctx.stroke();
                         break;
-                        case "web" :
+                        case WEB :
                             draw.drawWeb();
                         break;
-                        case "select" :
+                        case SELECT :
                             if(!select.hoverSelectRectangle)
                                 select.startSelect();
                         break;
-                        case "text" :
+                        case TEXT :
                             if(!text.hoverSelectRectangle)
                                 text.startSelect();
                         break;
-                        case "rectangle" :
+                        case RECTANGLE :
                             shapes.prepareRect();
                         break;
-                        case "circle" :
+                        case CIRCLE :
                             shapes.prepareCircle();
                         break;
                     }
@@ -349,8 +355,9 @@ var canvas,
                         ctx.beginPath();
                         ctx.stroke();
 
-                        if(webDraft.selectedTool === "eraser")
+                        if(webDraft.selectedTool === ERASER){
                             $("#eraseRect").show();
+                        }
 
                     })
                     .bind("contextmenu", function(event) {
@@ -364,12 +371,12 @@ var canvas,
                     .mouseleave(function() {
                         ctx.stroke();
                         layers.saveState();
-                        if(webDraft.selectedTool === "eraser")
+                        if(webDraft.selectedTool === ERASER)
                             $("#eraseRect").hide();
                     })
                     .dblclick(function(){
                         switch (webDraft.selectedTool) {
-                            case "select" :
+                            case SELECT :
                                 $("#selectRectangle")
                                     .css({
                                         "top"  : "0px",
@@ -379,7 +386,7 @@ var canvas,
                                     .height(0)
                                     .hide();
                             break;
-                            case "text" :
+                            case TEXT :
                                 text.putLayer();
 
                             break;
