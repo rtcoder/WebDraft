@@ -328,17 +328,5 @@ var layers = {
             return true;
         }
         return false;
-    },
-    initEvents: function () {
-
-        $("#addLayer").click(layers.newLayer);
-        $("#delLayer").click(function () {
-            identifier = $(".layerView.active").attr("data-id");
-            nr = $(".layerView.active").attr("id");
-
-            layers.delete(identifier, nr);
-        });
-        $("#mUpLayer").click(layers.moveUp);
-        $("#mDownLayer").click(layers.moveDown);
     }
 };

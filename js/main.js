@@ -325,6 +325,11 @@ var canvas,
                     $('[data-id=sliders]').html(data);
                     events.sliders();
                 });
+                $.get('parts/layers.part.html', function (data){
+                    $('#layers').html(data);
+                    events.layers();
+                    layers.newLayer();
+                });
                 $.get('parts/resizer.part.html', function (data){
                     $('#resizer').html(data);
                     events.resizer();
@@ -334,11 +339,10 @@ var canvas,
             init : function() {
                 if(!webDraft.isLoaded){
                     webDraft.func.loadParts();
+                }else{
+                    events.layers();
+                    layers.newLayer();
                 }
-                
-                layers.initEvents();
-                layers.newLayer();
-
                 //events on #draw
                 $(webDraft.draw.eventHandler)
                     .hover(function() {
