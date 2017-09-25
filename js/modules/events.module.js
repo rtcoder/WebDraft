@@ -272,6 +272,7 @@ var events = {
         $('#saveSnapOnComputer').click(camera.saveOnComputer);
         $('#applySnap').click(camera.applySnap);
         $('#cancelSnap').click(camera.cancelSnap);
+        $('#closeCamera').click(camera.stop);
     }
 
 
