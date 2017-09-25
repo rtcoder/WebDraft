@@ -215,11 +215,11 @@ var events = {
     },
     resizer: function () {
         $("#resizer")
-            .draggable({
-                snap    : true,
-                opacity : 0.75
-            })
-            .css({ "position" : "absolute" });
+                .draggable({
+                    snap: true,
+                    opacity: 0.75
+                })
+                .css({"position": "absolute"});
         $("#resizer input[type=number]").change(function () {
             var xSize = parseInt($("input[type=number]#drawWidth").val());
             var ySize = parseInt($("input[type=number]#drawHeight").val());
