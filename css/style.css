@@ -692,9 +692,9 @@ input#isShadow {
   cursor: pointer;
 }
 #camera {
-  width: 500px;
+  width: 640px;
   max-width: 100vw;
-  height: 500px;
+  height: 560px;
   max-height: 100vh;
   background: #2C2B2B;
   top: 50%;
@@ -702,6 +702,78 @@ input#isShadow {
   transform: translate(-50%, -50%);
   position: absolute;
   z-index: 99;
+  display: none;
+}
+#camera.opened {
+  display: block;
+}
+#camera #cameraHeader {
+  width: 100%;
+  height: 30px;
+}
+#camera #cameraHeader #cameraTitle {
+  width: calc(100% - 30px);
+  float: left;
+  height: 30px;
+  line-height: 30px;
+  padding: 0px 5px;
+  color: #FFFFFF;
+}
+#camera #cameraHeader #closeCamera {
+  width: 30px;
+  height: 30px;
+  border: none;
+  display: inline-block;
+  background: #C50000;
+  color: #FFFFFF;
+  cursor: pointer;
+  float: right;
+}
+#camera #cameraHeader #closeCamera i {
+  cursor: pointer;
+}
+#camera canvas#snapImage {
+  display: none;
+}
+#camera #cameraButtons {
+  height: 50px;
+  line-height: 50px;
+}
+#camera #cameraButtons button {
+  min-width: 50px;
+  border: none;
+  display: none;
+  cursor: pointer;
+}
+#camera #cameraButtons button * {
+  cursor: pointer;
+}
+#camera #cameraButtons button#snap {
+  display: inline-block;
+}
+#camera #cameraButtons button#applySnap {
+  background: #129a01;
+  color: #FFFFFF;
+}
+#camera #cameraButtons button#cancelSnap {
+  background: #C50000;
+  color: #FFFFFF;
+}
+#camera #cameraButtons button#saveSnapOnComputer {
+  background: #0052CC;
+  color: #FFFFFF;
+}
+#camera.snapped video#video {
+  display: none;
+}
+#camera.snapped canvas#snapImage {
+  display: block;
+}
+#camera.snapped #cameraButtons button {
+  display: inline-block;
+}
+#camera.snapped #cameraButtons button#snap {
+  display: none;
 }
 * {
   -moz-user-select: none;
