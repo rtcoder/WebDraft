@@ -26,6 +26,7 @@ var file = {
 
         var temp_c = document.getElementById("tmpCanvas");
         var temp_ctx = temp_c.getContext("2d");
+        $("#tmpCanvas").width(webDraft.draw.width).height(webDraft.draw.height);
 
         for (var i = 0; i < layers.list.length; i++) {
             if (typeof layers.list[i].id === "string" && layers.list[i].visible === true) {
@@ -36,9 +37,8 @@ var file = {
             }
         }
 
-        $("#tmpCanvas").width(webDraft.draw.width).height(webDraft.draw.height);
         temp_c.toBlob(function (blob) {
-            saveAs(blob, "image.png");
+            saveAs(blob, "WebDraft-image.png");
         });
 
         $("#tmpCanvas").remove();
