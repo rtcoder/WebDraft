@@ -340,6 +340,10 @@ var canvas,
                         $('#resizer').html(data);
                         events.resizer();
                     });
+                    $.get('parts/camera.part.html', function (data) {
+                        $('#camera').html(data);
+                        events.camera();
+                    });
                     webDraft.isLoaded = true;
                 },
                 init: function () {
