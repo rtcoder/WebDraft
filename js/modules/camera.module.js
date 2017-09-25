@@ -12,7 +12,7 @@ var camera = {
 
     },
     saveOnComputer: function () {
-
+        file.downloadFromCamera('snapImage');
     },
     cancelSnap: function () {
 

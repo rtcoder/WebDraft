@@ -42,5 +42,22 @@ var file = {
         });
 
         $("#tmpCanvas").remove();
+    },
+    downloadFromCamera: function (id = null) {
+        var imgData = document.getElementById(id);
+        $(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="' + imgData.width + '" height="' + imgData.height + '"></canvas>');
+
+        var temp_c = document.getElementById("tmpCanvas");
+        var temp_ctx = temp_c.getContext("2d");
+        $("#tmpCanvas").width(imgData.width).height(imgData.height);
+
+        temp_ctx.drawImage(imgData, 0, 0);
+
+        temp_c.toBlob(function (blob) {
+            saveAs(blob, "WebDraft-camera-photo.png");
+        });
+
+        $("#tmpCanvas").remove();
+
     }
 };
