@@ -270,8 +270,8 @@ var events = {
         $('#cameraBtn').click(camera.init);
         $('#snap').click(camera.snap);
         $('#saveSnapOnComputer').click(camera.saveOnComputer);
-        $('#applySnap').click();
-        $('#cancelSnap').click();
+        $('#applySnap').click(camera.applySnap);
+        $('#cancelSnap').click(camera.cancelSnap);
     }
 
 
