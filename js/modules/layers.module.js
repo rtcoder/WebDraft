@@ -40,7 +40,7 @@ var layers = {
             webDraft.draw.height = 0;
             $("canvas").each(function () {
                 w = parseInt($(this).attr("width"));
-                h = parseInt($(this).attr("height"))
+                h = parseInt($(this).attr("height"));
                 if (webDraft.draw.width < w)
                     webDraft.draw.width = w;
 
@@ -168,7 +168,7 @@ var layers = {
         $("canvas#" + layers.list[i].id).addClass("invisible");
 
         var j = 0;
-        $("canvas").each(function () {
+        $("canvas").not('#snapImage').each(function () {
             layers.list[j].id = $(this).attr("id");
 
             if ($(this).hasClass("invisible"))
@@ -196,7 +196,7 @@ var layers = {
         $("canvas#" + layers.list[i].id).removeClass("invisible");
 
         var j = 0;
-        $("canvas").each(function () {
+        $("canvas").not('#snapImage').each(function () {
             layers.list[j].id = $(this).attr("id");
 
             if ($(this).hasClass("invisible"))
