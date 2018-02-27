@@ -54,7 +54,6 @@
 #toolsGroup .tools #toolsBtns {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #toolsGroup .tools #toolsBtns .primaryTool,
 #toolsGroup .tools #toolsBtns .paintTools {
@@ -87,7 +86,6 @@
 #toolsGroup .tools #radioBtns {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #toolsGroup .tools #radioBtns #shadowInput,
 #toolsGroup .tools #radioBtns #fillShapeInput {
@@ -100,9 +98,7 @@
 #toolsGroup .tools #radioBtns #shadowInput *,
 #toolsGroup .tools #radioBtns #fillShapeInput * {
   cursor: pointer;
-  margin: 0px;
   float: left;
-  padding: 0px;
 }
 #toolsGroup .tools #radioBtns #fillShapeInput {
   display: none;
@@ -110,7 +106,6 @@
 #toolsGroup .tools #colorPicker {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #toolsGroup .tools #colorPicker .colorTab {
   width: 100%;
