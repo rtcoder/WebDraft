@@ -119,6 +119,14 @@ var canvas,
                     points[layers.activeId] = [];
 //                do poprawy
                 },
+                clear: function () {
+                    $(webDraft.draw.selectorId).empty();
+                    $("#listLayers").empty();
+
+                    points = {};
+
+                    webDraft.func.init();
+                },
                 colorsampler: function (event) {
                     var x = webDraft.mPosition.x;
                     var y = webDraft.mPosition.y;

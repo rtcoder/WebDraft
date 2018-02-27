@@ -121,12 +121,7 @@ var events = {
         });
         //Clear button Click event
         $("#btnCLear").click(function () {
-            $(webDraft.draw.selectorId).empty();
-            $("#listLayers").empty();
-
-            points = {};
-
-            webDraft.func.init();
+            webDraft.func.clear();
         });
 
         $("#resizeDraw").click(function () {
