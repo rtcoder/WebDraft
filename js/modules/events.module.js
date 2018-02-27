@@ -274,7 +274,18 @@ var events = {
         $('#cancelSnap').click(camera.cancelSnap);
         $('#closeCamera').click(camera.stop);
     },
-    context_menu: function () {
+    contextmenu: function () {
+        $('body').contextmenu(function (e) {
+            if (!DEBUG) {
+                e.preventDefault();
+            }
+            context_menu.show(e);
+        }).click(function (e) {
+            if (!$('#contextmenu').is(":hover")) {
+                e.preventDefault();
+                context_menu.hide(e);
+            }
+        });
 
     }
 
