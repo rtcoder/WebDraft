@@ -119,6 +119,14 @@ var canvas,
                     points[layers.activeId] = [];
 //                do poprawy
                 },
+                clear: function () {
+                    $(webDraft.draw.selectorId).empty();
+                    $("#listLayers").empty();
+
+                    points = {};
+
+                    webDraft.func.init();
+                },
                 colorsampler: function (event) {
                     var x = webDraft.mPosition.x;
                     var y = webDraft.mPosition.y;
@@ -344,6 +352,10 @@ var canvas,
                         $('#camera').html(data);
                         events.camera();
                     });
+                    $.get('parts/contextmenu.part.html', function (data) {
+                        $('#contextmenu').html(data);
+                        events.contextmenu();
+                    });
                     webDraft.isLoaded = true;
                 },
                 init: function () {
@@ -455,6 +467,7 @@ $(document)
         })
         .bind("contextmenu", function (e) {
             e.preventDefault();
+            contextmenu.show(e);
         })
         .on('mouseup touchend', webDraft.func._mouseup)
         .on('mousemove touchmove', webDraft.func._mousemove);

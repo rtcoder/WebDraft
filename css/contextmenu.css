@@ -1,0 +1,53 @@
+menu#contextmenu {
+  display: none;
+  width: 230px;
+  height: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: #fff;
+  z-index: 10;
+}
+menu#contextmenu ul li {
+  cursor: pointer;
+  padding: 0px 5px;
+  float: left;
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+}
+menu#contextmenu ul li * {
+  cursor: pointer;
+}
+menu#contextmenu ul li span {
+  height: inherit;
+  float: left;
+}
+menu#contextmenu ul li span.icon {
+  width: 20px;
+  margin-right: 5px;
+}
+menu#contextmenu ul li span.icon i {
+  float: left;
+  width: 20px;
+  height: 30px;
+  line-height: 30px;
+}
+menu#contextmenu ul li span.text {
+  width: calc(100% - 95px);
+}
+menu#contextmenu ul li span.shortcut {
+  text-align: right;
+  text-transform: uppercase;
+  width: 70px;
+  font-size: 11px;
+  color: #2E3436;
+}
+menu#contextmenu ul li.disabled {
+  color: #888888;
+}
+menu#contextmenu ul li:not(.disabled):hover {
+  color: #0052CC;
+  background-color: #dedede;
+}
+/*# sourceMappingURL=contextmenu.css.map */

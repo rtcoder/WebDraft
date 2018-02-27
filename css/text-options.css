@@ -4,7 +4,6 @@
 #textOptions #alignBtns {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #textOptions #alignBtns .textPostionTool {
   width: 50px;
@@ -25,7 +24,6 @@
 #textOptions #fontStyleBtns {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #textOptions #fontStyleBtns .styleTool {
   width: 50px;

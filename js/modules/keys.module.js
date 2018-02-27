@@ -57,7 +57,7 @@ $(document)
                     select.delSelectedPart();
                 }
                 if (event.ctrlKey) {
-                    $("#btnCLear").click();
+                    webDraft.func.clear();
                 }
             }
 
