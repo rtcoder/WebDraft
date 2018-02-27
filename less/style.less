@@ -23,11 +23,15 @@
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+ul{
+    list-style: none;
+
 }
 html{
     body{
-        margin: 0;
-        padding: 0;
         top: 0;
         left: 0;
         width: 100%;
@@ -42,7 +46,7 @@ html{
             width: calc(~"100vw - 200px");
             height: calc(~"100vh - 20px");
             #drawHandler{
-                border: 1px dotted @color1;
+                border: 1px dotted @blue1;
                 position: relative;
                 #draw, #drawHandler, #eventHandler{
                     width: 600px;
@@ -74,14 +78,14 @@ html{
             display: none;
             position: absolute;
             z-index: 2;
-            border: 1px solid @color5;
+            border: 1px solid @black1;
         }
         #selectRectangle{
             cursor: move;
         }
         #eraseRect{
             border-radius: 100%;
-            border-color: @color3;
+            border-color: @gray3;
         }
     }
 }
