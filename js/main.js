@@ -14,7 +14,7 @@ var canvas,
 
             isLoaded: false,
             title: "WebDraft",
-            version: "2.2.8",
+            version: "2.3.0",
             click: {
                 left: false, //left mouse button
                 right: false  //right mouse button
