@@ -1,0 +1,57 @@
+@import "variables";
+
+menu#contextmenu{
+    display: none;
+    width: 230px;
+    height: auto;
+    position: fixed;
+    top:50%;
+    left:50%;
+    background: #fff;
+    z-index:10;
+    ul{
+        li{
+            cursor: pointer;
+            padding: 0px 5px;
+            float: left;
+            height: 30px;
+            line-height: 30px;
+            width: 100%;
+            *{
+                cursor: pointer;
+            }
+            span{
+                height: inherit;
+                float: left;
+                &.icon{
+                    width: 20px;
+                    margin-right: 5px;
+                    i{
+                        float: left;
+                        width: 20px;
+                        height: 30px;
+                        line-height: 30px;
+                    }
+                }
+                &.text{
+                    width: ~"calc(100% - 95px)";
+                }
+                &.shortcut{
+                    text-align: right;
+                    text-transform: uppercase;
+                    width: 70px;
+                    font-size: 11px;
+                    color: @dark2;
+                }
+            }
+            &.disabled{
+                color: @gray1;
+            }
+            &:not(.disabled):hover{
+                color: @blue1;
+                background-color: @white6;
+            }
+        }
+
+    }
+}

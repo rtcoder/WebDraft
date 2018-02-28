@@ -121,12 +121,7 @@ var events = {
         });
         //Clear button Click event
         $("#btnCLear").click(function () {
-            $(webDraft.draw.selectorId).empty();
-            $("#listLayers").empty();
-
-            points = {};
-
-            webDraft.func.init();
+            webDraft.func.clear();
         });
 
         $("#resizeDraw").click(function () {
@@ -273,7 +268,19 @@ var events = {
         $('#applySnap').click(camera.applySnap);
         $('#cancelSnap').click(camera.cancelSnap);
         $('#closeCamera').click(camera.stop);
-    }
+    },
+    contextmenu: function () {
+        $('body').contextmenu(function (e) {
+            if (!DEBUG) {
+                e.preventDefault();
+            }
+            context_menu.show(e);
+        }).click(function (e) {
+            if (!$('#contextmenu').is(":hover")) {
+                context_menu.hide(e);
+            }
+        });
 
+    }
 
 };

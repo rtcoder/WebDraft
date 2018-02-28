@@ -127,8 +127,6 @@ input[type=color] {
   visibility: hidden;
   width: 0px;
   height: 0px;
-  margin: 0px;
-  padding: 0px;
   position: absolute;
 }
 input#fileUploaderInput {
@@ -196,7 +194,6 @@ input#isShadow {
 #toolsGroup .tools #toolsBtns {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #toolsGroup .tools #toolsBtns .primaryTool,
 #toolsGroup .tools #toolsBtns .paintTools {
@@ -229,7 +226,6 @@ input#isShadow {
 #toolsGroup .tools #radioBtns {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #toolsGroup .tools #radioBtns #shadowInput,
 #toolsGroup .tools #radioBtns #fillShapeInput {
@@ -242,9 +238,7 @@ input#isShadow {
 #toolsGroup .tools #radioBtns #shadowInput *,
 #toolsGroup .tools #radioBtns #fillShapeInput * {
   cursor: pointer;
-  margin: 0px;
   float: left;
-  padding: 0px;
 }
 #toolsGroup .tools #radioBtns #fillShapeInput {
   display: none;
@@ -252,7 +246,6 @@ input#isShadow {
 #toolsGroup .tools #colorPicker {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #toolsGroup .tools #colorPicker .colorTab {
   width: 100%;
@@ -294,7 +287,6 @@ input#isShadow {
 #textOptions #alignBtns {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #textOptions #alignBtns .textPostionTool {
   width: 50px;
@@ -315,7 +307,6 @@ input#isShadow {
 #textOptions #fontStyleBtns {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #textOptions #fontStyleBtns .styleTool {
   width: 50px;
@@ -422,7 +413,6 @@ input#isShadow {
   float: left;
   max-width: 58px;
   max-height: 58px;
-  margin: 0px;
 }
 #layers #listLayers .layerView .hideLayer,
 #layers #listLayers .layerView .showLayer {
@@ -449,12 +439,10 @@ input#isShadow {
 #sliders {
   width: 100%;
   float: left;
-  margin: 0px;
 }
 #sliders .sliderContainer {
   width: 100%;
   height: 45px;
-  margin: 0px;
   float: left;
 }
 #sliders .sliderContainer#shadow_slider {
@@ -775,6 +763,58 @@ input#isShadow {
 #camera.snapped #cameraButtons button#snap {
   display: none;
 }
+menu#contextmenu {
+  display: none;
+  width: 230px;
+  height: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: #fff;
+  z-index: 10;
+}
+menu#contextmenu ul li {
+  cursor: pointer;
+  padding: 0px 5px;
+  float: left;
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+}
+menu#contextmenu ul li * {
+  cursor: pointer;
+}
+menu#contextmenu ul li span {
+  height: inherit;
+  float: left;
+}
+menu#contextmenu ul li span.icon {
+  width: 20px;
+  margin-right: 5px;
+}
+menu#contextmenu ul li span.icon i {
+  float: left;
+  width: 20px;
+  height: 30px;
+  line-height: 30px;
+}
+menu#contextmenu ul li span.text {
+  width: calc(100% - 95px);
+}
+menu#contextmenu ul li span.shortcut {
+  text-align: right;
+  text-transform: uppercase;
+  width: 70px;
+  font-size: 11px;
+  color: #2E3436;
+}
+menu#contextmenu ul li.disabled {
+  color: #888888;
+}
+menu#contextmenu ul li:not(.disabled):hover {
+  color: #0052CC;
+  background-color: #dedede;
+}
 * {
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -785,10 +825,13 @@ input#isShadow {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-}
-html body {
   margin: 0;
   padding: 0;
+}
+ul {
+  list-style: none;
+}
+html body {
   top: 0;
   left: 0;
   width: 100%;
