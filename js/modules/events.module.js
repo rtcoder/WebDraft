@@ -277,7 +277,6 @@ var events = {
             context_menu.show(e);
         }).click(function (e) {
             if (!$('#contextmenu').is(":hover")) {
-                e.preventDefault();
                 context_menu.hide(e);
             }
         });
