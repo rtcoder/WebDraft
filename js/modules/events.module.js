@@ -261,13 +261,5 @@ var events = {
         $("#mUpLayer").click(layers.moveUp);
         $("#mDownLayer").click(layers.moveDown);
     },
-    camera: function () {
-        $('#cameraBtn').click(camera.init);
-        $('#snap').click(camera.snap);
-        $('#saveSnapOnComputer').click(camera.saveOnComputer);
-        $('#applySnap').click(camera.applySnap);
-        $('#cancelSnap').click(camera.cancelSnap);
-        $('#closeCamera').click(camera.stop);
-    }
 
 };
