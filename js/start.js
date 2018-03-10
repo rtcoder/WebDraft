@@ -22,6 +22,27 @@ let items = [
         onclick: function () {
             file.download();
         }
+    },
+    {
+        text: 'Color',
+        icon: 'fa fa-refresh',
+        shortcut: 'ctrl+s',
+        submenu: [
+            {
+                text: 'Invert',
+                icon: 'fa fa-refresh',
+                onclick: function () {
+                    layers.negative();
+                }
+            },
+            {
+                text: 'Colorpicker',
+                icon: 'fa fa-magic',
+                onclick: function () {
+                    $('#colorsampler').click();
+                }
+            }
+        ]
     }
 ];
 
