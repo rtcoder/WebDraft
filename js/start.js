@@ -25,8 +25,7 @@ let items = [
     },
     {
         text: 'Color',
-        icon: 'fa fa-refresh',
-        shortcut: 'ctrl+s',
+        icon: 'fa fa-tint',
         submenu: [
             {
                 text: 'Invert',
@@ -50,6 +49,7 @@ var context_menu = new Contextmenu(items);
 var camera = new Camera();
 var file = new File();
 var shapes = new Shapes();
+var draw = new Draw();
 $(window)
         .resize(function () {
             webDraft.func.resize();

@@ -129,7 +129,7 @@ var events = {
                 $("#draw, #drawHandler, #eventHandler").css({"cursor": "none"});
             } else {
                 $("#eraseRect").hide();
-                $("#draw, #drawHandler, #eventHandler").css({"cursor": "crosshair"});
+                $("#draw, #drawHandler, #eventHandler").css({"cursor": "default"});
             }
 
             if (thisId !== RECTANGLE) {

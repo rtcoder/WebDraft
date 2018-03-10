@@ -835,6 +835,7 @@ menu#contextmenu ul li .submenu + .content span.arrow.left-arrow {
 menu#contextmenu ul li .submenu + .content span.arrow.right-arrow {
   visibility: visible;
   opacity: 1;
+  float: right;
 }
 menu#contextmenu ul li.disabled {
   color: #888888;

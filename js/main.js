@@ -208,8 +208,6 @@ var canvas,
                                 select.initSelect();
                                 break;
                             case RECTANGLE :
-                                shapes.startShape();
-                                break;
                             case CIRCLE :
                                 shapes.startShape();
                                 break;
@@ -294,7 +292,6 @@ var canvas,
                         switch (webDraft.selectedTool) {
                             case PENCIL :
                             case ERASER :
-                                draw.drawStyle();
                                 ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
                                 ctx.stroke();
                                 break;
