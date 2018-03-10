@@ -49,6 +49,7 @@ let items = [
 var context_menu = new Contextmenu(items);
 var camera = new Camera();
 var file = new File();
+var shapes = new Shapes();
 $(window)
         .resize(function () {
             webDraft.func.resize();

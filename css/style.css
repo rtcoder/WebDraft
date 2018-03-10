@@ -775,38 +775,66 @@ menu#contextmenu {
 }
 menu#contextmenu ul li {
   cursor: pointer;
-  padding: 0px 5px;
   float: left;
   height: 30px;
   line-height: 30px;
+  position: relative;
   width: 100%;
+  background: #fff;
+  color: #000000;
 }
 menu#contextmenu ul li * {
   cursor: pointer;
 }
-menu#contextmenu ul li span {
+menu#contextmenu ul li .content {
+  width: 100%;
+  float: left;
+}
+menu#contextmenu ul li .content span {
   height: inherit;
   float: left;
 }
-menu#contextmenu ul li span.icon {
+menu#contextmenu ul li .content span.icon {
   width: 20px;
-  margin-right: 5px;
 }
-menu#contextmenu ul li span.icon i {
+menu#contextmenu ul li .content span.icon i {
   float: left;
   width: 20px;
   height: 30px;
   line-height: 30px;
 }
-menu#contextmenu ul li span.text {
-  width: calc(100% - 95px);
+menu#contextmenu ul li .content span.text {
+  width: calc(100% - 130px);
 }
-menu#contextmenu ul li span.shortcut {
+menu#contextmenu ul li .content span.shortcut {
   text-align: right;
   text-transform: uppercase;
   width: 70px;
   font-size: 11px;
   color: #2E3436;
+}
+menu#contextmenu ul li .content span.arrow {
+  color: #2E3436;
+  width: 10px;
+  margin: 0px 5px;
+  font-size: 11px;
+  visibility: hidden;
+  opacity: 0;
+}
+menu#contextmenu ul li .submenu {
+  width: 230px;
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 230px;
+}
+menu#contextmenu ul li .submenu + .content span.arrow.left-arrow {
+  visibility: hidden;
+  opacity: 0;
+}
+menu#contextmenu ul li .submenu + .content span.arrow.right-arrow {
+  visibility: visible;
+  opacity: 1;
 }
 menu#contextmenu ul li.disabled {
   color: #888888;
@@ -814,6 +842,21 @@ menu#contextmenu ul li.disabled {
 menu#contextmenu ul li:not(.disabled):hover {
   color: #0052CC;
   background-color: #dedede;
+}
+menu#contextmenu ul li:not(.disabled):hover .submenu {
+  display: block;
+  color: #000000;
+}
+menu#contextmenu.left-submenu ul li .submenu {
+  left: -230px;
+}
+menu#contextmenu.left-submenu ul li .submenu + .content span.arrow.left-arrow {
+  visibility: visible;
+  opacity: 1;
+}
+menu#contextmenu.left-submenu ul li .submenu + .content span.arrow.right-arrow {
+  visibility: hidden;
+  opacity: 0;
 }
 * {
   -moz-user-select: none;
@@ -850,6 +893,7 @@ html body #content {
 html body #content #drawHandler {
   border: 1px dotted #0052CC;
   position: relative;
+  overflow: hidden;
 }
 html body #content #drawHandler #draw,
 html body #content #drawHandler #drawHandler,
@@ -858,7 +902,7 @@ html body #content #drawHandler #eventHandler {
   height: 400px;
   overflow: hidden;
   position: relative;
-  cursor: crosshair;
+  /*cursor: crosshair;*/
 }
 html body #content #drawHandler #eventHandler {
   z-index: 3;
