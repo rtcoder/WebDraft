@@ -78,9 +78,6 @@ var events = {
         });
     },
     buttons: function () {
-        //Save button Click event (save file)
-        $("#btnSave").click(file.download);
-
         $("#invertColors").click(layers.negative);
 
         $("#rotateLeft").click(function () {
@@ -97,10 +94,6 @@ var events = {
             layers.mirror('horizontal');
         });
 
-
-        $("#fileUploader").click(function () {
-            $("input#fileUploaderInput").click();
-        });
         $("input[type=checkbox]#isShadow").change(function () {
             webDraft.shadow.isShadow = $(this).is(":checked");//return true if is :checked or false if not
 

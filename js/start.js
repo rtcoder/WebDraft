@@ -25,6 +25,9 @@ let items = [
     }
 ];
 
+var context_menu = new Contextmenu(items);
+var camera = new Camera();
+var file = new File();
 $(window)
         .resize(function () {
             webDraft.func.resize();
@@ -38,8 +41,6 @@ $(document)
             }
 
             webDraft.func.init();
-            var context_menu = new Contextmenu(items);
-            var camera = new Camera();
             $("#selectRectangle, #textRectangle")
                     .draggable({snap: false})
                     .css({"position": "absolute"});

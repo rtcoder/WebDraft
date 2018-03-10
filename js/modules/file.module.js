@@ -1,5 +1,9 @@
-var file = {
-    upload: function (event) {
+class File {
+    constructor() {
+        $('body').append('<input type="file" name="file" id="fileUploaderInput" accept="image/*" onchange="file.upload(event)">');
+    }
+
+    upload(event) {
         var input = event.target;
         var widthImg;
         var heightImg;
@@ -20,8 +24,8 @@ var file = {
             layers.saveState();
             keys.O = false;
         };
-    },
-    download: function () {
+    }
+    download() {
         $(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '"></canvas>');
 
         var temp_c = document.getElementById("tmpCanvas");
@@ -42,8 +46,8 @@ var file = {
         });
 
         $("#tmpCanvas").remove();
-    },
-    downloadFromCamera: function (id = null) {
+    }
+    downloadFromCamera(id = null) {
         var imgData = document.getElementById(id);
         $(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="' + imgData.width + '" height="' + imgData.height + '"></canvas>');
 
@@ -60,4 +64,4 @@ var file = {
         $("#tmpCanvas").remove();
 
     }
-};
+}
