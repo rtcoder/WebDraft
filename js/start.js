@@ -50,6 +50,7 @@ var camera = new Camera();
 var file = new File();
 var shapes = new Shapes();
 var draw = new Draw();
+var text = new Text();
 $(window)
         .resize(function () {
             webDraft.func.resize();

@@ -1,27 +1,82 @@
-var text = {
-    // variables
-    hoverSelectRectangle: false,
-    isSelecting: false,
-    startSelectPoints: [0, 0],
-    // functions
-    initSelect: function () {
-        text.startTextPoints = [webDraft.mPosition.x, webDraft.mPosition.y];
-    },
-    startSelect: function () {
+class Text {
+    constructor() {
+        $('#drawHandler').append('<div id="textRectangle" contenteditable></div>');
+
+        $.get('parts/text-options.part.html', function (data) {
+            $('#textOptions').html(data);
+
+
+            $("#selectFontType").change(function () {
+                $("#textRectangle").css("font-family", $(this).val());
+            });
+            $("#selectFontSize").change(function () {
+                $("#textRectangle").css("font-size", $(this).val() + "px");
+            });
+            $(".textPostionTool").click(function () {
+                $(".textPostionTool").removeClass("active");
+                $(this).addClass("active");
+                $("#textRectangle").css("text-align", $(this).attr('id'));
+            });
+            $(".styleTool").click(function () {
+                $(this).toggleClass("active");
+                switch ($(this).attr("id")) {
+                    case 'bold':
+                        if ($(this).hasClass('active'))
+                            $("#textRectangle").css("font-weight", 'bold');
+                        else
+                            $("#textRectangle").css("font-weight", 'normal');
+                        break;
+                    case 'italic':
+                        if ($(this).hasClass('active'))
+                            $("#textRectangle").css("font-style", 'italic');
+                        else
+                            $("#textRectangle").css("font-style", 'normal');
+                        break;
+                    case 'underline':
+                    case 'line-through':
+                        var textDecoration = "";
+                        $(".textDecoration.active").each(function () {
+                            textDecoration += $(this).attr("id") + " ";
+                        });
+                        if ($(".textDecoration.active").length > 0)
+                            $("#textRectangle").css("text-decoration", textDecoration);
+                        else
+                            $("#textRectangle").css("text-decoration", 'none');
+                        break;
+                    default:
+
+                }
+            });
+        });
+        this.hoverSelectRectangle = false;
+        this.isSelecting = false;
+        this.startSelectPoints = {
+            x: 0,
+            y: 0
+        };
+    }
+    initSelect() {
+        text.startTextPoints = {
+            x: webDraft.mPosition.x,
+            y: webDraft.mPosition.y
+        };
+    }
+    startSelect() {
         if ($("#textRectangle").empty()) {
-            if (text.startTextPoints[0] <= webDraft.mPosition.x) {
-                var x = text.startTextPoints[0],
-                        width = webDraft.mPosition.x - text.startTextPoints[0];
+            let x, y, width, height;
+            if (text.startTextPoints.x <= webDraft.mPosition.x) {
+                x = text.startTextPoints.x;
+                width = webDraft.mPosition.x - text.startTextPoints.x;
             } else {
-                var x = webDraft.mPosition.x,
-                        width = text.startTextPoints[0] - webDraft.mPosition.x;
+                x = webDraft.mPosition.x;
+                width = text.startTextPoints.x - webDraft.mPosition.x;
             }
-            if (text.startTextPoints[1] <= webDraft.mPosition.y) {
-                var y = text.startTextPoints[1],
-                        height = webDraft.mPosition.y - text.startTextPoints[1];
+            if (text.startTextPoints.y <= webDraft.mPosition.y) {
+                y = text.startTextPoints.y;
+                height = webDraft.mPosition.y - text.startTextPoints.y;
             } else {
-                var y = webDraft.mPosition.y,
-                        height = text.startTextPoints[1] - webDraft.mPosition.y;
+                y = webDraft.mPosition.y;
+                height = text.startTextPoints.y - webDraft.mPosition.y;
             }
             $("#textRectangle")
                     .empty()
@@ -37,25 +92,24 @@ var text = {
                     });
             text.isSelecting = true;
         }
-    },
-    showTextOptions: function () {
+    }
+    showTextOptions() {
         text.isSelecting = false;
         $("#textOptions").show();
-    },
-    putLayer: function () {
+    }
+    putLayer() {
         $("#textRectangle").css('border', 'none');
 
-        if( $('#textRectangle').html() === '' ){
+        if ($('#textRectangle').html() === '') {
             return false;
         }
 
-
-        var top = parseInt($("#textRectangle").css('top'));
-        var left = parseInt($("#textRectangle").css('left'));
+        let top = parseInt($("#textRectangle").css('top'));
+        let left = parseInt($("#textRectangle").css('left'));
         html2canvas($('#textRectangle'), {
             onrendered: function (canvas) {
-                var widthImg = canvas.width;
-                var heightImg = canvas.height;
+                let widthImg = canvas.width;
+                let heightImg = canvas.height;
                 layers.newLayer();
                 layers.setLayerSize(layers.activeId, widthImg, heightImg);
                 layers.setLayerPosition(layers.activeId, top, left);
@@ -77,4 +131,5 @@ var text = {
             }
         });
     }
-};
+}
+;
