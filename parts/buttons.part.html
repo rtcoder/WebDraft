@@ -4,13 +4,13 @@
 </div>
 <div id="toolsBtns" class="showHide">
     <div id="resizeDraw" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
-    <div id="btnCLear" class="primaryTool" title="Clear"><i class="fa fa-ban"></i></div>
+    <div id="btnCLear" onclick="webDraft.func.clear()" class="primaryTool" title="Clear"><i class="fa fa-ban"></i></div>
     <div id="btnSave" onclick="file.download()" class="primaryTool" title="Save file"><i class="fa fa-save"></i></div>
-    <div id="invertColors" class="primaryTool" title="Invert colors"><i class="fa fa-refresh"></i></div>
-    <div id="rotateLeft" class="primaryTool" title="Rotate left"><i class="fa fa-rotate-left"></i></div>
-    <div id="rotateRight" class="primaryTool" title="Rotate right"><i class="fa fa-rotate-right"></i></div>
-    <div id="mirrorV" class="primaryTool" title="Vertical mirror"><i class="fa fa-arrows-h"></i></div>
-    <div id="mirrorH" class="primaryTool" title="Horizontal mirror"><i class="fa fa-arrows-v"></i></div>
+    <div id="invertColors" onclick="layers.negative()" class="primaryTool" title="Invert colors"><i class="fa fa-refresh"></i></div>
+    <div id="rotateLeft" onclick="layers.rotate(-90)" class="primaryTool" title="Rotate left"><i class="fa fa-rotate-left"></i></div>
+    <div id="rotateRight" onclick="layers.rotate(90)" class="primaryTool" title="Rotate right"><i class="fa fa-rotate-right"></i></div>
+    <div id="mirrorV" onclick="layers.mirror('vertical')" class="primaryTool" title="Vertical mirror"><i class="fa fa-arrows-h"></i></div>
+    <div id="mirrorH" onclick="layers.mirror('horizontal')" class="primaryTool" title="Horizontal mirror"><i class="fa fa-arrows-v"></i></div>
     <div id="fileUploader" onclick="$('input#fileUploaderInput').click()" class="primaryTool" title="Upload file"><i class="fa fa-upload"></i></div>
     <div id="cameraBtn" onclick="camera.init()" class="primaryTool" title="Photo from camera"><i class="fa fa-camera"></i></div>
     <div id="select" class="paintTools paintTool" title="Select part of image"><i class="fa fa-object-group"></i></div>

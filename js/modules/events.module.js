@@ -78,22 +78,6 @@ var events = {
         });
     },
     buttons: function () {
-        $("#invertColors").click(layers.negative);
-
-        $("#rotateLeft").click(function () {
-            layers.rotate(-90);
-        });
-        $("#rotateRight").click(function () {
-            layers.rotate(90);
-        });
-
-        $("#mirrorV").click(function () {
-            layers.mirror('vertical');
-        });
-        $("#mirrorH").click(function () {
-            layers.mirror('horizontal');
-        });
-
         $("input[type=checkbox]#isShadow").change(function () {
             webDraft.shadow.isShadow = $(this).is(":checked");//return true if is :checked or false if not
 
@@ -111,10 +95,6 @@ var events = {
             } else {
                 $("#fillColor, #fillOpacity_slider").hide();
             }
-        });
-        //Clear button Click event
-        $("#btnCLear").click(function () {
-            webDraft.func.clear();
         });
 
         $("#resizeDraw").click(function () {
