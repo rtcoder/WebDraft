@@ -324,10 +324,6 @@ var canvas,
                         $('[data-id=color-picker]').html(data);
                         events.color();
                     });
-                    $.get('parts/text-options.part.html', function (data) {
-                        $('#textOptions').html(data);
-                        events.textOptions();
-                    });
                     $.get('parts/sliders.part.html', function (data) {
                         $('[data-id=sliders]').html(data);
                         events.sliders();

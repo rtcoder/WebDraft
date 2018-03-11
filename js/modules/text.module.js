@@ -56,27 +56,28 @@ class Text {
         };
     }
     initSelect() {
-        text.startTextPoints = {
+        this.startTextPoints = {
             x: webDraft.mPosition.x,
             y: webDraft.mPosition.y
         };
+        console.log(this.startTextPoints)
     }
     startSelect() {
         if ($("#textRectangle").empty()) {
             let x, y, width, height;
-            if (text.startTextPoints.x <= webDraft.mPosition.x) {
-                x = text.startTextPoints.x;
-                width = webDraft.mPosition.x - text.startTextPoints.x;
+            if (this.startTextPoints.x <= webDraft.mPosition.x) {
+                x = this.startTextPoints.x;
+                width = webDraft.mPosition.x - this.startTextPoints.x;
             } else {
                 x = webDraft.mPosition.x;
-                width = text.startTextPoints.x - webDraft.mPosition.x;
+                width = this.startTextPoints.x - webDraft.mPosition.x;
             }
-            if (text.startTextPoints.y <= webDraft.mPosition.y) {
-                y = text.startTextPoints.y;
-                height = webDraft.mPosition.y - text.startTextPoints.y;
+            if (this.startTextPoints.y <= webDraft.mPosition.y) {
+                y = this.startTextPoints.y;
+                height = webDraft.mPosition.y - this.startTextPoints.y;
             } else {
                 y = webDraft.mPosition.y;
-                height = text.startTextPoints.y - webDraft.mPosition.y;
+                height = this.startTextPoints.y - webDraft.mPosition.y;
             }
             $("#textRectangle")
                     .empty()
@@ -90,11 +91,11 @@ class Text {
                         "border": "1px dashed #fff",
                         "background": "transparent"
                     });
-            text.isSelecting = true;
+            this.isSelecting = true;
         }
     }
     showTextOptions() {
-        text.isSelecting = false;
+        this.isSelecting = false;
         $("#textOptions").show();
     }
     putLayer() {
@@ -132,4 +133,3 @@ class Text {
         });
     }
 }
-;
