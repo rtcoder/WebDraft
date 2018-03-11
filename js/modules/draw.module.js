@@ -1,7 +1,5 @@
-var draw = {
-
-    // functions
-    drawStyle: function () {
+class Draw {
+    drawStyle() {
         ctx.lineWidth = webDraft.size;
 
         if (webDraft.selectedTool === RECTANGLE) {
@@ -34,31 +32,33 @@ var draw = {
         }
 
         ctx.strokeStyle = webDraft.color;//line color
-    },
-    drawing: function () {
+    }
+    drawing() {
         ctx.beginPath();
         ctx.moveTo(webDraft.mPosition.x, webDraft.mPosition.y);
-        draw.drawStyle();
+        this.drawStyle();
         ctx.lineTo(webDraft.mPosition.x, webDraft.mPosition.y);
         ctx.stroke();
-    },
-    drawWeb: function () {
+    }
+    drawWeb() {
         ctx.beginPath();
-        draw.drawStyle();
+        this.drawStyle();
         ctx.moveTo(points[layers.activeId][points[layers.activeId].length - 2].x, points[layers.activeId][points[layers.activeId].length - 2].y);
         ctx.lineTo(points[layers.activeId][points[layers.activeId].length - 1].x, points[layers.activeId][points[layers.activeId].length - 1].y);
         ctx.stroke();
-        for (var i = 0, len = points[layers.activeId].length; i < len; i++) {
+        let dx, dy, d;
+        let len = points[layers.activeId].length;
+        for (let i = 0; i < len; i++) {
             dx = points[layers.activeId][i].x - points[layers.activeId][points[layers.activeId].length - 1].x;
             dy = points[layers.activeId][i].y - points[layers.activeId][points[layers.activeId].length - 1].y;
             d = dx * dx + dy * dy;
             if (d < webDraft.sensitivityPoints) {
                 ctx.beginPath();
-                draw.drawStyle();
+                this.drawStyle();
                 ctx.moveTo(points[layers.activeId][points[layers.activeId].length - 1].x + (dx * 0.2), points[layers.activeId][points[layers.activeId].length - 1].y + (dy * 0.2));
                 ctx.lineTo(points[layers.activeId][i].x - (dx * 0.2), points[layers.activeId][i].y - (dy * 0.2));
                 ctx.stroke();
             }
         }
     }
-};
+}

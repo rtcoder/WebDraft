@@ -1,7 +1,7 @@
-<input type="number" id="drawWidth" placeholder="Width" min="0" required>
-<input type="number" id="drawHeight" placeholder="Height" min="0" required>
+<input type="number" onchange="resizer.onchange()" id="drawWidth" placeholder="Width" min="0" required>
+<input type="number" onchange="resizer.onchange()" id="drawHeight" placeholder="Height" min="0" required>
 <input type="checkbox" name="allLayersResizing" id="allLayersResizing" value="">
 <label for="allLayersResizing">Resize all layers?</label>
 <div id="resizeinfo"></div>
-<div id="cancel" class="buttonAction">Cancel (Esc)</div>
-<div id="apply" class="buttonAction">OK (Enter)</div>
+<div id="cancel" onclick="resizer.cancel()" class="buttonAction">Cancel (Esc)</div>
+<div id="apply" onclick="resizer.apply()" class="buttonAction">OK (Enter)</div>

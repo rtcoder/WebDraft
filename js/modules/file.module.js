@@ -1,9 +1,13 @@
-var file = {
-    upload: function (event) {
-        var input = event.target;
-        var widthImg;
-        var heightImg;
-        var output = new Image();
+class File {
+    constructor() {
+        $('body').append('<input type="file" name="file" id="fileUploaderInput" accept="image/*" onchange="file.upload(event)">');
+    }
+
+    upload(event) {
+        let input = event.target;
+        let widthImg;
+        let heightImg;
+        let output = new Image();
 
         output.src = URL.createObjectURL(input.files[0]);
 
@@ -20,19 +24,19 @@ var file = {
             layers.saveState();
             keys.O = false;
         };
-    },
-    download: function () {
+    }
+    download() {
         $(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '"></canvas>');
 
-        var temp_c = document.getElementById("tmpCanvas");
-        var temp_ctx = temp_c.getContext("2d");
+        let temp_c = document.getElementById("tmpCanvas");
+        let temp_ctx = temp_c.getContext("2d");
         $("#tmpCanvas").width(webDraft.draw.width).height(webDraft.draw.height);
 
-        for (var i = 0; i < layers.list.length; i++) {
+        for (let i = 0; i < layers.list.length; i++) {
             if (typeof layers.list[i].id === "string" && layers.list[i].visible === true) {
-                var imgData = document.getElementById(layers.list[i].id);
-                var top = parseInt($("#" + layers.list[i].id).css("top"));
-                var left = parseInt($("#" + layers.list[i].id).css("left"));
+                let imgData = document.getElementById(layers.list[i].id);
+                let top = parseInt($("#" + layers.list[i].id).css("top"));
+                let left = parseInt($("#" + layers.list[i].id).css("left"));
                 temp_ctx.drawImage(imgData, top, left);
             }
         }
@@ -42,13 +46,13 @@ var file = {
         });
 
         $("#tmpCanvas").remove();
-    },
-    downloadFromCamera: function (id = null) {
-        var imgData = document.getElementById(id);
+    }
+    downloadFromCamera(id = null) {
+        let imgData = document.getElementById(id);
         $(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="' + imgData.width + '" height="' + imgData.height + '"></canvas>');
 
-        var temp_c = document.getElementById("tmpCanvas");
-        var temp_ctx = temp_c.getContext("2d");
+        let temp_c = document.getElementById("tmpCanvas");
+        let temp_ctx = temp_c.getContext("2d");
         $("#tmpCanvas").width(imgData.width).height(imgData.height);
 
         temp_ctx.drawImage(imgData, 0, 0);
@@ -60,4 +64,4 @@ var file = {
         $("#tmpCanvas").remove();
 
     }
-};
+}

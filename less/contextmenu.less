@@ -12,36 +12,71 @@ menu#contextmenu{
     ul{
         li{
             cursor: pointer;
-            padding: 0px 5px;
             float: left;
             height: 30px;
             line-height: 30px;
+            position: relative;
             width: 100%;
+            background: #fff;
+            color: @black1;
             *{
                 cursor: pointer;
             }
-            span{
-                height: inherit;
+            .content{
+                width: 100%;
                 float: left;
-                &.icon{
-                    width: 20px;
-                    margin-right: 5px;
-                    i{
-                        float: left;
+                span{
+                    height: inherit;
+                    float: left;
+                    &.icon{
                         width: 20px;
-                        height: 30px;
-                        line-height: 30px;
+                        i{
+                            float: left;
+                            width: 20px;
+                            height: 30px;
+                            line-height: 30px;
+                        }
+                    }
+                    &.text{
+                        width: ~"calc(100% - 130px)";
+                    }
+                    &.shortcut{
+                        text-align: right;
+                        text-transform: uppercase;
+                        width: 70px;
+                        font-size: 11px;
+                        color: @dark2;
+                    }
+                    &.arrow{
+                        color: @dark2;
+                        width: 10px;
+                        margin: 0px 5px;
+                        font-size: 11px;
+                        visibility: hidden;
+                        opacity: 0;
                     }
                 }
-                &.text{
-                    width: ~"calc(100% - 95px)";
-                }
-                &.shortcut{
-                    text-align: right;
-                    text-transform: uppercase;
-                    width: 70px;
-                    font-size: 11px;
-                    color: @dark2;
+            }
+            .submenu{
+                width: 230px;
+                position: absolute;
+                display: none;
+                top: 0;
+                left: 230px;
+                &+.content{
+                    span{
+                        &.arrow{
+                            &.left-arrow{
+                                visibility: hidden;
+                                opacity: 0;
+                            }
+                            &.right-arrow{
+                                visibility: visible;
+                                opacity: 1;
+                                float: right;
+                            }
+                        }
+                    }
                 }
             }
             &.disabled{
@@ -50,8 +85,34 @@ menu#contextmenu{
             &:not(.disabled):hover{
                 color: @blue1;
                 background-color: @white6;
+                .submenu{
+                    display: block;
+                    color: @black1;
+                }
             }
         }
-
+    }
+    &.left-submenu{
+        ul{
+            li{
+                .submenu{
+                    left: -230px;
+                    &+.content{
+                        span{
+                            &.arrow{
+                                &.left-arrow{
+                                    visibility: visible;
+                                    opacity: 1;
+                                }
+                                &.right-arrow{
+                                    visibility: hidden;
+                                    opacity: 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

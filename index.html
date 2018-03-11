@@ -11,8 +11,6 @@
     <body onload="webDraft.func.resize();webDraft.func.positionElements()">
         <!--all site elements-->
         <div id="eraseRect"></div>
-        <div id="prepareRect"></div>
-        <div id="prepareCircle"></div>
         <!--tools-->
         <div id="toolsGroup">
             <!-- preview color sampler -->
@@ -34,13 +32,9 @@
         </div>
         <!--resizer-->
         <div id="resizer"></div>
-        <!--camera-->
-        <div id="camera"></div>
         <!--content and draw field-->
         <div id="content">
             <div id="drawHandler">
-                <div id="selectRectangle"></div>
-                <div id="textRectangle" contenteditable></div>
                 <div id="eventHandler"></div>
                 <div id="draw"></div>
             </div>
@@ -66,7 +60,6 @@
                 Created by <a target="_blank" href="https://github.com/rtcoder">rtCoder</a>
             </div>
         </div>
-        <menu id="contextmenu"></menu>
 
 
         <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -86,6 +79,8 @@
         <script src="js/modules/camera.module.js"></script>
         <script src="js/modules/clipboard.module.js"></script>
         <script src="js/modules/contextmenu.module.js"></script>
+        <script src="js/modules/resizer.module.js"></script>
         <script src="js/main.js"></script>
+        <script src="js/start.js"></script>
     </body>
 </html>

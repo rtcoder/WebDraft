@@ -34,73 +34,7 @@ var events = {
             $("#info").hide();
         });
     },
-    textOptions: function () {
-        $("#selectFontType").change(function () {
-            $("#textRectangle").css("font-family", $(this).val());
-        });
-        $("#selectFontSize").change(function () {
-            $("#textRectangle").css("font-size", $(this).val() + "px");
-        });
-        $(".textPostionTool").click(function () {
-            $(".textPostionTool").removeClass("active");
-            $(this).addClass("active");
-            $("#textRectangle").css("text-align", $(this).attr('id'));
-        });
-        $(".styleTool").click(function () {
-            $(this).toggleClass("active");
-            switch ($(this).attr("id")) {
-                case 'bold':
-                    if ($(this).hasClass('active'))
-                        $("#textRectangle").css("font-weight", 'bold');
-                    else
-                        $("#textRectangle").css("font-weight", 'normal');
-                    break;
-                case 'italic':
-                    if ($(this).hasClass('active'))
-                        $("#textRectangle").css("font-style", 'italic');
-                    else
-                        $("#textRectangle").css("font-style", 'normal');
-                    break;
-                case 'underline':
-                case 'line-through':
-                    var textDecoration = "";
-                    $(".textDecoration.active").each(function () {
-                        textDecoration += $(this).attr("id") + " ";
-                    });
-                    if ($(".textDecoration.active").length > 0)
-                        $("#textRectangle").css("text-decoration", textDecoration);
-                    else
-                        $("#textRectangle").css("text-decoration", 'none');
-                    break;
-                default:
-
-            }
-        });
-    },
     buttons: function () {
-        //Save button Click event (save file)
-        $("#btnSave").click(file.download);
-
-        $("#invertColors").click(layers.negative);
-
-        $("#rotateLeft").click(function () {
-            layers.rotate(-90);
-        });
-        $("#rotateRight").click(function () {
-            layers.rotate(90);
-        });
-
-        $("#mirrorV").click(function () {
-            layers.mirror('vertical');
-        });
-        $("#mirrorH").click(function () {
-            layers.mirror('horizontal');
-        });
-
-
-        $("#fileUploader").click(function () {
-            $("input#fileUploaderInput").click();
-        });
         $("input[type=checkbox]#isShadow").change(function () {
             webDraft.shadow.isShadow = $(this).is(":checked");//return true if is :checked or false if not
 
@@ -118,17 +52,6 @@ var events = {
             } else {
                 $("#fillColor, #fillOpacity_slider").hide();
             }
-        });
-        //Clear button Click event
-        $("#btnCLear").click(function () {
-            webDraft.func.clear();
-        });
-
-        $("#resizeDraw").click(function () {
-            $("#resizer").fadeIn();
-            $("input[type=number]#drawWidth").val(webDraft.draw.width);
-            $("input[type=number]#drawHeight").val(webDraft.draw.height);
-            $("#resizeinfo").html(webDraft.draw.width + " <i class='fa fa-times'></i> " + webDraft.draw.height);
         });
 
         $(".paintTool").click(function () {
@@ -156,7 +79,7 @@ var events = {
                 $("#draw, #drawHandler, #eventHandler").css({"cursor": "none"});
             } else {
                 $("#eraseRect").hide();
-                $("#draw, #drawHandler, #eventHandler").css({"cursor": "crosshair"});
+                $("#draw, #drawHandler, #eventHandler").css({"cursor": "default"});
             }
 
             if (thisId !== RECTANGLE) {
@@ -208,79 +131,5 @@ var events = {
             $("#fillOpacityValue").text("fill opacity:" + Math.floor($(this).val()) + "%");
         });
     },
-    resizer: function () {
-        $("#resizer")
-                .draggable({
-                    snap: true,
-                    opacity: 0.75
-                })
-                .css({"position": "absolute"});
-        $("#resizer input[type=number]").change(function () {
-            var xSize = parseInt($("input[type=number]#drawWidth").val());
-            var ySize = parseInt($("input[type=number]#drawHeight").val());
-            $("#resizeinfo").html(xSize + " <i class='fa fa-times'></i> " + ySize);
-        }).keyup(function (e) {
-            $(this).change();
-
-            if (e.keyCode === 13) {
-                $("#apply").click();
-            } else if (e.keyCode === 27) {
-                $("#cancel").click();
-            }
-        });
-
-        $("#cancel").click(function () {
-            $("#resizer").fadeOut();
-            $("input[type=number]#drawWidth").val(webDraft.draw.width);
-            $("input[type=number]#drawHeight").val(webDraft.draw.height);
-        });
-        $("#apply").click(function () {
-            $("#resizer").fadeOut();
-            if ($("#allLayersResizing").is(":checked")) {
-                var w = $("input[type=number]#drawWidth").val(),
-                        h = $("input[type=number]#drawHeight").val();
-
-                layers.setLayerSize('', w, h);
-            } else {
-                var w = $("input[type=number]#drawWidth").val(),
-                        h = $("input[type=number]#drawHeight").val();
-
-                layers.setLayerSize(layers.activeId, w, h);
-            }
-            webDraft.func.positionElements();
-        });
-    },
-    layers: function () {
-        $("#addLayer").click(layers.newLayer);
-        $("#delLayer").click(function () {
-            identifier = $(".layerView.active").attr("data-id");
-            nr = $(".layerView.active").attr("id");
-
-            layers.delete(identifier, nr);
-        });
-        $("#mUpLayer").click(layers.moveUp);
-        $("#mDownLayer").click(layers.moveDown);
-    },
-    camera: function () {
-        $('#cameraBtn').click(camera.init);
-        $('#snap').click(camera.snap);
-        $('#saveSnapOnComputer').click(camera.saveOnComputer);
-        $('#applySnap').click(camera.applySnap);
-        $('#cancelSnap').click(camera.cancelSnap);
-        $('#closeCamera').click(camera.stop);
-    },
-    contextmenu: function () {
-        $('body').contextmenu(function (e) {
-            if (!DEBUG) {
-                e.preventDefault();
-            }
-            context_menu.show(e);
-        }).click(function (e) {
-            if (!$('#contextmenu').is(":hover")) {
-                context_menu.hide(e);
-            }
-        });
-
-    }
 
 };
