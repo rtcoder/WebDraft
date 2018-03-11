@@ -1,25 +1,34 @@
-var select = {
-    hoverSelectRectangle: false,
-    isSelecting: false,
-    startSelectPoints: [0, 0],
-    // functions
-    initSelect: function () {
-        select.startSelectPoints = [webDraft.mPosition.x, webDraft.mPosition.y];
-    },
-    startSelect: function () {
-        if (select.startSelectPoints[0] <= webDraft.mPosition.x) {
-            var x = select.startSelectPoints[0],
-                    width = webDraft.mPosition.x - select.startSelectPoints[0];
+class Select {
+    constructor() {
+        $('#drawHandler').append('<div id="selectRectangle"></div>');
+        this.hoverSelectRectangle = false;
+        this.isSelecting = false;
+        this.startSelectPoints = {
+            x: 0,
+            y: 0
+        };
+    }
+    initSelect() {
+        this.startSelectPoints = {
+            x: webDraft.mPosition.x,
+            y: webDraft.mPosition.y
+        };
+    }
+    startSelect() {
+        let x, y, width, height;
+        if (this.startSelectPoints.x <= webDraft.mPosition.x) {
+            x = this.startSelectPoints.x;
+            width = webDraft.mPosition.x - this.startSelectPoints.x;
         } else {
-            var x = webDraft.mPosition.x,
-                    width = select.startSelectPoints[0] - webDraft.mPosition.x;
+            x = webDraft.mPosition.x;
+            width = this.startSelectPoints.x - webDraft.mPosition.x;
         }
-        if (select.startSelectPoints[1] <= webDraft.mPosition.y) {
-            var y = select.startSelectPoints[1],
-                    height = webDraft.mPosition.y - select.startSelectPoints[1];
+        if (this.startSelectPoints.y <= webDraft.mPosition.y) {
+            y = this.startSelectPoints.y;
+            height = webDraft.mPosition.y - this.startSelectPoints.y;
         } else {
-            var y = webDraft.mPosition.y,
-                    height = select.startSelectPoints[1] - webDraft.mPosition.y;
+            y = webDraft.mPosition.y;
+            height = this.startSelectPoints.y - webDraft.mPosition.y;
         }
         $("#selectRectangle")
                 .show()
@@ -31,23 +40,21 @@ var select = {
                     "border": "1px dashed #fff",
                     "background": "transparent"
                 });
-        select.isSelecting = true;
-    },
-    selectOpt: function () {
-        select.isSelecting = false;
-    },
-    delSelectedPart: function () {
+        this.isSelecting = true;
+    }
+    selectOpt() {
+        this.isSelecting = false;
+    }
+    delSelectedPart() {
         if ($("#selectRectangle").css("background-image") === "none") {//if selectRectangle is empty then clear part of image hovered by it
             xpos = parseInt($("#selectRectangle").css("left"));
             ypos = parseInt($("#selectRectangle").css("top"));
-
             ctx.clearRect(xpos, ypos, $("#selectRectangle").width(), $("#selectRectangle").height());
         } else { //else clear only selectRectangle background
             $("#selectRectangle").css({"background": "transparent"});
         }
 
         layers.saveState();
-
         $("#selectRectangle")
                 .css({
                     "top": "0px",
@@ -57,8 +64,8 @@ var select = {
                 .width(0)
                 .height(0)
                 .hide();
-    },
-    copySelectedPart: function () {
+    }
+    copySelectedPart() {
         if ($("#selectRectangle").css("background-image") === "none") {
             $(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="' + $("#selectRectangle").width() + '" height="' + $("#selectRectangle").height() + '"></canvas>');
 
@@ -74,8 +81,8 @@ var select = {
             $("#tmpCanvas").remove();
             $("#selectRectangle").css({"background": "url(" + bgImg + ") -1px -1px no-repeat"});
         }
-    },
-    cutSelectedPart: function () {
+    }
+    cutSelectedPart() {
         $(webDraft.draw.selectorId).append('<canvas id="tmpCanvas" width="' + $("#selectRectangle").width() + '" height="' + $("#selectRectangle").height() + '"></canvas>');
 
         var xpos = parseInt($("#selectRectangle").css("left"));
@@ -92,8 +99,8 @@ var select = {
 
         ctx.clearRect(xpos, ypos, $("#selectRectangle").width(), $("#selectRectangle").height());
         layers.saveState();
-    },
-    pasteSelectedPart: function () {
+    }
+    pasteSelectedPart() {
         if ($("#selectRectangle").css("background-image") !== "none") {
             var xpos = parseInt($("#selectRectangle").css("left"));
             var ypos = parseInt($("#selectRectangle").css("top"));
@@ -104,15 +111,12 @@ var select = {
                     .replace(')', '')
                     .replace('"', '')
                     .replace('"', '');
-
             img.onload = function () {
                 ctx.drawImage(img, xpos, ypos); //save part of image when loaded
 
                 layers.saveState(); //and then update layer preview
             };
-
             img.src = bg;
-
             $("#selectRectangle")
                     .css({
                         "top": "0px",
@@ -124,4 +128,5 @@ var select = {
                     .hide();
         }
     }
-};
+}
+;

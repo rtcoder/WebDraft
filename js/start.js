@@ -53,6 +53,7 @@ let draw = new Draw();
 let text = new Text();
 let resizer = new Resizer();
 let layers = new Layers();
+var select = new Select();
 $(window)
         .resize(function () {
             webDraft.func.resize();
