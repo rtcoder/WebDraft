@@ -171,11 +171,8 @@ var canvas,
                         var pos_y = event.pageY;
                     }
 
-                    webDraft.mPosition.x = pos_x - parseInt($(webDraft.draw.selectorId).offset().left);
-                    webDraft.mPosition.y = pos_y - parseInt($(webDraft.draw.selectorId).offset().top);
-
-                    webDraft.mPosition.y = webDraft.mPosition.y - parseInt($(canvas).css('top'));
-                    webDraft.mPosition.x = webDraft.mPosition.x - parseInt($(canvas).css('left'));
+                    webDraft.mPosition.x = pos_x - parseInt($(webDraft.draw.selectorId).offset().left) - parseInt($(canvas).css('left'));
+                    webDraft.mPosition.y = pos_y - parseInt($(webDraft.draw.selectorId).offset().top) - parseInt($(canvas).css('top'));
 
                     $("#mousePosition").text(webDraft.mPosition.x + " , " + webDraft.mPosition.y);
                     if (webDraft.mPosition.x < 0 || webDraft.mPosition.x > $(webDraft.draw.selectorId).width()
