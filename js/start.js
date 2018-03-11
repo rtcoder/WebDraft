@@ -51,6 +51,7 @@ var file = new File();
 var shapes = new Shapes();
 var draw = new Draw();
 var text = new Text();
+var resizer = new Resizer();
 var layers = new Layers();
 $(window)
         .resize(function () {

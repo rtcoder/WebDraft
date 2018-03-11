@@ -335,10 +335,6 @@ var canvas,
                         $('[data-id=sliders]').html(data);
                         events.sliders();
                     });
-                    $.get('parts/resizer.part.html', function (data) {
-                        $('#resizer').html(data);
-                        events.resizer();
-                    });
                     webDraft.isLoaded = true;
                 },
                 init: function () {

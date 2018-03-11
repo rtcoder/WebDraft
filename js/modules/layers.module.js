@@ -44,8 +44,8 @@ class Layers {
             webDraft.draw.width = 0;
             webDraft.draw.height = 0;
             $("canvas").each(function () {
-                w = parseInt($(this).attr("width"));
-                h = parseInt($(this).attr("height"));
+                let w = parseInt($(this).attr("width"));
+                let h = parseInt($(this).attr("height"));
                 if (webDraft.draw.width < w)
                     webDraft.draw.width = w;
 

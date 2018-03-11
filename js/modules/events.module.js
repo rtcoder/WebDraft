@@ -54,13 +54,6 @@ var events = {
             }
         });
 
-        $("#resizeDraw").click(function () {
-            $("#resizer").fadeIn();
-            $("input[type=number]#drawWidth").val(webDraft.draw.width);
-            $("input[type=number]#drawHeight").val(webDraft.draw.height);
-            $("#resizeinfo").html(webDraft.draw.width + " <i class='fa fa-times'></i> " + webDraft.draw.height);
-        });
-
         $(".paintTool").click(function () {
             $(".paintTool").removeClass("active");
             $(this).addClass("active");
@@ -136,48 +129,6 @@ var events = {
         $("input[type=range]#fillOpacity").on('mousemove touchmove', function () {
             shapes.fill.opacity = $(this).val();
             $("#fillOpacityValue").text("fill opacity:" + Math.floor($(this).val()) + "%");
-        });
-    },
-    resizer: function () {
-        $("#resizer")
-                .draggable({
-                    snap: true,
-                    opacity: 0.75
-                })
-                .css({"position": "absolute"});
-        $("#resizer input[type=number]").change(function () {
-            var xSize = parseInt($("input[type=number]#drawWidth").val());
-            var ySize = parseInt($("input[type=number]#drawHeight").val());
-            $("#resizeinfo").html(xSize + " <i class='fa fa-times'></i> " + ySize);
-        }).keyup(function (e) {
-            $(this).change();
-
-            if (e.keyCode === 13) {
-                $("#apply").click();
-            } else if (e.keyCode === 27) {
-                $("#cancel").click();
-            }
-        });
-
-        $("#cancel").click(function () {
-            $("#resizer").fadeOut();
-            $("input[type=number]#drawWidth").val(webDraft.draw.width);
-            $("input[type=number]#drawHeight").val(webDraft.draw.height);
-        });
-        $("#apply").click(function () {
-            $("#resizer").fadeOut();
-            if ($("#allLayersResizing").is(":checked")) {
-                var w = $("input[type=number]#drawWidth").val(),
-                        h = $("input[type=number]#drawHeight").val();
-
-                layers.setLayerSize('', w, h);
-            } else {
-                var w = $("input[type=number]#drawWidth").val(),
-                        h = $("input[type=number]#drawHeight").val();
-
-                layers.setLayerSize(layers.activeId, w, h);
-            }
-            webDraft.func.positionElements();
         });
     },
 
