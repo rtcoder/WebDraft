@@ -11,7 +11,6 @@ var canvas,
         randomId,
         points = {},
         webDraft = {
-
             isLoaded: false,
             title: "WebDraft",
             version: "2.3.0",

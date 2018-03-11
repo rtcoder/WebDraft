@@ -160,4 +160,3 @@ class Shapes {
         this.startShapePoints.y = -1;
     }
 }
-;

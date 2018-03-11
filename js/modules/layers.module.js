@@ -1,6 +1,5 @@
 class Layers {
     constructor() {
-
         $.get('parts/layers.part.html', function (data) {
             $('#layers').html(data);
             layers.newLayer();
@@ -71,8 +70,6 @@ class Layers {
         $(".layerView[data-id=" + layers.activeId + "]").find("img").attr("src", imgSrc).show();
     }
     newLayer() {
-
-        console.log('ss')
         let j;
         if (isNaN(parseInt($(".layerView:last").attr("id")))) {
             j = 0;
@@ -86,7 +83,15 @@ class Layers {
             randomId = webDraft.func.makeid();
 
             $(webDraft.draw.selectorId).append('<canvas id="' + randomId + '" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '" style="top:0;left:0"></canvas>');
-            $("#listLayers").append('<div data-id="' + randomId + '" id="' + j + '" class="layerView"><div class="imgLayerContainer"><img src="" class="imgLayer"></div><div title="Hide layer" class="hideLayer fa fa-eye"></div><div style="display:none" title="Show layer" class="showLayer fa fa-eye-slash"></div></div>');
+            $("#listLayers").append(`
+                <div data-id="` + randomId + `" id="` + j + `" class="layerView">
+                    <div class="imgLayerContainer">
+                        <img src="" class="imgLayer">
+                    </div>
+                    <div title="Hide layer" class="hideLayer fa fa-eye"></div>
+                    <div style="display:none" title="Show layer" class="showLayer fa fa-eye-slash"></div>
+                </div>`
+                    );
 
             let new_layer = {
                 visible: true,
