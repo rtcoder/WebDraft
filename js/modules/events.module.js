@@ -130,6 +130,6 @@ var events = {
             shapes.fill.opacity = $(this).val();
             $("#fillOpacityValue").text("fill opacity:" + Math.floor($(this).val()) + "%");
         });
-    },
+    }
 
 };

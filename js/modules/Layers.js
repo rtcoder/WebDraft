@@ -80,7 +80,7 @@ class Layers {
         let countViews = $("#listLayers").children(".layerView").length;
 
         if (countViews < 15) {
-            randomId = webDraft.func.makeid();
+            randomId = webDraft.makeid();
 
             $(webDraft.draw.selectorId).append('<canvas id="' + randomId + '" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '" style="top:0;left:0"></canvas>');
             $("#listLayers").append(`
@@ -175,7 +175,7 @@ class Layers {
                     webDraft.draw.height = h;
             });
             $(".layerView").first().click();
-            webDraft.func.positionElements();
+            webDraft.positionElements();
         }
     }
     hide(nr) {

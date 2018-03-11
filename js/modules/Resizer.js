@@ -34,7 +34,7 @@ class Resizer {
 
             layers.setLayerSize(layers.activeId, w, h);
         }
-        webDraft.func.positionElements();
+        webDraft.positionElements();
     }
     onkeyup(e) {
         this.onchange();
