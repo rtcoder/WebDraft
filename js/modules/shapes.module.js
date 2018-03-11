@@ -37,8 +37,8 @@ class Shapes {
         $("#prepareRect")
                 .show()
                 .css({
-                    "top": y + "px",
-                    "left": x + "px",
+                    "top": y + parseInt($(canvas).css('top')) + "px",
+                    "left": x + parseInt($(canvas).css('left')) + "px",
                     "width": width + "px",
                     "height": height + "px",
                     "border": webDraft.size + "px solid " + webDraft.color
@@ -106,8 +106,8 @@ class Shapes {
         $("#prepareCircle")
                 .show()
                 .css({
-                    "top": y - radius + "px",
-                    "left": x - radius + "px",
+                    "top": y + parseInt($(canvas).css('top')) - radius + "px",
+                    "left": x + parseInt($(canvas).css('left')) - radius + "px",
                     "width": radius * 2 + "px",
                     "height": radius * 2 + "px",
                     "border": webDraft.size + "px solid " + webDraft.color,

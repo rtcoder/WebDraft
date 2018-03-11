@@ -24,8 +24,8 @@ var select = {
         $("#selectRectangle")
                 .show()
                 .css({
-                    "top": y + "px",
-                    "left": x + "px",
+                    "top": y + parseInt($(canvas).css('top')) + "px",
+                    "left": x + parseInt($(canvas).css('left')) + "px",
                     "width": width + "px",
                     "height": height + "px",
                     "border": "1px dashed #fff",

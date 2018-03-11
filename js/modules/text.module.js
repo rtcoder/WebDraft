@@ -82,8 +82,8 @@ class Text {
                     .empty()
                     .show()
                     .css({
-                        "top": y + "px",
-                        "left": x + "px",
+                        "top": y + parseInt($(canvas).css('top')) + "px",
+                        "left": x + parseInt($(canvas).css('left')) + "px",
                         "min-height": height + "px",
                         "width": width + "px",
                         "height": height + "px",
