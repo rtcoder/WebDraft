@@ -88,8 +88,8 @@ class Layers {
                     <div class="imgLayerContainer">
                         <img src="" class="imgLayer">
                     </div>
-                    <div title="Hide layer" class="hideLayer fa fa-eye"></div>
-                    <div style="display:none" title="Show layer" class="showLayer fa fa-eye-slash"></div>
+                    <div title="Hide layer" class="hideLayer fas fa-eye"></div>
+                    <div style="display:none" title="Show layer" class="showLayer far fa-eye-slash"></div>
                 </div>`
                     );
 

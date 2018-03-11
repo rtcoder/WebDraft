@@ -1,41 +1,41 @@
 <div class="title" title="Move">
-    <i class="fa fa-cogs"></i>
+    <i class="fas fa-wrench"></i>
     Tools
 </div>
 <div id="toolsBtns" class="showHide">
-    <div id="resizeDraw" onclick="resizer.show()" class="primaryTool" title="Resize"><i class="fa fa-arrows-alt"></i></div>
-    <div id="btnCLear" onclick="webDraft.func.clear()" class="primaryTool" title="Clear"><i class="fa fa-ban"></i></div>
-    <div id="btnSave" onclick="file.download()" class="primaryTool" title="Save file"><i class="fa fa-save"></i></div>
-    <div id="invertColors" onclick="layers.negative()" class="primaryTool" title="Invert colors"><i class="fa fa-refresh"></i></div>
-    <div id="rotateLeft" onclick="layers.rotate(-90)" class="primaryTool" title="Rotate left"><i class="fa fa-rotate-left"></i></div>
-    <div id="rotateRight" onclick="layers.rotate(90)" class="primaryTool" title="Rotate right"><i class="fa fa-rotate-right"></i></div>
-    <div id="mirrorV" onclick="layers.mirror('vertical')" class="primaryTool" title="Vertical mirror"><i class="fa fa-arrows-h"></i></div>
-    <div id="mirrorH" onclick="layers.mirror('horizontal')" class="primaryTool" title="Horizontal mirror"><i class="fa fa-arrows-v"></i></div>
-    <div id="fileUploader" onclick="$('input#fileUploaderInput').click()" class="primaryTool" title="Upload file"><i class="fa fa-upload"></i></div>
-    <div id="cameraBtn" onclick="camera.init()" class="primaryTool" title="Photo from camera"><i class="fa fa-camera"></i></div>
-    <div id="select" class="paintTools paintTool" title="Select part of image"><i class="fa fa-object-group"></i></div>
-    <div id="pencil" class="paintTools paintTool active" title="Pencil"><i class="fa fa-pencil"></i></div>
-    <div id="colorsampler" class="paintTools paintTool" title="Get color from draw"><i class="fa fa-magic"></i></div>
-    <div id="web" class="paintTools paintTool" title="Web"><i class="fa fa-random"></i></div>
-    <div id="eraser" class="paintTools paintTool" title="Eraser"><i class="fa fa-eraser"></i></div>
-    <div id="rectangle" class="paintTools paintTool" title="Rectangle"><i class="fa fa-square-o"></i></div>
-    <div id="circle" class="paintTools paintTool" title="Circle"><i class="fa fa-circle-thin"></i></div>
-    <div id="text" class="paintTools paintTool" title="Text"><i class="fa fa-font"></i></div>
+    <div id="resizeDraw" onclick="resizer.show()" class="primaryTool" title="Resize"><i class="fas fa-expand"></i></div>
+    <div id="btnCLear" onclick="webDraft.func.clear()" class="primaryTool" title="Clear"><i class="fas fa-ban"></i></div>
+    <div id="btnSave" onclick="file.download()" class="primaryTool" title="Save file"><i class="fas fa-download"></i></div>
+    <div id="invertColors" onclick="layers.negative()" class="primaryTool" title="Invert colors"><i class="fas fa-adjust"></i></div>
+    <div id="rotateLeft" onclick="layers.rotate(-90)" class="primaryTool" title="Rotate left"><i class="fas fa-undo"></i></div>
+    <div id="rotateRight" onclick="layers.rotate(90)" class="primaryTool" title="Rotate right"><i class="fas fa-redo"></i></div>
+    <div id="mirrorV" onclick="layers.mirror('vertical')" class="primaryTool" title="Vertical mirror"><i class="fas fa-arrows-alt-h"></i></div>
+    <div id="mirrorH" onclick="layers.mirror('horizontal')" class="primaryTool" title="Horizontal mirror"><i class="fas fa-arrows-alt-v"></i></div>
+    <div id="fileUploader" onclick="$('input#fileUploaderInput').click()" class="primaryTool" title="Upload file"><i class="fas fa-upload"></i></div>
+    <div id="cameraBtn" onclick="camera.init()" class="primaryTool" title="Photo from camera"><i class="fas fa-camera"></i></div>
+    <div id="select" class="paintTools paintTool" title="Select part of image"><i class="far fa-object-group"></i></div>
+    <div id="pencil" class="paintTools paintTool active" title="Pencil"><i class="fas fa-pencil-alt"></i></div>
+    <div id="colorsampler" class="paintTools paintTool" title="Color picker"><i class="fas fa-eye-dropper"></i></div>
+    <div id="web" class="paintTools paintTool" title="Web"><i class="fab fa-hubspot"></i></div>
+    <div id="eraser" class="paintTools paintTool" title="Eraser"><i class="fas fa-eraser"></i></div>
+    <div id="rectangle" class="paintTools paintTool" title="Rectangle"><i class="far fa-square"></i></div>
+    <div id="circle" class="paintTools paintTool" title="Circle"><i class="far fa-circle"></i></div>
+    <div id="text" class="paintTools paintTool" title="Text"><i class="fas fa-font"></i></div>
 </div>
 <div id="radioBtns" class="showHide">
     <div id="shadowInput">
         <input type="checkbox" id="isShadow">
         <label for="isShadow">
-            <i class="fa fa-circle-o"></i>
-            <i class="fa fa-dot-circle-o"></i>
+            <i class="far fa-circle"></i>
+            <i class="far fa-check-circle"></i>
             <span class="label">Shadow</span>
         </label>
     </div>
     <div id="fillShapeInput">
         <input type="checkbox" id="isFillSet">
         <label for="isFillSet">
-            <i class="fa fa-circle-o"></i>
-            <i class="fa fa-dot-circle-o"></i>
+            <i class="far fa-circle"></i>
+            <i class="far fa-check-circle"></i>
             <span class="label">Fill</span>
         </label>
     </div>

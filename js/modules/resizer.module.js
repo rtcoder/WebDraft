@@ -13,7 +13,7 @@ class Resizer {
         $("#resizer").show();
         $("input[type=number]#drawWidth").val(webDraft.draw.width);
         $("input[type=number]#drawHeight").val(webDraft.draw.height);
-        $("#resizeinfo").html(webDraft.draw.width + " <i class='fa fa-times'></i> " + webDraft.draw.height);
+        $("#resizeinfo").html(webDraft.draw.width + " <i class='fas fa-times'></i> " + webDraft.draw.height);
     }
     cancel() {
         $("#resizer").hide();
@@ -46,6 +46,6 @@ class Resizer {
     onchange() {
         let xSize = parseInt($("input[type=number]#drawWidth").val());
         let ySize = parseInt($("input[type=number]#drawHeight").val());
-        $("#resizeinfo").html(xSize + " <i class='fa fa-times'></i> " + ySize);
+        $("#resizeinfo").html(xSize + " <i class='fas fa-times'></i> " + ySize);
     }
 }

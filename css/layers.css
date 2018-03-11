@@ -33,7 +33,9 @@
 #layers #layersBtns .layerTool:hover {
   color: #FFFFFF;
 }
-#layers #layersBtns .layerTool .fa {
+#layers #layersBtns .layerTool .fas,
+#layers #layersBtns .layerTool .fab,
+#layers #layersBtns .layerTool .far {
   font-size: 15px;
 }
 #layers #listLayers {

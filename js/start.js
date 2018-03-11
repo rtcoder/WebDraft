@@ -2,7 +2,7 @@ let items = [
     {
         text: 'Clear',
         shortcut: 'ctrl+del',
-        icon: 'fa fa-ban',
+        icon: 'fas fa-ban',
         onclick: function () {
             webDraft.func.clear();
         }
@@ -10,7 +10,7 @@ let items = [
     {
         text: 'Upload image',
         shortcut: 'ctrl+o',
-        icon: 'fa fa-upload',
+        icon: 'fas fa-upload',
         onclick: function () {
             $('#fileUploader').click();
         }
@@ -18,25 +18,25 @@ let items = [
     {
         text: 'Save image',
         shortcut: 'ctrl+s',
-        icon: 'fa fa-save',
+        icon: 'fas fa-download',
         onclick: function () {
             file.download();
         }
     },
     {
         text: 'Color',
-        icon: 'fa fa-tint',
+        icon: 'fas fa-tint',
         submenu: [
             {
                 text: 'Invert',
-                icon: 'fa fa-refresh',
+                icon: 'fas fa-adjust',
                 onclick: function () {
                     layers.negative();
                 }
             },
             {
                 text: 'Colorpicker',
-                icon: 'fa fa-magic',
+                icon: 'fas fa-eye-dropper',
                 onclick: function () {
                     $('#colorsampler').click();
                 }

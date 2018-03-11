@@ -7,8 +7,8 @@ input[type=checkbox] + label {
   border: none;
   border-radius: 0px;
 }
-input[type=checkbox] + label .fa-circle-o,
-input[type=checkbox] + label .fa-dot-circle-o {
+input[type=checkbox] + label .fa-circle,
+input[type=checkbox] + label .fa-check-circle {
   float: left;
   text-align: center;
   width: 30px;
@@ -18,7 +18,7 @@ input[type=checkbox] + label .fa-dot-circle-o {
   height: 20px;
   line-height: 20px;
 }
-input[type=checkbox] + label .fa-dot-circle-o {
+input[type=checkbox] + label .fa-check-circle {
   display: none;
 }
 input[type=checkbox] + label #l {
@@ -38,19 +38,19 @@ input[type=checkbox]:checked + label {
   font-weight: bold;
   color: #0052CC;
 }
-input[type=checkbox]:checked + label .fa-circle-o {
+input[type=checkbox]:checked + label .fa-circle {
   display: none;
 }
-input[type=checkbox]:checked + label .fa-dot-circle-o {
+input[type=checkbox]:checked + label .fa-check-circle {
   display: block;
 }
 input[type=checkbox]:hover + label {
   color: #FFFFFF;
 }
-input[type=checkbox]:hover + label .fa-circle-o {
+input[type=checkbox]:hover + label .fa-circle {
   display: none;
 }
-input[type=checkbox]:hover + label .fa-dot-circle-o {
+input[type=checkbox]:hover + label .fa-check-circle {
   display: block;
 }
 input[type=range] {
