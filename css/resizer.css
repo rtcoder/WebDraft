@@ -6,15 +6,15 @@
   left: 0;
   background: #2C2B2B;
   display: none;
+  padding: 10px;
   z-index: 4;
-  cursor: move;
   margin-left: calc((100vw - 300px) / 2);
   margin-top: calc((100vh - 210px) / 2);
 }
 #resizer input[type=number] {
   width: 250px;
   height: 30px;
-  margin: 10px 25px;
+  margin: 10px 15px;
   border: none;
   cursor: text;
   text-align: center;
@@ -26,9 +26,8 @@
   line-height: 30px;
   text-align: center;
   color: #CCCCCC;
-  cursor: move;
   float: left;
-  margin: 0px 25px;
+  margin: 0px 20px;
 }
 #resizer .buttonAction {
   float: left;
@@ -36,7 +35,7 @@
   height: 30px;
   line-height: 30px;
   font-size: 15px;
-  margin: 10px 15px;
+  margin: 10px 10px;
   text-align: center;
   background: #CCCCCC;
   cursor: pointer;
