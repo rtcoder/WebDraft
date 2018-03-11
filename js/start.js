@@ -45,14 +45,14 @@ let items = [
     }
 ];
 
-var context_menu = new Contextmenu(items);
-var camera = new Camera();
-var file = new File();
-var shapes = new Shapes();
-var draw = new Draw();
-var text = new Text();
-var resizer = new Resizer();
-var layers = new Layers();
+let context_menu = new Contextmenu(items);
+let camera = new Camera();
+let file = new File();
+let shapes = new Shapes();
+let draw = new Draw();
+let text = new Text();
+let resizer = new Resizer();
+let layers = new Layers();
 $(window)
         .resize(function () {
             webDraft.func.resize();
@@ -74,23 +74,23 @@ $(document)
                 containment: "#shadowSquare",
                 scroll: false,
                 drag: function () {
-                    var shadowY = parseInt($(this).css('top')) - (parseInt($(this).parent().height()) / 2);
-                    var shadowX = parseInt($(this).css('left')) - (parseInt($(this).parent().width()) / 2);
+                    let shadowY = parseInt($(this).css('top')) - (parseInt($(this).parent().height()) / 2);
+                    let shadowX = parseInt($(this).css('left')) - (parseInt($(this).parent().width()) / 2);
                     webDraft.shadow.offsetX = shadowX;
                     webDraft.shadow.offsetY = shadowY;
                 }
             });
             $('#shadowSquare').on('mousedown', function (e) {
-                var x = e.pageX - $(this).offset().left;
-                var y = e.pageY - $(this).offset().top;
+                let x = e.pageX - $(this).offset().left;
+                let y = e.pageY - $(this).offset().top;
 
                 $("#shadowDot").css({
                     top: (y - 5) + 'px',
                     left: (x - 5) + 'px'
                 });
 
-                var shadowY = parseInt($("#shadowDot").css('top')) - (parseInt($("#shadowDot").parent().height()) / 2);
-                var shadowX = parseInt($("#shadowDot").css('left')) - (parseInt($("#shadowDot").parent().width()) / 2);
+                let shadowY = parseInt($("#shadowDot").css('top')) - (parseInt($("#shadowDot").parent().height()) / 2);
+                let shadowX = parseInt($("#shadowDot").css('left')) - (parseInt($("#shadowDot").parent().width()) / 2);
                 webDraft.shadow.offsetX = shadowX;
                 webDraft.shadow.offsetY = shadowY;
             });
