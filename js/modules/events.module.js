@@ -1,33 +1,32 @@
 var events = {
     color: function () {
-        //setting first Color
-        $("#generalColor").click(function () {
-            $("input[type=color]#firstColor").click();
-        });
-        //setting shadow Color
-        $("#shadowColor").click(function () {
-            $("input[type=color]#shadowColorVal").click();
-        });
-        //setting fill Color
-        $("#fillColor").click(function () {
-            $("input[type=color]#fillColorVal").click();
-        });
-        //changing first color input
-        $("input[type=color]#firstColor").change(function () {
-            $("#generalColor .color").css({"background": $(this).val()});
-            webDraft.color = $(this).val();
-            $("#textRectangle").css('color', $(this).val());
-        });
-        //changing shadow color input
-        $("input[type=color]#shadowColorVal").change(function () {
-            $("#shadowColor .color").css({"background": $(this).val()});
-            webDraft.shadow.color = $(this).val();
-        });
-        //changing fill color input
-        $("input[type=color]#fillColorVal").change(function () {
-            $("#fillColor .color").css({"background": $(this).val()});
-            shapes.fill.color = $(this).val();
-        });
+        $('#generalColor').colorpicker({
+            onChange: function (color) {
+                $('#generalColor .color').css({
+                    'background': color
+                });
+                webDraft.color = color;
+            }
+        }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
+
+        $('#shadowColor').colorpicker({
+            onChange: function (color) {
+                $('#shadowColor .color').css({
+                    'background': color
+                });
+                webDraft.shadow.color = color;
+            }
+        }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
+
+        $('#fillColor').colorpicker({
+            onChange: function (color) {
+                $('#fillColor .color').css({
+                    'background': color
+                });
+                webDraft.fill.color = color;
+            }
+        }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
+
     },
     info: function () {
         $(".close-info").click(function () {
