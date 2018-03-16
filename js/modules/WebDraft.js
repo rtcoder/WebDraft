@@ -88,7 +88,7 @@ class WebDraft {
         if (active !== "")
             layers.select(active);
 
-        $("title").text(this.title + " v" + this.version + ' [' + this.draw.width + " x " + this.draw.height + ']');
+        $("title").text(this.title + ' [' + this.draw.width + " x " + this.draw.height + ']');
         $("html, body, #paint").css({"visibility": "visible"});
     }
     moveEraseRect(event) {
