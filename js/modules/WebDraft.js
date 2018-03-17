@@ -328,9 +328,10 @@ class WebDraft {
         //events on #draw
         $(this.draw.eventHandler)
                 .hover(function () {
-                    ctx.beginPath();
-                    ctx.stroke();
-
+                    if (typeof ctx !== 'undefined') {
+                        ctx.beginPath();
+                        ctx.stroke();
+                    }
                     if (this.selectedTool === ERASER) {
                         $("#eraseRect").show();
                     }

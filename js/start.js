@@ -1,4 +1,3 @@
-
 const DEBUG = 0;
 
 const PENCIL = 'pencil';

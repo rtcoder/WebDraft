@@ -1,29 +1,29 @@
 var events = {
     color: function () {
         $('#generalColor').colorpicker({
-            onChange: function (color) {
+            onSelect: function (color) {
                 $('#generalColor .color').css({
-                    'background': color
+                    'background': color.hex
                 });
-                webDraft.color = color;
+                webDraft.color = color.hex;
             }
         }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
 
         $('#shadowColor').colorpicker({
-            onChange: function (color) {
+            onSelect: function (color) {
                 $('#shadowColor .color').css({
-                    'background': color
+                    'background': color.hex
                 });
-                webDraft.shadow.color = color;
+                webDraft.shadow.color = color.hex;
             }
         }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
 
         $('#fillColor').colorpicker({
-            onChange: function (color) {
+            onSelect: function (color) {
                 $('#fillColor .color').css({
-                    'background': color
+                    'background': color.hex
                 });
-                webDraft.fill.color = color;
+                webDraft.fill.color = color.hex;
             }
         }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
 
