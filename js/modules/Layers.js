@@ -80,7 +80,7 @@ class Layers {
         let countViews = $("#listLayers").children(".layerView").length;
 
         if (countViews < 15) {
-            randomId = webDraft.func.makeid();
+            randomId = webDraft.makeid();
 
             $(webDraft.draw.selectorId).append('<canvas id="' + randomId + '" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '" style="top:0;left:0"></canvas>');
             $("#listLayers").append(`
@@ -88,8 +88,8 @@ class Layers {
                     <div class="imgLayerContainer">
                         <img src="" class="imgLayer">
                     </div>
-                    <div title="Hide layer" class="hideLayer fa fa-eye"></div>
-                    <div style="display:none" title="Show layer" class="showLayer fa fa-eye-slash"></div>
+                    <div title="Hide layer" class="hideLayer fas fa-eye"></div>
+                    <div style="display:none" title="Show layer" class="showLayer far fa-eye-slash"></div>
                 </div>`
                     );
 
@@ -175,7 +175,7 @@ class Layers {
                     webDraft.draw.height = h;
             });
             $(".layerView").first().click();
-            webDraft.func.positionElements();
+            webDraft.positionElements();
         }
     }
     hide(nr) {

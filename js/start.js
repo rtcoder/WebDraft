@@ -1,16 +1,27 @@
+const DEBUG = 0;
+
+const PENCIL = 'pencil';
+const SELECT = 'select';
+const ERASER = 'eraser';
+const WEB = 'web';
+const TEXT = 'text';
+const RECTANGLE = 'rectangle';
+const CIRCLE = 'circle';
+const COLORSAMPLER = 'colorsampler';
+
 let items = [
     {
         text: 'Clear',
         shortcut: 'ctrl+del',
-        icon: 'fa fa-ban',
+        icon: 'fas fa-ban',
         onclick: function () {
-            webDraft.func.clear();
+            webDraft.clear();
         }
     },
     {
         text: 'Upload image',
         shortcut: 'ctrl+o',
-        icon: 'fa fa-upload',
+        icon: 'fas fa-upload',
         onclick: function () {
             $('#fileUploader').click();
         }
@@ -18,25 +29,25 @@ let items = [
     {
         text: 'Save image',
         shortcut: 'ctrl+s',
-        icon: 'fa fa-save',
+        icon: 'fas fa-download',
         onclick: function () {
             file.download();
         }
     },
     {
         text: 'Color',
-        icon: 'fa fa-tint',
+        icon: 'fas fa-tint',
         submenu: [
             {
                 text: 'Invert',
-                icon: 'fa fa-refresh',
+                icon: 'fas fa-adjust',
                 onclick: function () {
                     layers.negative();
                 }
             },
             {
                 text: 'Colorpicker',
-                icon: 'fa fa-magic',
+                icon: 'fas fa-eye-dropper',
                 onclick: function () {
                     $('#colorsampler').click();
                 }
@@ -54,10 +65,19 @@ let text = new Text();
 let resizer = new Resizer();
 let layers = new Layers();
 var select = new Select();
+var webDraft = new WebDraft();
+
+
+var canvas,
+        ctx,
+        randomId,
+        points = {};
+
+
 $(window)
         .resize(function () {
-            webDraft.func.resize();
-            webDraft.func.positionElements();
+            webDraft.resize();
+            webDraft.positionElements();
         });
 $(document)
         .ready(function (event) {
@@ -66,7 +86,7 @@ $(document)
                 webDraft.draw.height = window.innerHeight - 30;
             }
 
-            webDraft.func.init();
+            webDraft.init();
             $("#selectRectangle, #textRectangle")
                     .draggable({snap: false})
                     .css({"position": "absolute"});
@@ -103,5 +123,20 @@ $(document)
                 e.preventDefault();
             }
         })
-        .on('mouseup touchend', webDraft.func._mouseup)
-        .on('mousemove touchmove', webDraft.func._mousemove);
+        .on('mouseup touchend', function (e) {
+            webDraft._mouseup(e);
+        })
+        .on('mousemove touchmove', function (e) {
+            webDraft._mousemove(e);
+        });
+
+function hexToRgba(hex, opacity) {
+    hex = hex.replace('#', '');
+    var r = parseInt(hex.substring(0, 2), 16);
+    var g = parseInt(hex.substring(2, 4), 16);
+    var b = parseInt(hex.substring(4, 6), 16);
+    var a = opacity / 100;
+    var result = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+
+    return result;
+}

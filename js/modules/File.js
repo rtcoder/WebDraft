@@ -17,7 +17,7 @@ class File {
 
             layers.newLayer();
             layers.setLayerSize(layers.activeId, widthImg, heightImg);
-            webDraft.func.positionElements();
+            webDraft.positionElements();
 
             ctx.drawImage(output, 0, 0);
 

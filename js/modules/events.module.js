@@ -1,33 +1,32 @@
 var events = {
     color: function () {
-        //setting first Color
-        $("#generalColor").click(function () {
-            $("input[type=color]#firstColor").click();
-        });
-        //setting shadow Color
-        $("#shadowColor").click(function () {
-            $("input[type=color]#shadowColorVal").click();
-        });
-        //setting fill Color
-        $("#fillColor").click(function () {
-            $("input[type=color]#fillColorVal").click();
-        });
-        //changing first color input
-        $("input[type=color]#firstColor").change(function () {
-            $("#generalColor .color").css({"background": $(this).val()});
-            webDraft.color = $(this).val();
-            $("#textRectangle").css('color', $(this).val());
-        });
-        //changing shadow color input
-        $("input[type=color]#shadowColorVal").change(function () {
-            $("#shadowColor .color").css({"background": $(this).val()});
-            webDraft.shadow.color = $(this).val();
-        });
-        //changing fill color input
-        $("input[type=color]#fillColorVal").change(function () {
-            $("#fillColor .color").css({"background": $(this).val()});
-            shapes.fill.color = $(this).val();
-        });
+        $('#generalColor').colorpicker({
+            onSelect: function (color) {
+                $('#generalColor .color').css({
+                    'background': color.hex
+                });
+                webDraft.color = color.hex;
+            }
+        }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
+
+        $('#shadowColor').colorpicker({
+            onSelect: function (color) {
+                $('#shadowColor .color').css({
+                    'background': color.hex
+                });
+                webDraft.shadow.color = color.hex;
+            }
+        }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
+
+        $('#fillColor').colorpicker({
+            onSelect: function (color) {
+                $('#fillColor .color').css({
+                    'background': color.hex
+                });
+                shapes.fill.color = color.hex;
+            }
+        }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
+
     },
     info: function () {
         $(".close-info").click(function () {
@@ -130,6 +129,6 @@ var events = {
             shapes.fill.opacity = $(this).val();
             $("#fillOpacityValue").text("fill opacity:" + Math.floor($(this).val()) + "%");
         });
-    },
+    }
 
 };

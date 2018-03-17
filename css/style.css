@@ -8,8 +8,8 @@ input[type=checkbox] + label {
   border: none;
   border-radius: 0px;
 }
-input[type=checkbox] + label .fa-circle-o,
-input[type=checkbox] + label .fa-dot-circle-o {
+input[type=checkbox] + label .fa-circle,
+input[type=checkbox] + label .fa-check-circle {
   float: left;
   text-align: center;
   width: 30px;
@@ -19,7 +19,7 @@ input[type=checkbox] + label .fa-dot-circle-o {
   height: 20px;
   line-height: 20px;
 }
-input[type=checkbox] + label .fa-dot-circle-o {
+input[type=checkbox] + label .fa-check-circle {
   display: none;
 }
 input[type=checkbox] + label #l {
@@ -39,19 +39,19 @@ input[type=checkbox]:checked + label {
   font-weight: bold;
   color: #0052CC;
 }
-input[type=checkbox]:checked + label .fa-circle-o {
+input[type=checkbox]:checked + label .fa-circle {
   display: none;
 }
-input[type=checkbox]:checked + label .fa-dot-circle-o {
+input[type=checkbox]:checked + label .fa-check-circle {
   display: block;
 }
 input[type=checkbox]:hover + label {
   color: #FFFFFF;
 }
-input[type=checkbox]:hover + label .fa-circle-o {
+input[type=checkbox]:hover + label .fa-circle {
   display: none;
 }
-input[type=checkbox]:hover + label .fa-dot-circle-o {
+input[type=checkbox]:hover + label .fa-check-circle {
   display: block;
 }
 input[type=range] {
@@ -183,7 +183,9 @@ input#isShadow {
   background: #EEEEEE;
   color: #2E3436;
 }
-#toolsGroup .tools .title .fa {
+#toolsGroup .tools .title .fas,
+#toolsGroup .tools .title .fab,
+#toolsGroup .tools .title .far {
   position: relative;
   height: inherit;
   line-height: inherit;
@@ -205,8 +207,12 @@ input#isShadow {
   color: #A9A9A9;
   cursor: pointer;
 }
-#toolsGroup .tools #toolsBtns .primaryTool .fa,
-#toolsGroup .tools #toolsBtns .paintTools .fa {
+#toolsGroup .tools #toolsBtns .primaryTool .fas,
+#toolsGroup .tools #toolsBtns .paintTools .fas,
+#toolsGroup .tools #toolsBtns .primaryTool .fab,
+#toolsGroup .tools #toolsBtns .paintTools .fab,
+#toolsGroup .tools #toolsBtns .primaryTool .far,
+#toolsGroup .tools #toolsBtns .paintTools .far {
   font-size: 15px;
 }
 #toolsGroup .tools #toolsBtns .primaryTool:hover,
@@ -297,7 +303,9 @@ input#isShadow {
   color: #A9A9A9;
   cursor: pointer;
 }
-#textOptions #alignBtns .textPostionTool .fa {
+#textOptions #alignBtns .textPostionTool .fas,
+#textOptions #alignBtns .textPostionTool .fab,
+#textOptions #alignBtns .textPostionTool .far {
   font-size: 15px;
 }
 #textOptions #alignBtns .textPostionTool:hover,
@@ -317,7 +325,9 @@ input#isShadow {
   color: #A9A9A9;
   cursor: pointer;
 }
-#textOptions #fontStyleBtns .styleTool .fa {
+#textOptions #fontStyleBtns .styleTool .fas,
+#textOptions #fontStyleBtns .styleTool .fab,
+#textOptions #fontStyleBtns .styleTool .far {
   font-size: 15px;
 }
 #textOptions #fontStyleBtns .styleTool:hover,
@@ -367,7 +377,9 @@ input#isShadow {
 #layers #layersBtns .layerTool:hover {
   color: #FFFFFF;
 }
-#layers #layersBtns .layerTool .fa {
+#layers #layersBtns .layerTool .fas,
+#layers #layersBtns .layerTool .fab,
+#layers #layersBtns .layerTool .far {
   font-size: 15px;
 }
 #layers #listLayers {

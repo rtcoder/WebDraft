@@ -14,7 +14,9 @@
   color: #A9A9A9;
   cursor: pointer;
 }
-#textOptions #alignBtns .textPostionTool .fa {
+#textOptions #alignBtns .textPostionTool .fas,
+#textOptions #alignBtns .textPostionTool .fab,
+#textOptions #alignBtns .textPostionTool .far {
   font-size: 15px;
 }
 #textOptions #alignBtns .textPostionTool:hover,
@@ -34,7 +36,9 @@
   color: #A9A9A9;
   cursor: pointer;
 }
-#textOptions #fontStyleBtns .styleTool .fa {
+#textOptions #fontStyleBtns .styleTool .fas,
+#textOptions #fontStyleBtns .styleTool .fab,
+#textOptions #fontStyleBtns .styleTool .far {
   font-size: 15px;
 }
 #textOptions #fontStyleBtns .styleTool:hover,

@@ -114,7 +114,7 @@ class Text {
                 layers.newLayer();
                 layers.setLayerSize(layers.activeId, widthImg, heightImg);
                 layers.setLayerPosition(layers.activeId, top, left);
-                webDraft.func.positionElements();
+                webDraft.positionElements();
 
                 ctx.drawImage(canvas, 0, 0);
 

@@ -56,7 +56,7 @@ class Camera {
         let snapImage = document.getElementById('snapImage');
         layers.newLayer();
         layers.setLayerSize(layers.activeId, snapImage.width, snapImage.height);
-        webDraft.func.positionElements();
+        webDraft.positionElements();
         ctx.drawImage(snapImage, 0, 0);
         layers.saveState();
         $('#camera').removeClass('snapped');

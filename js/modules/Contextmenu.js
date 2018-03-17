@@ -65,8 +65,8 @@ class Contextmenu {
         $('#contextmenu').hide();
     }
     buildItem(item) {
-        let arrowLeft = '<span class="arrow left-arrow"><i class="fa fa-chevron-left"></i></span>';
-        let arrowRight = '<span class="arrow right-arrow"><i class="fa fa-chevron-right"></i></span>';
+        let arrowLeft = '<span class="arrow left-arrow"><i class="fas fa-chevron-left"></i></span>';
+        let arrowRight = '<span class="arrow right-arrow"><i class="fas fa-chevron-right"></i></span>';
         let shortcut = '<span class="shortcut">';
         let text = '<span class="text">';
         let icon = '<span class="icon"><i';

@@ -1,0 +1,3 @@
+[submodule "vendor/rtcoder/colorpicker"]
+	path = vendor/rtcoder/colorpicker
+	url = https://github.com/rtcoder/Color-Picker.git
