@@ -23,7 +23,7 @@ var events = {
                 $('#fillColor .color').css({
                     'background': color.hex
                 });
-                webDraft.fill.color = color.hex;
+                shapes.fill.color = color.hex;
             }
         }, './vendor/rtcoder/colorpicker/html/colorpicker.html');
 
