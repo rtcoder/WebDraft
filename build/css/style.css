@@ -707,30 +707,56 @@ input#isShadow {
 #camera.opened {
   display: block;
 }
+#camera.fullscreen {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  transform: translate(0, 0);
+}
+#camera.fullscreen .cameraContent .videoContainer {
+  width: 100vw;
+  height: calc(100vh - 130px);
+}
+#camera.fullscreen .cameraContent .filters {
+  width: 100vw;
+  height: 50px;
+  line-height: 50px;
+}
+#camera.fullscreen .cameraContent .filters label span.filter {
+  margin: 15px 5px;
+}
 #camera #cameraHeader {
   width: 100%;
   height: 30px;
 }
 #camera #cameraHeader #cameraTitle {
-  width: calc(100% - 30px);
+  width: calc(100% - 70px);
   float: left;
   height: 30px;
   line-height: 30px;
   padding: 0px 5px;
   color: #FFFFFF;
 }
-#camera #cameraHeader #closeCamera {
+#camera #cameraHeader button {
   width: 30px;
   height: 30px;
   border: none;
   display: inline-block;
-  background: #C50000;
-  color: #FFFFFF;
   cursor: pointer;
   float: right;
 }
-#camera #cameraHeader #closeCamera i {
+#camera #cameraHeader button i {
   cursor: pointer;
+}
+#camera #cameraHeader button#closeCamera {
+  background: #C50000;
+  color: #FFFFFF;
+}
+#camera #cameraHeader button#switchFullscreen {
+  background: #0021CC;
+  color: #FFFFFF;
+  margin-right: 10px;
 }
 #camera .cameraContent {
   width: 100%;
@@ -742,9 +768,13 @@ input#isShadow {
   float: left;
   position: relative;
 }
+#camera .cameraContent .videoContainer canvas#snapImage,
+#camera .cameraContent .videoContainer canvas#frame,
+#camera .cameraContent .videoContainer canvas#additional,
 #camera .cameraContent .videoContainer video {
   width: 100%;
-  height: 100%;
+  max-width: 100vw;
+  max-height: calc(100vh - 130px);
   float: left;
 }
 #camera .cameraContent .videoContainer canvas#snapImage,
@@ -769,9 +799,9 @@ input#isShadow {
   color: #FFFFFF;
 }
 #camera .cameraContent .filters label span.filter {
-  width: 60px;
+  width: 70px;
   height: 20px;
-  margin: 0px 20px 5px;
+  margin: 0px 15px 5px;
   cursor: pointer;
   background: #EEEEEE;
   line-height: 20px;
@@ -815,6 +845,7 @@ input#isShadow {
 #camera.snapped #cameraButtons button#snap {
   display: none;
 }
+#camera.snapped .cameraContent .videoContainer canvas#additional,
 #camera.snapped .cameraContent .videoContainer video#video {
   display: none;
 }

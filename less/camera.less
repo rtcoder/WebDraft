@@ -16,28 +16,58 @@
   &.opened {
     display: block;
   }
+  &.fullscreen {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    transform: translate(0, 0);
+    .cameraContent {
+      .videoContainer {
+        width: 100vw;
+        height: ~"calc(100vh - 130px)";
+      }
+      .filters {
+        width: 100vw;
+        height: 50px;
+        line-height: 50px;
+        label {
+          span.filter {
+            margin: 15px 5px;
+          }
+        }
+      }
+    }
+  }
   #cameraHeader {
     width: 100%;
     height: 30px;
     #cameraTitle {
-      width: ~"calc(100% - 30px)";
+      width: ~"calc(100% - 70px)";
       float: left;
       height: 30px;
       line-height: 30px;
       padding: 0px 5px;
       color: @white1;
     }
-    #closeCamera {
+    button {
       width: 30px;
       height: 30px;
       border: none;
       display: inline-block;
-      background: @red1;
-      color: @white1;
       cursor: pointer;
       float: right;
       i {
         cursor: pointer;
+      }
+      &#closeCamera {
+        background: @red1;
+        color: @white1;
+      }
+      &#switchFullscreen {
+        background: @blue2;
+        color: @white1;
+        margin-right: 10px;
       }
     }
   }
@@ -49,16 +79,20 @@
       width: ~"calc(100% - 100px)";
       float: left;
       position: relative;
+      canvas#snapImage,
+      canvas#frame,
+      canvas#additional,
       video {
         width: 100%;
-        height: 100%;
+        max-width: 100vw;
+        max-height: ~"calc(100vh - 130px)";
         float: left;
       }
       canvas#snapImage,
       canvas#frame {
         display: none;
       }
-      canvas#additional{
+      canvas#additional {
         display: block;
         position: absolute;
         top: 0;
@@ -77,9 +111,9 @@
           }
         }
         span.filter {
-          width: 60px;
+          width: 70px;
           height: 20px;
-          margin: 0px 20px 5px;
+          margin: 0px 15px 5px;
           cursor: pointer;
           background: @white2;
           line-height: 20px;
@@ -134,6 +168,7 @@
     }
     .cameraContent {
       .videoContainer {
+        canvas#additional,
         video#video {
           display: none;
         }

@@ -18,6 +18,9 @@ class Camera {
             $('#saveSnapOnComputer').click($this.saveOnComputer);
             $('#applySnap').click($this.applySnap);
             $('#cancelSnap').click($this.cancelSnap);
+            $('#switchFullscreen').click(function (e) {
+                $('#camera').toggleClass('fullscreen');
+            })
             $('#closeCamera').click(function () {
                 $this.stop();
             });
