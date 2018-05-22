@@ -147,7 +147,7 @@ input#isShadow {
 #toolsGroup #previewColorSampler {
   width: 100%;
   height: 60px;
-  background: 0 30px url('../pic/transparent.png');
+  background: 0 30px url('/pic/transparent.png');
   z-index: 1;
   display: none;
 }
@@ -691,7 +691,8 @@ input#isShadow {
   cursor: pointer;
 }
 #camera {
-  width: 640px;
+  box-shadow: 0px 0px 5px 2px #6f6f6f;
+  width: 740px;
   max-width: 100vw;
   height: 560px;
   max-height: 100vh;
@@ -706,73 +707,150 @@ input#isShadow {
 #camera.opened {
   display: block;
 }
+#camera.fullscreen {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  transform: translate(0, 0);
+}
+#camera.fullscreen .cameraContent .videoContainer {
+  width: 100vw;
+  height: calc(100vh - 130px);
+}
+#camera.fullscreen .cameraContent .filters {
+  width: 100vw;
+  height: 50px;
+  line-height: 50px;
+}
+#camera.fullscreen .cameraContent .filters label span.filter {
+  margin: 15px 5px;
+}
 #camera #cameraHeader {
   width: 100%;
   height: 30px;
 }
 #camera #cameraHeader #cameraTitle {
-  width: calc(100% - 30px);
+  width: calc(100% - 70px);
   float: left;
   height: 30px;
   line-height: 30px;
   padding: 0px 5px;
   color: #FFFFFF;
 }
-#camera #cameraHeader #closeCamera {
+#camera #cameraHeader button {
   width: 30px;
   height: 30px;
   border: none;
   display: inline-block;
-  background: #C50000;
-  color: #FFFFFF;
   cursor: pointer;
   float: right;
 }
-#camera #cameraHeader #closeCamera i {
+#camera #cameraHeader button i {
   cursor: pointer;
 }
-#camera canvas#snapImage {
+#camera #cameraHeader button#closeCamera {
+  background: #C50000;
+  color: #FFFFFF;
+}
+#camera #cameraHeader button#switchFullscreen {
+  background: #0021CC;
+  color: #FFFFFF;
+  margin-right: 10px;
+}
+#camera .cameraContent {
+  width: 100%;
+  float: left;
+  margin-top: 10px;
+}
+#camera .cameraContent .videoContainer {
+  width: calc(100% - 100px);
+  float: left;
+  position: relative;
+}
+#camera .cameraContent .videoContainer canvas#snapImage,
+#camera .cameraContent .videoContainer canvas#frame,
+#camera .cameraContent .videoContainer canvas#additional,
+#camera .cameraContent .videoContainer video {
+  width: 100%;
+  max-width: 100vw;
+  max-height: calc(100vh - 130px);
+  float: left;
+}
+#camera .cameraContent .videoContainer canvas#snapImage,
+#camera .cameraContent .videoContainer canvas#frame {
   display: none;
 }
-#camera #cameraButtons {
+#camera .cameraContent .videoContainer canvas#additional {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#camera .cameraContent .filters {
+  width: 100px;
+  float: left;
+}
+#camera .cameraContent .filters label input {
+  display: none;
+}
+#camera .cameraContent .filters label input:checked + span {
+  background: #0052CC;
+  color: #FFFFFF;
+}
+#camera .cameraContent .filters label span.filter {
+  width: 70px;
+  height: 20px;
+  margin: 0px 15px 5px;
+  cursor: pointer;
+  background: #EEEEEE;
+  line-height: 20px;
+  text-align: center;
+  font-size: 13px;
+  float: left;
+}
+#camera .cameraContent #cameraButtons {
+  float: left;
+  width: 100%;
   height: 50px;
   line-height: 50px;
 }
-#camera #cameraButtons button {
+#camera .cameraContent #cameraButtons button {
   min-width: 50px;
   border: none;
   display: none;
   cursor: pointer;
 }
-#camera #cameraButtons button * {
+#camera .cameraContent #cameraButtons button * {
   cursor: pointer;
 }
-#camera #cameraButtons button#snap {
+#camera .cameraContent #cameraButtons button#snap {
   display: inline-block;
 }
-#camera #cameraButtons button#applySnap {
+#camera .cameraContent #cameraButtons button#applySnap {
   background: #129a01;
   color: #FFFFFF;
 }
-#camera #cameraButtons button#cancelSnap {
+#camera .cameraContent #cameraButtons button#cancelSnap {
   background: #C50000;
   color: #FFFFFF;
 }
-#camera #cameraButtons button#saveSnapOnComputer {
+#camera .cameraContent #cameraButtons button#saveSnapOnComputer {
   background: #0052CC;
   color: #FFFFFF;
-}
-#camera.snapped video#video {
-  display: none;
-}
-#camera.snapped canvas#snapImage {
-  display: block;
 }
 #camera.snapped #cameraButtons button {
   display: inline-block;
 }
 #camera.snapped #cameraButtons button#snap {
   display: none;
+}
+#camera.snapped .cameraContent .videoContainer canvas#additional,
+#camera.snapped .cameraContent .videoContainer video#video {
+  display: none;
+}
+#camera.snapped .cameraContent .videoContainer canvas#snapImage {
+  display: block;
 }
 menu#contextmenu {
   display: none;

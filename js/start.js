@@ -9,6 +9,7 @@ const RECTANGLE = 'rectangle';
 const CIRCLE = 'circle';
 const COLORSAMPLER = 'colorsampler';
 
+
 let items = [
     {
         text: 'Clear',
@@ -64,11 +65,11 @@ let draw = new Draw();
 let text = new Text();
 let resizer = new Resizer();
 let layers = new Layers();
-var select = new Select();
-var webDraft = new WebDraft();
+let select = new Select();
+let webDraft = new WebDraft();
 
 
-var canvas,
+let canvas,
         ctx,
         randomId,
         points = {};

@@ -1,0 +1,28 @@
+{
+  "name": "webdraft",
+  "version": "2.3.0",
+  "description": "Web application for drawing.",
+  "main": "js/start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtcoder/WebDraft.git"
+  },
+  "author": "Dawid Jeż (rtcoder)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rtcoder/WebDraft/issues"
+  },
+  "homepage": "https://github.com/rtcoder/WebDraft#readme",
+  "devDependencies": {
+    "grunt": "^1.0.2"
+  },
+  "dependencies": {
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-cssmin": "^2.2.1",
+    "grunt-contrib-less": "^1.4.1",
+    "grunt-contrib-watch": "^1.1.0"
+  }
+}
