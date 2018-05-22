@@ -58,7 +58,10 @@ class Camera {
         let snapImage = document.getElementById('snapImage');
         let snapImageContext = snapImage.getContext('2d');
         let video = document.getElementById('video');
-        snapImageContext.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+        let additionalLayer = document.getElementById('additional');
+        let additionalLayerContext = additionalLayer.getContext('2d');
+        let videoImageData = additionalLayerContext.getImageData(0, 0, additionalLayer.width, additionalLayer.height);
+        snapImageContext.putImageData(videoImageData, 0, 0);
         $('#camera').addClass('snapped');
     }
 
