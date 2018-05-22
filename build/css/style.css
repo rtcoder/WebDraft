@@ -147,7 +147,7 @@ input#isShadow {
 #toolsGroup #previewColorSampler {
   width: 100%;
   height: 60px;
-  background: 0 30px url('../pic/transparent.png');
+  background: 0 30px url('/pic/transparent.png');
   z-index: 1;
   display: none;
 }
@@ -761,6 +761,9 @@ input#isShadow {
 #camera #cameraButtons button#saveSnapOnComputer {
   background: #0052CC;
   color: #FFFFFF;
+}
+#camera .ok {
+  visibility: collapse;
 }
 #camera.snapped video#video {
   display: none;
