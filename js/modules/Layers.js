@@ -32,7 +32,7 @@ class Layers {
         if (layerId === "") {
             webDraft.draw.width = width;
             webDraft.draw.height = height;
-            $("canvas").attr({
+            $("canvas.canvas-draw").attr({
                 "width": webDraft.draw.width,
                 "height": webDraft.draw.height
             });
@@ -43,7 +43,7 @@ class Layers {
             });
             webDraft.draw.width = 0;
             webDraft.draw.height = 0;
-            $("canvas").each(function () {
+            $("canvas.canvas-draw").each(function () {
                 let w = parseInt($(this).attr("width"));
                 let h = parseInt($(this).attr("height"));
                 if (webDraft.draw.width < w)
@@ -82,7 +82,7 @@ class Layers {
         if (countViews < 15) {
             randomId = webDraft.makeid();
 
-            $(webDraft.draw.selectorId).append('<canvas id="' + randomId + '" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '" style="top:0;left:0"></canvas>');
+            $(webDraft.draw.selectorId).append('<canvas class="canvas-draw" id="' + randomId + '" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '" style="top:0;left:0"></canvas>');
             $("#listLayers").append(`
                 <div data-id="` + randomId + `" id="` + j + `" class="layerView">
                     <div class="imgLayerContainer">
@@ -147,7 +147,7 @@ class Layers {
         if (countViews > 1) {
             let i = parseInt(nr);
             $(".layerView#" + i).remove();
-            $("canvas#" + id).remove();
+            $("canvas#" + identifier).remove();
             for (i in layers.list) {
                 if (!$('canvas#' + layers.list[i].id).length) {
                     layers.list.splice(i, 1);
@@ -165,9 +165,9 @@ class Layers {
 
             webDraft.draw.width = 0;
             webDraft.draw.height = 0;
-            $("canvas").each(function () {
-                w = parseInt($(this).attr("width"));
-                h = parseInt($(this).attr("height"));
+            $("canvas.canvas-draw").each(function () {
+                const w = parseInt($(this).attr("width"));
+                const h = parseInt($(this).attr("height"));
                 if (webDraft.draw.width < w)
                     webDraft.draw.width = w;
 
@@ -185,7 +185,7 @@ class Layers {
         $("canvas#" + layers.list[i].id).addClass("invisible");
 
         let j = 0;
-        $("canvas").not('#snapImage').each(function () {
+        $("canvas.canvas-draw").not('#snapImage').each(function () {
             layers.list[j].id = $(this).attr("id");
 
             if ($(this).hasClass("invisible"))
@@ -213,7 +213,7 @@ class Layers {
         $("canvas#" + layers.list[i].id).removeClass("invisible");
 
         let j = 0;
-        $("canvas").not('#snapImage').each(function () {
+        $("canvas.canvas-draw").not('#snapImage').each(function () {
             layers.list[j].id = $(this).attr("id");
 
             if ($(this).hasClass("invisible"))
@@ -301,7 +301,7 @@ class Layers {
             $("canvas#" + layers.activeId).insertBefore("canvas#" + prevId);
 
             let j = 0;
-            $("canvas").each(function () {
+            $("canvas.canvas-draw").each(function () {
                 layers.list[j].id = $(this).attr("id");
 
                 if ($(this).hasClass("invisible"))
@@ -331,7 +331,7 @@ class Layers {
 
             $("canvas#" + layers.activeId).insertAfter("canvas#" + nextId);
             let j = 0;
-            $("canvas").each(function () {
+            $("canvas.canvas-draw").each(function () {
                 layers.list[j].id = $(this).attr("id");
 
                 if ($(this).hasClass("invisible"))

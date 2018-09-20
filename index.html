@@ -1,77 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>WebDraft</title>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="build/css/style.min.css">
-        <link rel="stylesheet" href="vendor/jquery-ui/css/jquery-ui-1.12.1.min.css">
-        <link rel="stylesheet" href="vendor/fontawesome/css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="vendor/rtcoder/colorpicker/css/colorpicker.min.css">
+<head>
+    <title>WebDraft</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="build/css/style.min.css">
+    <link rel="stylesheet" href="vendor/jquery-ui/css/jquery-ui-1.12.1.min.css">
+    <link rel="stylesheet" href="vendor/fontawesome/css/fontawesome-all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+    <link rel="stylesheet" href="vendor/rtcoder/colorpicker/css/colorpicker.min.css">
 
-        <link rel="shortcut icon" href="favicon.ico" />
-    </head>
-    <body onload="webDraft.resize();webDraft.positionElements()">
-        <!--all site elements-->
-        <div id="eraseRect"></div>
-        <!--tools-->
-        <div id="toolsGroup">
-            <!-- preview color sampler -->
-            <div id="previewColorSampler">
-                <div id="textColorSampler"></div>
-                <div id="colorBoxSampler"></div>
-            </div>
-            <div class="tools" data-id="buttons"></div>
-            <div class="tools" data-id="color-picker"></div>
-            <div class="tools" data-id="sliders"></div>
-            <div class="tools" data-id="shadow">
-                <div id="shadowSquare">
-                    <div id="shadowDot"></div>
-                </div>
-            </div>
-            <!--textOptions-->
-            <div id="textOptions" class="tools"></div>
-            <div id="layers" class="tools"></div>
+    <link rel="shortcut icon" href="favicon.ico"/>
+</head>
+<body onload="webDraft.resize();webDraft.positionElements()">
+<!--all site elements-->
+<div id="eraseRect"></div>
+<!--tools-->
+<div id="toolsGroup">
+    <!-- preview color sampler -->
+    <div id="previewColorSampler">
+        <div id="textColorSampler"></div>
+        <div id="colorBoxSampler"></div>
+    </div>
+    <div class="tools" data-id="buttons"></div>
+    <div class="tools" data-id="color-picker"></div>
+    <div class="tools" data-id="sliders"></div>
+    <div class="tools" data-id="shadow">
+        <div id="shadowSquare">
+            <div id="shadowDot"></div>
         </div>
-        <!--resizer-->
-        <div id="resizer"></div>
-        <!--content and draw field-->
-        <div id="content">
-            <div id="drawHandler">
-                <div id="eventHandler"></div>
-                <div id="draw"></div>
-            </div>
-        </div>
-        <div id="hint">
-            <div class="hintGroup" id="selecting">
-                <div class="keyboardButton">Del</div>
-                <div class="describeHint">Delete</div>
-                <div class="keyboardButton">Ctrl + X</div>
-                <div class="describeHint">Cut</div>
-                <div class="keyboardButton">Ctrl + C</div>
-                <div class="describeHint">Copy</div>
-                <div class="keyboardButton">Ctrl + V</div>
-                <div class="describeHint">Paste</div>
-            </div>
-        </div>
-        <div id="info"></div>
-        <!--statusbar-->
-        <div id="statusbar">
-            <div id="mousePosition"></div>
-            <div id="author">
-                <a class="fab fa-github" style="text-decoration:none" title="Watch WebDraft on GitHub" target="_blank" href="https://github.com/rtcoder/WebDraft"></a>&nbsp;&nbsp;|&nbsp;&nbsp;
-                Created by <a target="_blank" href="https://github.com/rtcoder">rtCoder</a>
-            </div>
-        </div>
+    </div>
+    <!--textOptions-->
+    <div id="textOptions" class="tools"></div>
+    <div id="layers" class="tools"></div>
+</div>
+<!--resizer-->
+<div id="resizer"></div>
+<!--content and draw field-->
+<div id="content">
+    <div id="drawHandler">
+        <div id="eventHandler"></div>
+        <div id="draw"></div>
+    </div>
+</div>
+<div id="hint">
+    <div class="hintGroup" id="selecting">
+        <div class="keyboardButton">Del</div>
+        <div class="describeHint">Delete</div>
+        <div class="keyboardButton">Ctrl + X</div>
+        <div class="describeHint">Cut</div>
+        <div class="keyboardButton">Ctrl + C</div>
+        <div class="describeHint">Copy</div>
+        <div class="keyboardButton">Ctrl + V</div>
+        <div class="describeHint">Paste</div>
+    </div>
+</div>
+<div id="info"></div>
+<!--statusbar-->
+<div id="statusbar">
+    <div id="mousePosition"></div>
+    <div id="author">
+        <a class="fab fa-github" style="text-decoration:none" title="Watch WebDraft on GitHub" target="_blank"
+           href="https://github.com/rtcoder/WebDraft"></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        Created by <a target="_blank" href="https://github.com/rtcoder">rtCoder</a>
+    </div>
+</div>
 
 
-        <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-        <script src="vendor/jquery-ui/js//jquery-ui-1.12.1.min.js"></script>
-        <script src="vendor/canvas-to-blob/canvas-toBlob.js"></script>
-        <script src="vendor/file-saver/FileSaver.min.js"></script>
-        <script src="vendor/html2canvas/html2canvas.js"></script>
-        <script src="vendor/rtcoder/colorpicker/js/colorpicker.js"></script>
+<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<script src="vendor/jquery-ui/js//jquery-ui-1.12.1.min.js"></script>
+<script src="vendor/canvas-to-blob/canvas-toBlob.js"></script>
+<script src="vendor/file-saver/FileSaver.min.js"></script>
+<script src="vendor/html2canvas/html2canvas.js"></script>
+<script src="vendor/rtcoder/colorpicker/js/colorpicker.js"></script>
 
-        <script src="build/js/built.js"></script>
-    </body>
+<script src="build/js/built.js"></script>
+</body>
 </html>

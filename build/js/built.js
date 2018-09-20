@@ -144,10 +144,10 @@ class Camera {
     noiseFilter(imageData) {
         let pixels = imageData.data;
         for (let i = 0; i < pixels.length; i += 4) {
-            let rand =  (0.5 - Math.random()) * 100;
-            pixels[i] +=rand;   // red
-            pixels[i + 1] +=rand; // green
-            pixels[i + 2] +=rand; // blue
+            let rand = (0.5 - Math.random()) * 100;
+            pixels[i] += rand;   // red
+            pixels[i + 1] += rand; // green
+            pixels[i + 2] += rand; // blue
         }
 
         return imageData;
@@ -729,7 +729,7 @@ class Layers {
         if (layerId === "") {
             webDraft.draw.width = width;
             webDraft.draw.height = height;
-            $("canvas").attr({
+            $("canvas.canvas-draw").attr({
                 "width": webDraft.draw.width,
                 "height": webDraft.draw.height
             });
@@ -740,7 +740,7 @@ class Layers {
             });
             webDraft.draw.width = 0;
             webDraft.draw.height = 0;
-            $("canvas").each(function () {
+            $("canvas.canvas-draw").each(function () {
                 let w = parseInt($(this).attr("width"));
                 let h = parseInt($(this).attr("height"));
                 if (webDraft.draw.width < w)
@@ -779,7 +779,7 @@ class Layers {
         if (countViews < 15) {
             randomId = webDraft.makeid();
 
-            $(webDraft.draw.selectorId).append('<canvas id="' + randomId + '" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '" style="top:0;left:0"></canvas>');
+            $(webDraft.draw.selectorId).append('<canvas class="canvas-draw" id="' + randomId + '" width="' + webDraft.draw.width + '" height="' + webDraft.draw.height + '" style="top:0;left:0"></canvas>');
             $("#listLayers").append(`
                 <div data-id="` + randomId + `" id="` + j + `" class="layerView">
                     <div class="imgLayerContainer">
@@ -844,7 +844,7 @@ class Layers {
         if (countViews > 1) {
             let i = parseInt(nr);
             $(".layerView#" + i).remove();
-            $("canvas#" + id).remove();
+            $("canvas#" + identifier).remove();
             for (i in layers.list) {
                 if (!$('canvas#' + layers.list[i].id).length) {
                     layers.list.splice(i, 1);
@@ -862,9 +862,9 @@ class Layers {
 
             webDraft.draw.width = 0;
             webDraft.draw.height = 0;
-            $("canvas").each(function () {
-                w = parseInt($(this).attr("width"));
-                h = parseInt($(this).attr("height"));
+            $("canvas.canvas-draw").each(function () {
+                const w = parseInt($(this).attr("width"));
+                const h = parseInt($(this).attr("height"));
                 if (webDraft.draw.width < w)
                     webDraft.draw.width = w;
 
@@ -882,7 +882,7 @@ class Layers {
         $("canvas#" + layers.list[i].id).addClass("invisible");
 
         let j = 0;
-        $("canvas").not('#snapImage').each(function () {
+        $("canvas.canvas-draw").not('#snapImage').each(function () {
             layers.list[j].id = $(this).attr("id");
 
             if ($(this).hasClass("invisible"))
@@ -910,7 +910,7 @@ class Layers {
         $("canvas#" + layers.list[i].id).removeClass("invisible");
 
         let j = 0;
-        $("canvas").not('#snapImage').each(function () {
+        $("canvas.canvas-draw").not('#snapImage').each(function () {
             layers.list[j].id = $(this).attr("id");
 
             if ($(this).hasClass("invisible"))
@@ -998,7 +998,7 @@ class Layers {
             $("canvas#" + layers.activeId).insertBefore("canvas#" + prevId);
 
             let j = 0;
-            $("canvas").each(function () {
+            $("canvas.canvas-draw").each(function () {
                 layers.list[j].id = $(this).attr("id");
 
                 if ($(this).hasClass("invisible"))
@@ -1028,7 +1028,7 @@ class Layers {
 
             $("canvas#" + layers.activeId).insertAfter("canvas#" + nextId);
             let j = 0;
-            $("canvas").each(function () {
+            $("canvas.canvas-draw").each(function () {
                 layers.list[j].id = $(this).attr("id");
 
                 if ($(this).hasClass("invisible"))
@@ -1978,74 +1978,72 @@ let webDraft = new WebDraft();
 
 
 let canvas,
-        ctx,
-        randomId,
-        points = {};
+    ctx,
+    randomId,
+    points = {};
 
 
 $(window)
-        .resize(function () {
-            webDraft.resize();
-            webDraft.positionElements();
-        });
+    .resize(function () {
+        webDraft.resize();
+        webDraft.positionElements();
+    });
 $(document)
-        .ready(function (event) {
-            if (/mobile/i.test(navigator.userAgent)) {
-                webDraft.draw.width = window.innerWidth - 10;
-                webDraft.draw.height = window.innerHeight - 30;
-            }
+    .ready(function (event) {
+        if (/mobile/i.test(navigator.userAgent)) {
+            webDraft.draw.width = window.innerWidth - 10;
+            webDraft.draw.height = window.innerHeight - 30;
+        }
 
-            webDraft.init();
-            $("#selectRectangle, #textRectangle")
-                    .draggable({snap: false})
-                    .css({"position": "absolute"});
+        webDraft.init();
+        $("#selectRectangle, #textRectangle")
+            .draggable({snap: false})
+            .css({"position": "absolute"});
 
-            $("#shadowDot").draggable({
-                containment: "#shadowSquare",
-                scroll: false,
-                drag: function () {
-                    let shadowY = parseInt($(this).css('top')) - (parseInt($(this).parent().height()) / 2);
-                    let shadowX = parseInt($(this).css('left')) - (parseInt($(this).parent().width()) / 2);
-                    webDraft.shadow.offsetX = shadowX;
-                    webDraft.shadow.offsetY = shadowY;
-                }
-            });
-            $('#shadowSquare').on('mousedown', function (e) {
-                let x = e.pageX - $(this).offset().left;
-                let y = e.pageY - $(this).offset().top;
-
-                $("#shadowDot").css({
-                    top: (y - 5) + 'px',
-                    left: (x - 5) + 'px'
-                });
-
-                let shadowY = parseInt($("#shadowDot").css('top')) - (parseInt($("#shadowDot").parent().height()) / 2);
-                let shadowX = parseInt($("#shadowDot").css('left')) - (parseInt($("#shadowDot").parent().width()) / 2);
+        $("#shadowDot").draggable({
+            containment: "#shadowSquare",
+            scroll: false,
+            drag: function () {
+                let shadowY = parseInt($(this).css('top')) - (parseInt($(this).parent().height()) / 2);
+                let shadowX = parseInt($(this).css('left')) - (parseInt($(this).parent().width()) / 2);
                 webDraft.shadow.offsetX = shadowX;
                 webDraft.shadow.offsetY = shadowY;
+            }
+        });
+        $('#shadowSquare').on('mousedown', function (e) {
+            let x = e.pageX - $(this).offset().left;
+            let y = e.pageY - $(this).offset().top;
+
+            $("#shadowDot").css({
+                top: (y - 5) + 'px',
+                left: (x - 5) + 'px'
             });
 
-
-        })
-        .bind("contextmenu", function (e) {
-            if (!DEBUG) {
-                e.preventDefault();
-            }
-        })
-        .on('mouseup touchend', function (e) {
-            webDraft._mouseup(e);
-        })
-        .on('mousemove touchmove', function (e) {
-            webDraft._mousemove(e);
+            let shadowY = parseInt($("#shadowDot").css('top')) - (parseInt($("#shadowDot").parent().height()) / 2);
+            let shadowX = parseInt($("#shadowDot").css('left')) - (parseInt($("#shadowDot").parent().width()) / 2);
+            webDraft.shadow.offsetX = shadowX;
+            webDraft.shadow.offsetY = shadowY;
         });
+
+
+    })
+    .bind("contextmenu", function (e) {
+        if (!DEBUG) {
+            e.preventDefault();
+        }
+    })
+    .on('mouseup touchend', function (e) {
+        webDraft._mouseup(e);
+    })
+    .on('mousemove touchmove', function (e) {
+        webDraft._mousemove(e);
+    });
 
 function hexToRgba(hex, opacity) {
     hex = hex.replace('#', '');
-    var r = parseInt(hex.substring(0, 2), 16);
-    var g = parseInt(hex.substring(2, 4), 16);
-    var b = parseInt(hex.substring(4, 6), 16);
-    var a = opacity / 100;
-    var result = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-
-    return result;
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const a = opacity / 100;
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
