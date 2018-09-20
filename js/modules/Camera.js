@@ -144,10 +144,10 @@ class Camera {
     noiseFilter(imageData) {
         let pixels = imageData.data;
         for (let i = 0; i < pixels.length; i += 4) {
-            let rand =  (0.5 - Math.random()) * 100;
-            pixels[i] +=rand;   // red
-            pixels[i + 1] +=rand; // green
-            pixels[i + 2] +=rand; // blue
+            let rand = (0.5 - Math.random()) * 100;
+            pixels[i] += rand;   // red
+            pixels[i + 1] += rand; // green
+            pixels[i + 2] += rand; // blue
         }
 
         return imageData;

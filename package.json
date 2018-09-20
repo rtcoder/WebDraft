@@ -1,6 +1,6 @@
 {
   "name": "webdraft",
-  "version": "2.3.0",
+  "version": "2.3.3",
   "description": "Web application for drawing.",
   "main": "js/start.js",
   "scripts": {
