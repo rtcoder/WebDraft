@@ -1,0 +1,89 @@
+<div class="tools-container" data-id="buttons">
+  <div class="tools">
+    <div class="title">Tools</div>
+    <div class="buttons">
+      <button mat-icon-button>
+        <mat-icon>zoom_out_map</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="executeLayerOperation(layerOperationEnum.CLEAR)">
+        <mat-icon>block</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="executeOperation(operationsEnum.DOWNLOAD)">
+        <mat-icon>cloud_download</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="executeLayerOperation(layerOperationEnum.INVERT_COLORS)">
+        <mat-icon>invert_colors</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="executeLayerOperation(layerOperationEnum.ROTATE_LEFT)">
+        <mat-icon>rotate_left</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="executeLayerOperation(layerOperationEnum.ROTATE_RIGHT)">
+        <mat-icon>rotate_right</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="executeLayerOperation(layerOperationEnum.MIRROR_HORIZONTAL)">
+        <mat-icon>swap_horiz</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="executeLayerOperation(layerOperationEnum.MIRROR_VERTICAL)">
+        <mat-icon>swap_vert</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="executeOperation(operationsEnum.UPLOAD)">
+        <mat-icon>cloud_upload</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon>camera_alt</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="changeTool(toolsEnum.SELECT)"
+              [ngClass]="{'active': currentTool === toolsEnum.SELECT}">
+        <mat-icon>photo_size_select_large</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="changeTool(toolsEnum.PENCIL)"
+              [ngClass]="{'active': currentTool === toolsEnum.PENCIL}">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="changeTool(toolsEnum.COLOR_SAMPLER)"
+              [ngClass]="{'active': currentTool === toolsEnum.COLOR_SAMPLER}">
+        <mat-icon>colorize</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="changeTool(toolsEnum.WEB)"
+              [ngClass]="{'active': currentTool === toolsEnum.WEB}">
+        <mat-icon>call_split</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="changeTool(toolsEnum.ERASER)"
+              [ngClass]="{'active': currentTool === toolsEnum.ERASER}">
+        <mat-icon>delete_sweep</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="changeTool(toolsEnum.RECTANGLE)"
+              [ngClass]="{'active': currentTool === toolsEnum.RECTANGLE}">
+        <mat-icon>crop_square</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="changeTool(toolsEnum.CIRCLE)"
+              [ngClass]="{'active': currentTool === toolsEnum.CIRCLE}">
+        <mat-icon>panorama_fish_eye</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="changeTool(toolsEnum.TEXT)"
+              [ngClass]="{'active': currentTool === toolsEnum.TEXT}">
+        <mat-icon>text_format</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="tools">
+    <div class="title">Layers</div>
+    <app-layers-preview></app-layers-preview>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+export enum ToolsEnum {
+  PENCIL = 'PENCIL',
+  SELECT = 'SELECT',
+  ERASER = 'ERASER',
+  WEB = 'WEB',
+  TEXT = 'TEXT',
+  RECTANGLE = 'RECTANGLE',
+  CIRCLE = 'CIRCLE',
+  COLOR_SAMPLER = 'COLOR_SAMPLER'
+}

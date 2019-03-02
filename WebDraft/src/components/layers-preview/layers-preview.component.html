@@ -1,0 +1,18 @@
+<div class="layers-preview">
+  <div class="buttons">
+    <button mat-button (click)="addLayer()" class="add-layer">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button mat-button (click)="removeLayer()" class="remove-layer">
+      <mat-icon>remove</mat-icon>
+    </button>
+  </div>
+  <div class="layers">
+    <div class="layer"
+         *ngFor="let layer of layers"
+         [ngClass]="{'active': layer.active}"
+         (click)="activateLayer(layer)">
+      <app-canvas [data]="layer.data"></app-canvas>
+    </div>
+  </div>
+</div>
