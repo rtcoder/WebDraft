@@ -4,6 +4,55 @@ import {LayersService} from "../../services/layers.service";
 import {LayerOperation} from "../../models/layer-operation";
 import {LayerOperationsEnum} from "../../enums/layer-operations.enum";
 
+const KEYS_DESCRIPTION = [
+  {
+    title: 'General',
+    keys: [
+      {
+        value: 'CTRL + I',
+        description: 'Toggle this info'
+      },
+      {
+        value: 'CTRL + S',
+        description: 'Save image'
+      },
+      {
+        value: 'CTRL + O',
+        description: 'Upload image'
+      },
+      {
+        value: 'CTRL + DEL',
+        description: 'Clear image'
+      },
+      {
+        value: 'CTRL + Scroll',
+        description: 'Pencil size'
+      },
+    ]
+  },
+  {
+    title: 'Selection',
+    keys: [
+      {
+        value: 'CTRL + X',
+        description: 'Cut'
+      },
+      {
+        value: 'CTRL + C',
+        description: 'Copy'
+      },
+      {
+        value: 'CTRL + V',
+        description: 'Paste'
+      },
+      {
+        value: 'DEL',
+        description: 'Delete selection'
+      },
+    ]
+  },
+];
+
 @Component({
   selector: 'app-hotkeys',
   templateUrl: './hotkeys.component.html',
@@ -11,6 +60,7 @@ import {LayerOperationsEnum} from "../../enums/layer-operations.enum";
 })
 export class HotkeysComponent implements OnInit {
   show = false;
+  keysDescription = KEYS_DESCRIPTION;
 
   constructor(private layersService: LayersService) {
   }
