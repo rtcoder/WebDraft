@@ -1,5 +1,4 @@
 @import '~@angular/material/theming';
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 @import "assets/scss/variables";
 // Plus imports for other components in your app.
 
@@ -28,7 +27,7 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
 * {
   user-select: none;
   cursor: default;
-  font-family: 'Open Sans', sans-serif;
+  font-family: Roboto, sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;

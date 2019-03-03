@@ -1,0 +1,53 @@
+@import "../../assets/scss/variables";
+
+.hotkeys {
+  position: fixed;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  background: #2c2b2b;
+  width: 300px;
+  height: 100vh;
+  color: #ffffff;
+
+  button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #FFFFFF;
+    cursor: pointer;
+  }
+
+  .info-section {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+
+    .title {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .key-info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 10px;
+
+      .key {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 5px;
+        margin: 0 5px;
+        min-width: 30px;
+        height: 20px;
+        font-size: 12px;
+        background: #f1f1f1;
+        border: 1px solid #ccc;
+        color: #2c2b2b;
+      }
+    }
+  }
+}

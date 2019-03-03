@@ -1,0 +1,47 @@
+<div class="hotkeys" *ngIf="show">
+  <button mat-icon-button (click)="show = false">
+    <mat-icon>close</mat-icon>
+  </button>
+  <div class="info-section">
+    <div class="title">General</div>
+    <div class="key-info">
+      <span class="key">CTRL + I</span>
+      <div class="description">Toggle this info</div>
+    </div>
+    <div class="key-info">
+      <span class="key">CTRL + S</span>
+      <div class="description">Save image</div>
+    </div>
+    <div class="key-info">
+      <span class="key">CTRL + O</span>
+      <div class="description">Upload image</div>
+    </div>
+    <div class="key-info">
+      <span class="key">CTRL + DEL</span>
+      <div class="description">Clear image</div>
+    </div>
+    <div class="key-info">
+      <span class="key">CTRL + Scroll</span>
+      <div class="description">Pencil size</div>
+    </div>
+  </div>
+  <div class="info-section">
+    <div class="title">Selection</div>
+    <div class="key-info">
+      <span class="key">CTRL + X</span>
+      <div class="description">Cut</div>
+    </div>
+    <div class="key-info">
+      <span class="key">CTRL + C</span>
+      <div class="description">Copy</div>
+    </div>
+    <div class="key-info">
+      <span class="key">CTRL + V</span>
+      <div class="description">Paste</div>
+    </div>
+    <div class="key-info">
+      <span class="key">DEL</span>
+      <div class="description">Delete selection</div>
+    </div>
+  </div>
+</div>

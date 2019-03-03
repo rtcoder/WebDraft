@@ -31,8 +31,8 @@ export class ToolsComponent implements OnInit {
     this.toolsService.runOperation(operation)
   }
 
-  executeLayerOperation(operation: LayerOperation) {
-    this.layersService.runOperation(operation)
+  executeLayerOperation(operation: LayerOperationsEnum) {
+    this.layersService.runOperation(new LayerOperation(operation))
   }
 
   ngOnInit(): void {
