@@ -1,1 +1,16 @@
 @import "../../assets/scss/variables";
+
+.layers-container {
+  display: flex;
+  height: 100vh;
+  width: $widthMinusTools;
+  justify-content: center;
+  align-items: center;
+  overflow: scroll;
+  position: absolute;
+
+  app-drawer {
+    background: url('/assets/img/transparent.png');
+    position: absolute;
+  }
+}

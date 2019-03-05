@@ -2,7 +2,7 @@
 
 .tools-container {
   width: $toolsWidth;
-  height: $heightMinusFooter;
+  height: 100vh;
   background: $toolsBackground;
   display: flex;
   flex-direction: column;

@@ -9,8 +9,12 @@ const KEYS_DESCRIPTION = [
     title: 'General',
     keys: [
       {
-        value: 'CTRL + I',
+        value: 'CTRL + /',
         description: 'Toggle this info'
+      },
+      {
+        value: 'CTRL + H',
+        description: 'History'
       },
       {
         value: 'CTRL + S',
@@ -71,7 +75,7 @@ export class HotkeysComponent implements OnInit {
     $event.preventDefault();
     if ($event.ctrlKey || $event.metaKey) {
       switch ($event.code) {
-        case KeysEnum.I:
+        case KeysEnum.SLASH:
           this.show = !this.show;
           break;
         case KeysEnum.S:
@@ -91,6 +95,9 @@ export class HotkeysComponent implements OnInit {
           break;
         case KeysEnum.V:
           // paste
+          break;
+        case KeysEnum.R:
+          window.location.reload();
           break;
       }
     }

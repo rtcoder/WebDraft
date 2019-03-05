@@ -6,7 +6,10 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
   styleUrls: ['./canvas.component.scss']
 })
 export class CanvasComponent implements OnInit {
+  @Input() width: number;
+  @Input() height: number;
   @ViewChild('canvas') canvas: HTMLCanvasElement;
+
   @Input() set data(data: ImageData) {
     if (!data) {
       return;

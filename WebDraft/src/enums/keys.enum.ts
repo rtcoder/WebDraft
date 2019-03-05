@@ -26,5 +26,6 @@ export enum KeysEnum {
   Y = 'KeyY',
   Z = 'KeyZ',
   DELETE = 'Delete',
-  BACKSPACE = 'Backspace'
+  BACKSPACE = 'Backspace',
+  SLASH = 'Slash'
 }

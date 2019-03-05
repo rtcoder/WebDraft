@@ -12,7 +12,7 @@
          *ngFor="let layer of layers"
          [ngClass]="{'active': layer.active}"
          (click)="activateLayer(layer)">
-      <app-canvas [data]="layer.data"></app-canvas>
+      <app-canvas [data]="layer.data" [height]="100" [width]="100"></app-canvas>
     </div>
   </div>
 </div>

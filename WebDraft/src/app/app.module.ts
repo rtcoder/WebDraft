@@ -6,7 +6,7 @@ import {MaterialModule} from "../modules/material.module";
 import {ToolsComponent} from "../components/tools/tools.component";
 import {LayersComponent} from "../components/layers/layers.component";
 import {LayersPreviewComponent} from "../components/layers-preview/layers-preview.component";
-import {CanvasComponent} from "../components/canvas/canvas.component";
+import {CanvasComponent} from "../components/layers-preview/canvas/canvas.component";
 import {DrawerComponent} from "../components/drawer/drawer.component";
 import {HotkeysComponent} from "../components/hotkeys/hotkeys.component";
 

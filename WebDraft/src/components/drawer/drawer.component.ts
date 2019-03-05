@@ -6,6 +6,9 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
   styleUrls: ['./drawer.component.scss']
 })
 export class DrawerComponent implements OnInit {
+  @Input() width: number;
+  @Input() height: number;
+  @Input() active: boolean;
   @ViewChild('drawer') drawer: HTMLCanvasElement;
 
   @Input() set data(data: ImageData) {

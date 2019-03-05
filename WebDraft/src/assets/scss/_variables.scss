@@ -39,3 +39,6 @@ $toolsWidth: 200px;
 $toolsBackground: #2c2b2b;
 $toolsTitleBackground: #eee;
 $toolsTitleColor: #2e3436;
+
+
+$widthMinusTools: calc(100vw - #{$toolsWidth});

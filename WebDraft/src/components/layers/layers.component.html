@@ -1,0 +1,9 @@
+<div class="layers-container" #layersElement [ngStyle]="{'justify-content': justifyContent, 'align-items': alignItems}">
+  <app-drawer *ngFor="let layer of layers"
+              [data]="layer.data"
+              [width]="layersWidth"
+              [height]="layersHeight"
+              [active]="layer.active"
+              [ngStyle]="{'z-index': layer.zIndex, 'width.px': layersWidth, 'height.px': layersHeight}">
+  </app-drawer>
+</div>

@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {Layer} from "../../models/layer";
 import {LayersService} from "../../services/layers.service";
 import {LayerOperation} from "../../models/layer-operation";
 import {LayerOperationsEnum} from "../../enums/layer-operations.enum";
+import {MouseOnLayerPositionInterface} from "../../interfaces/mouse-on-layer-position.interface";
 
 @Component({
   selector: 'app-layers',
@@ -14,12 +15,45 @@ export class LayersComponent implements OnInit {
   layers: Layer[] = [];
   layersWidth = 600;
   layersHeight = 400;
+  justifyContent = 'center';
+  alignItems = 'center';
 
   constructor(private layersService: LayersService) {
 
   }
 
+  @ViewChild('layersElement') layersElement;
+
+  @HostListener('window:resize')
+  resize() {
+    if (this.layersElement.nativeElement.clientWidth < this.layersWidth) {
+      this.justifyContent = 'flex-start'
+    } else {
+      this.justifyContent = 'center';
+    }
+    if (this.layersElement.nativeElement.clientHeight < this.layersHeight) {
+      this.alignItems= 'flex-start'
+    } else {
+      this.alignItems= 'center';
+    }
+  }
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(e: MouseEvent) {
+    const target = (<HTMLCanvasElement>e.target);
+    if (target.nodeName !== 'CANVAS') {
+      return;
+    }
+    const rect = target.getBoundingClientRect();
+
+    console.log(rect, <MouseOnLayerPositionInterface>{
+      top: e.pageY - rect.top,
+      left: e.pageX - rect.left
+    })
+  }
+
   ngOnInit(): void {
+    this.resize()
     if (!this.layers.length) {
       this.newLayer();
     }
