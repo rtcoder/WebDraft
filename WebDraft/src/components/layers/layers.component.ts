@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {Layer} from "../../models/layer";
 import {LayersService} from "../../services/layers.service";
 import {LayerOperation} from "../../models/layer-operation";
@@ -22,7 +22,7 @@ export class LayersComponent implements OnInit {
 
   }
 
-  @ViewChild('layersElement') layersElement;
+  @ViewChild('layersElement') layersElement!: ElementRef;
 
   @HostListener('window:resize')
   resize() {
@@ -32,9 +32,9 @@ export class LayersComponent implements OnInit {
       this.justifyContent = 'center';
     }
     if (this.layersElement.nativeElement.clientHeight < this.layersHeight) {
-      this.alignItems= 'flex-start'
+      this.alignItems = 'flex-start'
     } else {
-      this.alignItems= 'center';
+      this.alignItems = 'center';
     }
   }
 
@@ -53,7 +53,7 @@ export class LayersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.resize()
+    this.resize();
     if (!this.layers.length) {
       this.newLayer();
     }
@@ -66,7 +66,7 @@ export class LayersComponent implements OnInit {
           this.removeLayer(operation.layer);
           break;
         case this.layerOperationsEnum.ACTIVATE:
-          this.setActiveLayer(operation.layer.id);
+          this.setActiveLayer(operation.layer!.id!);
           break;
       }
     })
@@ -91,7 +91,7 @@ export class LayersComponent implements OnInit {
     }, layer));
 
     this.layers.push(newLayer);
-    this.setActiveLayer(newLayer.id);
+    this.setActiveLayer(newLayer.id!);
   }
 
   private removeLayer(layer?: Layer) {
@@ -119,7 +119,9 @@ export class LayersComponent implements OnInit {
     const maxZIndex = this.getMaxZIndex();
     const layerToActivate = this.layers.find((_layer: Layer) => _layer.zIndex === maxZIndex);
 
-    this.setActiveLayer(layerToActivate.id);
+    if (layerToActivate) {
+      this.setActiveLayer(layerToActivate.id!);
+    }
   }
 
   private setActiveLayer(id: string) {

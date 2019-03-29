@@ -101,7 +101,7 @@ export class HotkeysComponent implements OnInit {
           break;
       }
     }
-    if (!$event.ctrlKey && !$event.altKey && !$event.metaKey && !$event.shiftKey && !$event) {
+    if (!$event.ctrlKey && !$event.altKey && !$event.metaKey && !$event.shiftKey) {
       if ($event.code === KeysEnum.DELETE) {
         // delete selection
       }

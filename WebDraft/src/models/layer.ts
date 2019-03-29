@@ -1,13 +1,13 @@
 export class Layer {
   id?: string;
-  width: number;
-  height: number;
-  offsetLeft: number;
-  offsetTop: number;
-  data: ImageData;
-  visible: boolean;
-  active: boolean;
-  zIndex:number;
+  width!: number;
+  height!: number;
+  offsetLeft!: number;
+  offsetTop!: number;
+  data!: ImageData;
+  visible!: boolean;
+  active!: boolean;
+  zIndex!:number;
 
   constructor(data?: Layer) {
     Object.assign(this, data);
