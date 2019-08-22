@@ -1,0 +1,239 @@
+.colorpickerContainer {
+    width: 360px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background: #252525;
+    padding: 5px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        box-sizing: border-box;
+    }
+    .tabs {
+        width: 100%;
+        height: 20px;
+        line-height: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        ul {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: 20px;
+            line-height: 20px;
+            li {
+                align-self: center;
+                padding: 0px 5px;
+                width: auto;
+                color: #eee;
+                height: 20px;
+                line-height: 20px;
+                cursor: pointer;
+                border: 1px solid #636363;
+                border-bottom-width: 0px;
+                border-right-width: 0px;
+                &.active {
+                    color: #09c;
+                }
+                &:last-child{
+                    border-right-width: 1px;
+                }
+            }
+        }
+    }
+    .buttonContainer{
+        width: 100%;
+        margin-top: 5px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .apply,
+        .close{
+            width: 50px;
+            height: 20px;
+            line-height: 20px;
+            color: #fff;
+            font-size: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .close{
+            background: #f40;
+        }
+        .apply{
+            background: #3dcc13;
+        }
+    }
+    .pickers {
+        width: 100%;
+        .pickerContainer {
+            width: 100%;
+            height: 320px;
+            display: none;
+            padding: 10px;
+            text-align: center;
+            justify-content: center;
+            &.active {
+                display: flex;
+            }
+            &#circle{
+                text-align: center;
+            }
+            canvas {
+                cursor: crosshair;
+                &.colorpickerCircle {
+                    border-radius: 100%;
+                    display: inline-block;
+                }
+            }
+            .value {
+                width: 30px;
+                height: 300px;
+                position: relative;
+                .selectpreview {
+                    content: ' ';
+                    position: absolute;
+                    top: 0;
+                    left: 35px;
+                    width: 30px;
+                    height: 30px;
+                    display: none;
+                    border: 1px solid rgba(44, 30, 0, 0.59);
+                    border-radius: 30px;
+                    border-top-left-radius: 0px;
+                    transform: rotate(-45deg);
+                    &:hover {
+                        display: block;
+                    }
+                }
+                .colorselect {
+                    cursor: pointer;
+                    &:hover {
+                        & + .selectpreview {
+                            display: block;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+    .preview {
+        width:100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        .colorPreview,
+        .colorSelected {
+            width: 70px;
+            height: 15px;
+            border: 1px solid #252525;
+            background: transparent;
+        }
+    }
+    .selectHistory {
+        padding: 15px 0px 5px 0px;
+        width:100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 40px;
+        .content{
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            .item {
+                width: 30px;
+                height: 30px;
+                border: 1px solid #252525;
+                transform: rotate(45deg);
+                border-radius: 30px;
+                border-top-left-radius: 0px;
+                cursor: pointer;
+            }
+            &.empty+.clearSelectHistory{
+                display: none;
+            }
+        }
+        .clearSelectHistory{
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            color: #fff;
+            background: #f40;
+            font-size: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    }
+    .colors{
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 5px 0px;
+        >div{
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            width: 100%;
+            margin: 5px 0px;
+            span.title{
+                padding-right: 5px;
+                font-size: 13px;
+                line-height: 20px;
+            }
+            input{
+                border: none;
+                padding: 0px 5px;
+                width: 150px;
+                height: 20px;
+            }
+            button.copy{
+                width: 20px;
+                height: 20px;
+                padding: 0px 5px;
+                color: #252525;
+                background: #fff;
+                border: none;
+                cursor: pointer;
+                border-left: 1px solid #252525;
+            }
+        }
+    }
+    .author{
+        width: 100%;
+        height: 20px;
+        line-height: 20px;
+        right: 0;
+        font-size: 13px;
+        color: #ccc;
+        margin-top: 5px;
+        border-top: 1px solid #ccc;
+        a{
+            color: #eee;
+        }
+    }
+}

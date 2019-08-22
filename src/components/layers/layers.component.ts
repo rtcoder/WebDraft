@@ -22,7 +22,7 @@ export class LayersComponent implements OnInit {
 
   }
 
-  @ViewChild('layersElement') layersElement!: ElementRef;
+  @ViewChild('layersElement', { static: true }) layersElement!: ElementRef;
 
   @HostListener('window:resize')
   resize() {

@@ -1,0 +1,61 @@
+<div class="colorpickerContainer">
+    <div class="tabs">
+        <ul>
+            <li data-id="hsv" class="active">HSV</li>
+            <li data-id="circle">Circle</li>
+        </ul>
+    </div>
+
+
+    <div class="pickers">
+        <div data-id="hsv" class="pickerContainer">
+            <canvas class="colorpicker" width="300" height="300"></canvas>
+            <div class="value">
+                <canvas class="colorselect" width="30" height="300"></canvas>
+                <div class="selectpreview"></div>
+            </div>
+        </div>
+
+        <div data-id="circle" class="pickerContainer">
+            <canvas class="colorpickerCircle" width="300" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="preview">
+        <div class="colorSelected"></div>
+        <div class="colorPreview"></div>
+    </div>
+
+    <div class="selectHistory">
+        <div class="content"></div>
+        <div class="clearSelectHistory" title="Clear last selected">&times;</div>
+    </div>
+
+    <div class="colors">
+        <div class="rgba">
+            <span class="title">rgba:</span>
+            <input type="text" value="">
+            <button type="button" title="Copy to clipboard" class="copy">&swarrow;</button>
+        </div>
+        <div class="hsl">
+            <span class="title">hsl:</span>
+            <input type="text" value="">
+            <button type="button" title="Copy to clipboard" class="copy">&swarrow;</button>
+        </div>
+        <div class="hex">
+            <span class="title">hex:</span>
+            <input type="text" value="">
+            <button type="button" title="Copy to clipboard" class="copy">&swarrow;</button>
+        </div>
+    </div>
+
+    <div class="buttonContainer">
+        <div class="apply" title="Apply">&check;</div>
+        <div class="close" title="Close">&times;</div>
+    </div>
+
+    <div class="author">
+        <a style="text-decoration:none" title="Watch Color-Picker on GitHub" target="_blank" href="https://github.com/rtcoder/Color-Picker">GitHub</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+        Created by <a target="_blank" href="https://github.com/rtcoder">rtCoder</a>
+    </div>
+</div>

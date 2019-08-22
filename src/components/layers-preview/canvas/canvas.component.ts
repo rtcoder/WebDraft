@@ -1,21 +1,21 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 
 @Component({
-  selector: 'app-drawer',
-  templateUrl: './drawer.component.html',
-  styleUrls: ['./drawer.component.scss']
+  selector: 'app-canvas',
+  templateUrl: './canvas.component.html',
+  styleUrls: ['./canvas.component.scss']
 })
-export class DrawerComponent implements OnInit {
+export class CanvasComponent implements OnInit {
   @Input() width!: number;
   @Input() height!: number;
-  @Input() active!: boolean;
-  @ViewChild('drawer') drawer!: HTMLCanvasElement;
+  @ViewChild('canvas', { static: true }) canvas!: HTMLCanvasElement;
 
   @Input() set data(data: ImageData) {
     if (!data) {
       return;
     }
-    this.cx = this.drawer.getContext('2d');
+
+    this.cx = this.canvas.getContext('2d');
     if (this.cx) {
       this.cx.putImageData(data, 0, 0);
     }

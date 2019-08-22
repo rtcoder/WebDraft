@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ColorPicker by rtCoder</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/colorpicker.css">
+    </head>
+    <body>
+        <button id="a">sdad</button>
+        <script src="js/jquery-2.1.4.min.js"></script>
+        <script src="js/colorpicker.js"></script>
+        <script>
+
+            $('button#a').colorpicker({
+                onChange: function (color) {
+                    $('button#a').css({
+                        'color': color.hex
+
+                    });
+                    console.log('change', color)
+                },
+                onSelect: function (color) {
+                    $('button#a').css({
+                        'color': color.hsl
+
+                    });
+                    console.log('select', color)
+                },
+                onShow: function () {
+                    console.log('show')
+                },
+                onHide: function () {
+                    console.log('hide')
+                }
+            });
+        </script>
+    </body>
+</html>
