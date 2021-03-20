@@ -1,32 +1,35 @@
 //statusbar
-@import "variables";
+@import "variables.css";
 
-#statusbar{
-    width: 100%;
-    background: @dark3;
-    height: 20px;
-    line-height: 20px;
+#statusbar {
+  width: 100%;
+  background: var(--dark3);
+  height: 20px;
+  line-height: 20px;
+  float: left;
+  position: absolute;
+  bottom: 0;
+  font-size: 13px;
+  color: var(--gray3);
+
+  #mousePosition {
     float: left;
-    position: absolute;
-    bottom: 0;
-    font-size: 13px;
-    color: @gray3;
-    #mousePosition{
-        float: left;
-        width: 100px;
-        height: inherit;
-        line-height: inherit;
-        text-align: center;
+    width: 100px;
+    height: inherit;
+    line-height: inherit;
+    text-align: center;
+  }
+
+  #author {
+    height: inherit;
+    line-height: inherit;
+    float: right;
+    right: 0;
+    margin-right: 20px;
+
+    a {
+      color: var(--white2);
+      cursor: pointer;
     }
-    #author{
-        height: inherit;
-        line-height: inherit;
-        float: right;
-        right: 0;
-        margin-right: 20px;
-        a{
-            color: @white2;
-            cursor: pointer;
-        }
-    }
+  }
 }

@@ -1,31 +1,36 @@
 //sliders
-@import "variables";
+@import "variables.css";
 
-#sliders{
+#sliders {
+  width: 100%;
+  float: left;
+
+  .sliderContainer {
     width: 100%;
+    height: 45px;
     float: left;
-    .sliderContainer{
-        width: 100%;
-        height: 45px;
-        float: left;
-        &#shadow_slider{
-            display: none;
-        }
-        &#sensitivityPoints_slider{
-            display: none;
-        }
-        &#fillOpacity_slider{
-            display: none;
-        }
-        .sliderVal{
-            width: 100%;
-            height: 20px;
-            margin-top: 5px;
-            line-height: 20px;
-            word-wrap: break-word;
-            font-size: 13px;
-            float: left;
-            text-align: center;
-        }
+
+    &#shadow_slider {
+      display: none;
     }
+
+    &#sensitivityPoints_slider {
+      display: none;
+    }
+
+    &#fillOpacity_slider {
+      display: none;
+    }
+
+    .sliderVal {
+      width: 100%;
+      height: 20px;
+      margin-top: 5px;
+      line-height: 20px;
+      word-wrap: break-word;
+      font-size: 13px;
+      float: left;
+      text-align: center;
+    }
+  }
 }
