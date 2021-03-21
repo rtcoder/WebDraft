@@ -1,51 +1,50 @@
 class Resizer {
-    constructor() {
-        let $this = this;
-        $.get('parts/resizer.part.html', function (data) {
-            $('#resizer').html(data);
+  constructor() {
+    $('#resizer input[type=number]').keyup((e) => {
+      this.onkeyup(e);
+    });
+  }
 
-            $("#resizer input[type=number]").keyup(function (e) {
-                $this.onkeyup(e);
-            });
-        });
-    }
-    show() {
-        $("#resizer").show();
-        $("input[type=number]#drawWidth").val(webDraft.draw.width);
-        $("input[type=number]#drawHeight").val(webDraft.draw.height);
-        $("#resizeinfo").html(webDraft.draw.width + " <i class='fas fa-times'></i> " + webDraft.draw.height);
-    }
-    cancel() {
-        $("#resizer").hide();
-        $("input[type=number]#drawWidth").val(webDraft.draw.width);
-        $("input[type=number]#drawHeight").val(webDraft.draw.height);
-    }
-    apply() {
-        $("#resizer").hide();
-        let w, h;
-        if ($("#allLayersResizing").is(":checked")) {
-            w = $("input[type=number]#drawWidth").val();
-            h = $("input[type=number]#drawHeight").val();
+  cancel() {
+    $('#resizer').hide();
+    $('input[type=number]#drawWidth').val(webDraftDraw.width);
+    $('input[type=number]#drawHeight').val(webDraftDraw.height);
+  }
 
-            layers.setLayerSize('', w, h);
-        } else {
-            w = $("input[type=number]#drawWidth").val();
-            h = $("input[type=number]#drawHeight").val();
+  onkeyup(e) {
+    this.onchange();
 
-            layers.setLayerSize(layers.activeId, w, h);
-        }
-        webDraft.positionElements();
+    if (e.keyCode === KEY_CODES.Enter) {
+      $('#apply').click();
     }
-    onkeyup(e) {
-        this.onchange();
+  }
 
-        if (e.keyCode === 13) {
-            $("#apply").click();
-        }
-    }
-    onchange() {
-        let xSize = parseInt($("input[type=number]#drawWidth").val());
-        let ySize = parseInt($("input[type=number]#drawHeight").val());
-        $("#resizeinfo").html(xSize + " <i class='fas fa-times'></i> " + ySize);
-    }
+  onchange() {
+    const xSize = parseInt($('input[type=number]#drawWidth').val());
+    const ySize = parseInt($('input[type=number]#drawHeight').val());
+    q('#resizeinfo').innerHtml = xSize + ' <i class=\'fas fa-times\'></i> ' + ySize;
+  }
+}
+
+const resizer = new Resizer();
+
+function showResizer() {
+  $('#resizer').show();
+  $('input[type=number]#drawWidth').val(webDraftDraw.width);
+  $('input[type=number]#drawHeight').val(webDraftDraw.height);
+  $('#resizeinfo').html(webDraftDraw.width + ' <i class=\'fas fa-times\'></i> ' + webDraftDraw.height);
+}
+
+function applyNewSizes() {
+  $('#resizer').hide();
+
+  const w = $('input[type=number]#drawWidth').val();
+  const h = $('input[type=number]#drawHeight').val();
+  const layerId = $('#allLayersResizing').is(':checked')
+      ? ''
+      : activeLayerId;
+
+  setLayerSize(layerId, w, h);
+
+  positionElements();
 }
