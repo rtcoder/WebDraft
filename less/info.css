@@ -1,0 +1,72 @@
+@import "variables.css";
+
+#info {
+  width: 350px;
+  height: 100vh;
+  z-index: 5;
+  position: absolute;
+  display: none;
+  overflow: auto;
+  background: var(--dark3);
+  border-left: 1px solid var(--gray2);
+  color: var(--white1);
+  top: 0;
+  right: 0;
+}
+
+@media all and (max-width: 400px) {
+  #info {
+    width: 100vw;
+  }
+}
+
+#info .close-info {
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+  margin: 5px;
+}
+
+#info .info-section {
+  width: 100%;
+  float: left;
+  margin: 5px 0;
+}
+
+#info .info-section .info-section-title {
+  width: 100%;
+  float: left;
+  text-align: center;
+}
+
+#info .info-section .info-section-line {
+  width: 100%;
+  float: left;
+}
+
+#info .info-section .info-section-line .info-section-shortcut {
+  width: 30%;
+  float: left;
+  padding: 2px 5px;
+  text-align: right;
+}
+
+#info .info-section .info-section-line .info-section-shortcut span {
+  padding: 0 5px;
+  min-width: 30px;
+  height: 20px;
+  border-radius: 2px;
+  margin: 15px 5px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 12px;
+  background: var(--white5);
+  border: 1px solid var(--gray3);
+  color: var(--dark3);
+}
+
+#info .info-section .info-section-line .info-section-shortcut-describe {
+  width: 70%;
+  float: left;
+  padding: 2px 5px;
+}
