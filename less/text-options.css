@@ -1,0 +1,66 @@
+@import "variables.css";
+
+#textOptions {
+  display: none;
+}
+
+#textOptions #alignBtns {
+  width: 100%;
+  float: left;
+}
+
+#textOptions #alignBtns .textPostionTool {
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  float: left;
+  color: var(--gray2);
+  cursor: pointer;
+}
+
+#textOptions #alignBtns .textPostionTool .fas,
+#textOptions #alignBtns .textPostionTool .fab,
+#textOptions #alignBtns .textPostionTool .far {
+  font-size: 15px;
+}
+
+#textOptions #alignBtns .textPostionTool:hover,
+#textOptions #alignBtns .textPostionTool.active {
+  color: var(--white1);
+}
+
+#textOptions #fontStyleBtns {
+  width: 100%;
+  float: left;
+}
+
+#textOptions #fontStyleBtns .styleTool {
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  float: left;
+  color: var(--gray2);
+  cursor: pointer;
+}
+
+#textOptions #fontStyleBtns .styleTool .fas,
+#textOptions #fontStyleBtns .styleTool .fab,
+#textOptions #fontStyleBtns .styleTool .far {
+  font-size: 15px;
+}
+
+#textOptions #fontStyleBtns .styleTool :hover,
+#textOptions #fontStyleBtns .styleTool .active {
+  color: var(--white1);
+}
+
+#textRectangle {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  border: 1px solid var(--black1);
+  font-size: 8mm;
+  cursor: move;
+}

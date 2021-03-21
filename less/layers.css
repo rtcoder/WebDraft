@@ -1,0 +1,128 @@
+@import "variables.css";
+
+#layers .title {
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  float: left;
+  font-size: 15px;
+  text-align: center;
+  background: var(--white2);
+  color: var(--dark2);
+}
+
+#layers #layersBtns {
+  width: 100%;
+  background: var(--dark3);
+  float: left;
+  z-index: 4;
+  color: var(--gray2);
+}
+
+#layers #layersBtns .layerTool {
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  float: left;
+  color: var(--gray2);
+  cursor: pointer;
+}
+
+#layers #layersBtns .layerTool#addLayer {
+  color: var(--green1);
+}
+
+#layers #layersBtns .layerTool#delLayer {
+  color: var(--red1);
+}
+
+#layers #layersBtns .layerTool:hover {
+  color: var(--white1);
+}
+
+#layers #layersBtns .layerTool .fas,
+#layers #layersBtns .layerTool .fab,
+#layers #layersBtns .layerTool .far {
+  font-size: 15px;
+}
+
+#layers #listLayers {
+  width: 100%;
+  background: var(--dark3);
+  float: left;
+  z-index: 4;
+  color: var(--gray2);
+  max-height: calc(50vh - 170px);
+  overflow: auto;
+  top: 50px;
+}
+
+#layers #listLayers .layerView {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  margin: 10px auto;
+  background: transparent;
+  text-align: center;
+  cursor: pointer;
+}
+
+#layers #listLayers .layerView.active {
+  cursor: default;
+  background-color: var(--rgba1);
+}
+
+#layers #listLayers .layerView.active:hover {
+  cursor: default;
+  background-color: var(--rgba1);
+}
+
+#layers #listLayers .layerView.active .imgLayerContainer {
+  border-color: var(--blue2);
+}
+
+#layers #listLayers .layerView:hover {
+  background-color: var(--rgba2);
+}
+
+#layers #listLayers .layerView .imgLayerContainer {
+  float: left;
+  border: 1px solid var(--gray3);
+  width: 60px;
+  height: 60px;
+}
+
+#layers #listLayers .layerView .imgLayerContainer img.imgLayer {
+  float: left;
+  max-width: 58px;
+  max-height: 58px;
+}
+
+
+#layers #listLayers .layerView .hideLayer,
+#layers #listLayers .layerView .showLayer {
+  float: left;
+  margin: 21px 5px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px !important;
+  text-align: center;
+  cursor: pointer;
+}
+
+#layers #listLayers .layerView .showLayer {
+  color: var(--red1);
+}
+
+#layers #listLayers .layerView .showLayer:hover {
+  color: var(--green1);
+}
+
+#layers #listLayers .layerView .hideLayer {
+  color: var(--green1);
+}
+
+#layers #listLayers .layerView .hideLayer:hover {
+  color: var(--red1);
+}

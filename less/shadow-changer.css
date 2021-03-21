@@ -1,0 +1,43 @@
+@import "variables.css";
+
+#shadowSquare {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  background: var(--rgba3);
+  float: left;
+  display: none;
+}
+
+#shadowSquare #shadowDot {
+  cursor: move;
+  background: var(--white1);
+  border-radius: 100%;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 95px;
+  left: 95px;
+  z-index: 2;
+}
+
+#shadowSquare::after, #shadowSquare::before {
+  position: absolute;
+  content: ' ';
+  background: var(--gray2);
+  z-index: 1;
+}
+
+#shadowSquare::after {
+  width: 200px;
+  height: 1px;
+  top: 50%;
+  left: 0;
+}
+
+#shadowSquare::before {
+  width: 1px;
+  height: 200px;
+  top: 0;
+  left: 50%;
+}
