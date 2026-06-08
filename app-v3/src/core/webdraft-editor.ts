@@ -1,5 +1,6 @@
 import type {LayerSnapshot, LayerSummary} from './layer-manager';
 import {LayerManager} from './layer-manager';
+import {invertPixelBuffer, mirrorPixelBuffer, rotatePixelBuffer} from './layer-transforms';
 import {EditorOptions, EditorState, Point, SizeWithPosition, Tool} from './types';
 
 export class WebDraftEditor extends EventTarget {
@@ -295,34 +296,36 @@ export class WebDraftEditor extends EventTarget {
     const before = this.layerManager.captureActiveLayer();
     const {canvas, context} = this.layerManager.activeLayer;
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const {data} = imageData;
+    const transformed = invertPixelBuffer(imageData);
 
-    for (let index = 0; index < data.length; index += 4) {
-      data[index] = 255 - data[index];
-      data[index + 1] = 255 - data[index + 1];
-      data[index + 2] = 255 - data[index + 2];
-    }
-
-    context.putImageData(imageData, 0, 0);
+    context.putImageData(createImageData(transformed), 0, 0);
     this.pushHistory(before, this.layerManager.captureActiveLayer());
   }
 
   rotateActiveLayer(direction: 'left' | 'right'): void {
-    this.transformActiveLayer((context, source, width, height) => {
-      const angle = direction === 'left' ? -Math.PI / 2 : Math.PI / 2;
+    this.commitTextInput();
+    this.clearSelection();
 
-      context.translate(width / 2, height / 2);
-      context.rotate(angle);
-      context.drawImage(source, -width / 2, -height / 2);
-    });
+    const before = this.layerManager.captureActiveLayer();
+    const {canvas, context} = this.layerManager.activeLayer;
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const transformed = rotatePixelBuffer(imageData, direction);
+
+    context.putImageData(createImageData(transformed), 0, 0);
+    this.pushHistory(before, this.layerManager.captureActiveLayer());
   }
 
   mirrorActiveLayer(axis: 'horizontal' | 'vertical'): void {
-    this.transformActiveLayer((context, source, width, height) => {
-      context.translate(width / 2, height / 2);
-      context.scale(axis === 'horizontal' ? -1 : 1, axis === 'vertical' ? -1 : 1);
-      context.drawImage(source, -width / 2, -height / 2);
-    });
+    this.commitTextInput();
+    this.clearSelection();
+
+    const before = this.layerManager.captureActiveLayer();
+    const {canvas, context} = this.layerManager.activeLayer;
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const transformed = mirrorPixelBuffer(imageData, axis);
+
+    context.putImageData(createImageData(transformed), 0, 0);
+    this.pushHistory(before, this.layerManager.captureActiveLayer());
   }
 
   private bindPointerEvents(): void {
@@ -851,33 +854,6 @@ export class WebDraftEditor extends EventTarget {
     this.webPoints.push(point);
   }
 
-  private transformActiveLayer(
-    draw: (context: CanvasRenderingContext2D, source: HTMLCanvasElement, width: number, height: number) => void,
-  ): void {
-    this.commitTextInput();
-    this.clearSelection();
-
-    const before = this.layerManager.captureActiveLayer();
-    const {canvas, context} = this.layerManager.activeLayer;
-    const source = document.createElement('canvas');
-    const sourceContext = source.getContext('2d');
-
-    if (!sourceContext) {
-      throw new Error('Canvas 2D context is unavailable.');
-    }
-
-    source.width = canvas.width;
-    source.height = canvas.height;
-    sourceContext.drawImage(canvas, 0, 0);
-
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.save();
-    context.globalCompositeOperation = 'source-over';
-    draw(context, source, canvas.width, canvas.height);
-    context.restore();
-    this.pushHistory(before, this.layerManager.captureActiveLayer());
-  }
-
   private applyBrush(context: CanvasRenderingContext2D): void {
     context.lineCap = 'round';
     context.lineJoin = 'round';
@@ -940,4 +916,11 @@ function rgbToHex(red: number, green: number, blue: number): string {
 
 function toHex(value: number): string {
   return value.toString(16).padStart(2, '0');
+}
+
+function createImageData(buffer: {data: Uint8ClampedArray; width: number; height: number}): ImageData {
+  const data = new Uint8ClampedArray(buffer.data.length);
+  data.set(buffer.data);
+
+  return new ImageData(data, buffer.width, buffer.height);
 }
