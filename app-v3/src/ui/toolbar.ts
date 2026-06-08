@@ -1,6 +1,7 @@
 import {Tool} from '../core/types';
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {createColorPicker} from './color-picker';
+import {bindKeyboardShortcuts} from './keyboard-shortcuts';
 import {createLayersPanel} from './layers-panel';
 
 type ToolConfig = {
@@ -101,7 +102,7 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   exportButton.type = 'button';
   exportButton.className = 'command-button';
   exportButton.textContent = 'Export PNG';
-  exportButton.addEventListener('click', async () => {
+  const exportImage = async () => {
     const blob = await editor.exportPng();
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -110,12 +111,19 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     link.download = 'webdraft-image.png';
     link.click();
     URL.revokeObjectURL(url);
+  };
+
+  exportButton.addEventListener('click', () => {
+    void exportImage();
   });
 
   const renderState = () => {
     for (const [tool, button] of toolButtons) {
       button.classList.toggle('is-active', tool === editor.state.activeTool);
     }
+
+    sizeInput.value = String(editor.state.size);
+    sizeValue.textContent = String(editor.state.size);
   };
 
   editor.addEventListener('change', renderState);
@@ -132,6 +140,11 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     fileInput,
     createLayersPanel(editor),
   );
+
+  bindKeyboardShortcuts(editor, {
+    openImagePicker: () => fileInput.click(),
+    exportImage,
+  });
 
   return toolbar;
 }

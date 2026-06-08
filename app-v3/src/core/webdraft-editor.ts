@@ -68,7 +68,7 @@ export class WebDraftEditor extends EventTarget {
   }
 
   setSize(size: number): void {
-    this.state.size = size;
+    this.state.size = Math.min(Math.max(size, 1), 120);
     this.dispatchChange();
   }
 

@@ -21,7 +21,7 @@
 - [x] Add shape tools.
 - [ ] Add text tool.
 - [ ] Add undo/redo history.
-- [ ] Add keyboard shortcuts.
+- [x] Add keyboard shortcuts.
 - [ ] Add responsive layout polish.
 - [ ] Add final smoke tests and regression tests.
 
