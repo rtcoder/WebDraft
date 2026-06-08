@@ -13,6 +13,7 @@ import {
   normalizeCanvasBounds,
   normalizeTextBounds,
 } from './editor-geometry';
+import {HistoryManager} from './history-manager';
 import {LayerManager} from './layer-manager';
 import {invertPixelBuffer, mirrorPixelBuffer, rotatePixelBuffer} from './layer-transforms';
 import {EditorOptions, EditorState, Point, SizeWithPosition, Tool} from './types';
@@ -35,8 +36,7 @@ export class WebDraftEditor extends EventTarget {
   private webPoints: Point[] = [];
   private clipboard: ClipboardSnapshot | null = null;
   private pendingHistorySnapshot: HistorySnapshot | null = null;
-  private readonly undoStack: HistoryEntry[] = [];
-  private readonly redoStack: HistoryEntry[] = [];
+  private readonly history = new HistoryManager<HistorySnapshot>();
 
   readonly state: EditorState;
 
@@ -94,11 +94,11 @@ export class WebDraftEditor extends EventTarget {
   }
 
   get canUndo(): boolean {
-    return this.undoStack.length > 0;
+    return this.history.canUndo;
   }
 
   get canRedo(): boolean {
-    return this.redoStack.length > 0;
+    return this.history.canRedo;
   }
 
   get hasSelection(): boolean {
@@ -220,26 +220,24 @@ export class WebDraftEditor extends EventTarget {
   }
 
   undo(): void {
-    const entry = this.undoStack.pop();
+    const snapshot = this.history.undo();
 
-    if (!entry) {
+    if (!snapshot) {
       return;
     }
 
-    this.restoreHistorySnapshot(entry.before);
-    this.redoStack.push(entry);
+    this.restoreHistorySnapshot(snapshot);
     this.dispatchChange();
   }
 
   redo(): void {
-    const entry = this.redoStack.pop();
+    const snapshot = this.history.redo();
 
-    if (!entry) {
+    if (!snapshot) {
       return;
     }
 
-    this.restoreHistorySnapshot(entry.after);
-    this.undoStack.push(entry);
+    this.restoreHistorySnapshot(snapshot);
     this.dispatchChange();
   }
 
@@ -871,8 +869,7 @@ export class WebDraftEditor extends EventTarget {
   }
 
   private pushHistory(before: HistorySnapshot, after: HistorySnapshot): void {
-    this.undoStack.push({before, after});
-    this.redoStack.length = 0;
+    this.history.push(before, after);
     this.dispatchChange();
   }
 
@@ -880,11 +877,6 @@ export class WebDraftEditor extends EventTarget {
     this.dispatchEvent(new CustomEvent('change', {detail: this.state}));
   }
 }
-
-type HistoryEntry = {
-  before: HistorySnapshot;
-  after: HistorySnapshot;
-};
 
 type HistorySnapshot = {
   canvasWidth: number;
