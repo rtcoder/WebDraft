@@ -51,17 +51,26 @@ export class WebDraftEditor extends EventTarget {
       color: options.color,
       fillColor: '#ffffff',
       fillEnabled: false,
+      fillOpacity: 100,
       size: options.size,
+      canvasWidth: options.width,
+      canvasHeight: options.height,
       webSensitivity: 100,
+      shadowEnabled: false,
+      shadowColor: '#000000',
+      shadowBlur: 8,
+      shadowOffsetX: 8,
+      shadowOffsetY: 8,
+      textFontFamily: 'sans-serif',
+      textAlign: 'left',
+      textBold: false,
+      textItalic: false,
     };
   }
 
   mount(): void {
-    this.root.style.setProperty('--canvas-width', `${this.options.width}px`);
-    this.root.style.setProperty('--canvas-height', `${this.options.height}px`);
-    this.previewCanvas.width = this.options.width;
-    this.previewCanvas.height = this.options.height;
-    this.layerManager.createLayer(this.options.width, this.options.height);
+    this.applyCanvasSize();
+    this.layerManager.createLayer(this.state.canvasWidth, this.state.canvasHeight);
     this.root.append(this.previewCanvas);
     this.root.append(this.eventLayer);
     this.bindPointerEvents();
@@ -112,6 +121,11 @@ export class WebDraftEditor extends EventTarget {
     this.dispatchChange();
   }
 
+  setFillOpacity(opacity: number): void {
+    this.state.fillOpacity = Math.min(Math.max(opacity, 0), 100);
+    this.dispatchChange();
+  }
+
   setSize(size: number): void {
     this.state.size = Math.min(Math.max(size, 1), 120);
     this.dispatchChange();
@@ -119,6 +133,72 @@ export class WebDraftEditor extends EventTarget {
 
   setWebSensitivity(sensitivity: number): void {
     this.state.webSensitivity = Math.min(Math.max(sensitivity, 20), 260);
+    this.dispatchChange();
+  }
+
+  setShadowEnabled(enabled: boolean): void {
+    this.state.shadowEnabled = enabled;
+    this.dispatchChange();
+  }
+
+  setShadowColor(color: string): void {
+    this.state.shadowColor = color;
+    this.dispatchChange();
+  }
+
+  setShadowBlur(blur: number): void {
+    this.state.shadowBlur = Math.min(Math.max(blur, 0), 80);
+    this.dispatchChange();
+  }
+
+  setShadowOffsetX(offset: number): void {
+    this.state.shadowOffsetX = Math.min(Math.max(offset, -120), 120);
+    this.dispatchChange();
+  }
+
+  setShadowOffsetY(offset: number): void {
+    this.state.shadowOffsetY = Math.min(Math.max(offset, -120), 120);
+    this.dispatchChange();
+  }
+
+  setTextFontFamily(fontFamily: string): void {
+    this.state.textFontFamily = fontFamily;
+    this.dispatchChange();
+  }
+
+  setTextAlign(align: CanvasTextAlign): void {
+    this.state.textAlign = align;
+    this.dispatchChange();
+  }
+
+  setTextBold(enabled: boolean): void {
+    this.state.textBold = enabled;
+    this.dispatchChange();
+  }
+
+  setTextItalic(enabled: boolean): void {
+    this.state.textItalic = enabled;
+    this.dispatchChange();
+  }
+
+  resizeCanvas(width: number, height: number): void {
+    this.commitTextInput();
+    this.clearSelection();
+
+    const nextWidth = Math.min(Math.max(Math.round(width), 64), 4096);
+    const nextHeight = Math.min(Math.max(Math.round(height), 64), 4096);
+
+    if (nextWidth === this.state.canvasWidth && nextHeight === this.state.canvasHeight) {
+      return;
+    }
+
+    this.state.canvasWidth = nextWidth;
+    this.state.canvasHeight = nextHeight;
+    this.layerManager.resizeLayers(nextWidth, nextHeight);
+    this.applyCanvasSize();
+    this.undoStack.length = 0;
+    this.redoStack.length = 0;
+    this.clipboard = null;
     this.dispatchChange();
   }
 
@@ -156,8 +236,41 @@ export class WebDraftEditor extends EventTarget {
     const image = await this.loadImage(file);
     const target = this.fitImage(image);
 
-    this.layerManager.drawImageOnNewLayer(image, this.options.width, this.options.height, target);
+    this.layerManager.drawImageOnNewLayer(image, this.state.canvasWidth, this.state.canvasHeight, target);
     this.dispatchChange();
+  }
+
+  async importCameraFrame(): Promise<void> {
+    const mediaDevices = navigator.mediaDevices;
+
+    if (!mediaDevices?.getUserMedia) {
+      throw new Error('Camera is unavailable in this browser.');
+    }
+
+    const stream = await mediaDevices.getUserMedia({video: true});
+    const video = document.createElement('video');
+
+    try {
+      video.muted = true;
+      video.playsInline = true;
+      video.srcObject = stream;
+      await video.play();
+
+      await new Promise<void>((resolve) => {
+        if (video.videoWidth > 0 && video.videoHeight > 0) {
+          resolve();
+          return;
+        }
+
+        video.addEventListener('loadedmetadata', () => resolve(), {once: true});
+      });
+
+      const target = this.fitImage({naturalWidth: video.videoWidth, naturalHeight: video.videoHeight});
+      this.layerManager.drawImageOnNewLayer(video, this.state.canvasWidth, this.state.canvasHeight, target);
+      this.dispatchChange();
+    } finally {
+      stream.getTracks().forEach((track) => track.stop());
+    }
   }
 
   async exportPng(): Promise<Blob> {
@@ -168,8 +281,8 @@ export class WebDraftEditor extends EventTarget {
       throw new Error('Canvas 2D context is unavailable.');
     }
 
-    canvas.width = this.options.width;
-    canvas.height = this.options.height;
+    canvas.width = this.state.canvasWidth;
+    canvas.height = this.state.canvasHeight;
 
     for (const layer of this.layerManager.visibleLayers) {
       context.drawImage(layer.canvas, 0, 0);
@@ -187,7 +300,7 @@ export class WebDraftEditor extends EventTarget {
   }
 
   addLayer(): void {
-    this.layerManager.createLayer(this.options.width, this.options.height);
+    this.layerManager.createLayer(this.state.canvasWidth, this.state.canvasHeight);
     this.dispatchChange();
   }
 
@@ -481,14 +594,21 @@ export class WebDraftEditor extends EventTarget {
     }
   }
 
-  private fitImage(image: HTMLImageElement): SizeWithPosition {
-    const ratio = Math.min(this.options.width / image.naturalWidth, this.options.height / image.naturalHeight, 1);
+  private applyCanvasSize(): void {
+    this.root.style.setProperty('--canvas-width', `${this.state.canvasWidth}px`);
+    this.root.style.setProperty('--canvas-height', `${this.state.canvasHeight}px`);
+    this.previewCanvas.width = this.state.canvasWidth;
+    this.previewCanvas.height = this.state.canvasHeight;
+  }
+
+  private fitImage(image: {naturalWidth: number; naturalHeight: number}): SizeWithPosition {
+    const ratio = Math.min(this.state.canvasWidth / image.naturalWidth, this.state.canvasHeight / image.naturalHeight, 1);
     const width = image.naturalWidth * ratio;
     const height = image.naturalHeight * ratio;
 
     return {
-      x: (this.options.width - width) / 2,
-      y: (this.options.height - height) / 2,
+      x: (this.state.canvasWidth - width) / 2,
+      y: (this.state.canvasHeight - height) / 2,
       width,
       height,
     };
@@ -502,7 +622,7 @@ export class WebDraftEditor extends EventTarget {
     const x = Math.floor(point.x);
     const y = Math.floor(point.y);
 
-    if (x < 0 || y < 0 || x >= this.options.width || y >= this.options.height) {
+    if (x < 0 || y < 0 || x >= this.state.canvasWidth || y >= this.state.canvasHeight) {
       return;
     }
 
@@ -513,8 +633,8 @@ export class WebDraftEditor extends EventTarget {
       throw new Error('Canvas 2D context is unavailable.');
     }
 
-    canvas.width = this.options.width;
-    canvas.height = this.options.height;
+    canvas.width = this.state.canvasWidth;
+    canvas.height = this.state.canvasHeight;
 
     for (const layer of this.layerManager.visibleLayers) {
       context.drawImage(layer.canvas, 0, 0);
@@ -587,6 +707,9 @@ export class WebDraftEditor extends EventTarget {
     input.style.height = `${bounds.height}px`;
     input.style.color = this.state.color;
     input.style.font = this.getCanvasFont();
+    input.style.fontWeight = this.state.textBold ? '700' : '400';
+    input.style.fontStyle = this.state.textItalic ? 'italic' : 'normal';
+    input.style.textAlign = this.state.textAlign;
     input.placeholder = 'Text';
 
     input.addEventListener('keydown', (event) => {
@@ -719,8 +842,8 @@ export class WebDraftEditor extends EventTarget {
   private normalizeCanvasBounds(bounds: SizeWithPosition): SizeWithPosition | null {
     const x = Math.max(0, Math.round(bounds.x));
     const y = Math.max(0, Math.round(bounds.y));
-    const right = Math.min(this.options.width, Math.round(bounds.x + bounds.width));
-    const bottom = Math.min(this.options.height, Math.round(bounds.y + bounds.height));
+    const right = Math.min(this.state.canvasWidth, Math.round(bounds.x + bounds.width));
+    const bottom = Math.min(this.state.canvasHeight, Math.round(bounds.y + bounds.height));
     const width = right - x;
     const height = bottom - y;
 
@@ -734,8 +857,8 @@ export class WebDraftEditor extends EventTarget {
   private normalizeTextBounds(bounds: SizeWithPosition): SizeWithPosition {
     const x = Math.max(0, Math.round(bounds.x));
     const y = Math.max(0, Math.round(bounds.y));
-    const width = Math.max(160, Math.min(this.options.width - x, Math.round(bounds.width)));
-    const height = Math.max(48, Math.min(this.options.height - y, Math.round(bounds.height)));
+    const width = Math.max(160, Math.min(this.state.canvasWidth - x, Math.round(bounds.width)));
+    const height = Math.max(48, Math.min(this.state.canvasHeight - y, Math.round(bounds.height)));
 
     return {x, y, width, height};
   }
@@ -744,19 +867,21 @@ export class WebDraftEditor extends EventTarget {
     context.save();
     context.globalCompositeOperation = 'source-over';
     context.fillStyle = this.state.color;
+    this.applyShadow(context);
     context.font = this.getCanvasFont();
-    context.textAlign = 'left';
+    context.textAlign = this.state.textAlign;
     context.textBaseline = 'top';
 
     const fontSize = this.getTextFontSize();
     const lineHeight = fontSize * 1.25;
     const lines = value.split('\n');
+    const x = this.getTextLineX(bounds);
 
     lines.forEach((line, index) => {
       const y = bounds.y + index * lineHeight;
 
       if (y + lineHeight <= bounds.y + bounds.height) {
-        context.fillText(line, bounds.x, y, bounds.width);
+        context.fillText(line, x, y, bounds.width);
       }
     });
 
@@ -764,7 +889,10 @@ export class WebDraftEditor extends EventTarget {
   }
 
   private getCanvasFont(): string {
-    return `${this.getTextFontSize()}px sans-serif`;
+    const style = this.state.textItalic ? 'italic' : 'normal';
+    const weight = this.state.textBold ? '700' : '400';
+
+    return `${style} ${weight} ${this.getTextFontSize()}px ${this.state.textFontFamily}`;
   }
 
   private getTextFontSize(): number {
@@ -861,6 +989,9 @@ export class WebDraftEditor extends EventTarget {
 
     if (this.state.activeTool === Tool.Eraser) {
       context.globalCompositeOperation = 'destination-out';
+      context.shadowBlur = 0;
+      context.shadowOffsetX = 0;
+      context.shadowOffsetY = 0;
       context.strokeStyle = '#000000';
       context.fillStyle = '#000000';
       return;
@@ -869,6 +1000,7 @@ export class WebDraftEditor extends EventTarget {
     context.globalCompositeOperation = 'source-over';
     context.strokeStyle = this.state.color;
     context.fillStyle = this.state.color;
+    this.applyShadow(context);
   }
 
   private applyStroke(context: CanvasRenderingContext2D): void {
@@ -877,7 +1009,34 @@ export class WebDraftEditor extends EventTarget {
     context.lineJoin = 'round';
     context.lineWidth = this.state.size;
     context.strokeStyle = this.state.color;
-    context.fillStyle = this.state.fillColor;
+    context.fillStyle = hexToRgba(this.state.fillColor, this.state.fillOpacity / 100);
+    this.applyShadow(context);
+  }
+
+  private applyShadow(context: CanvasRenderingContext2D): void {
+    if (!this.state.shadowEnabled) {
+      context.shadowBlur = 0;
+      context.shadowOffsetX = 0;
+      context.shadowOffsetY = 0;
+      return;
+    }
+
+    context.shadowColor = this.state.shadowColor;
+    context.shadowBlur = this.state.shadowBlur;
+    context.shadowOffsetX = this.state.shadowOffsetX;
+    context.shadowOffsetY = this.state.shadowOffsetY;
+  }
+
+  private getTextLineX(bounds: SizeWithPosition): number {
+    if (this.state.textAlign === 'center') {
+      return bounds.x + bounds.width / 2;
+    }
+
+    if (this.state.textAlign === 'right' || this.state.textAlign === 'end') {
+      return bounds.x + bounds.width;
+    }
+
+    return bounds.x;
   }
 
   private commitPendingHistory(): void {
@@ -916,6 +1075,15 @@ function rgbToHex(red: number, green: number, blue: number): string {
 
 function toHex(value: number): string {
   return value.toString(16).padStart(2, '0');
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  const normalized = hex.replace('#', '');
+  const red = Number.parseInt(normalized.slice(0, 2), 16);
+  const green = Number.parseInt(normalized.slice(2, 4), 16);
+  const blue = Number.parseInt(normalized.slice(4, 6), 16);
+
+  return `rgb(${red} ${green} ${blue} / ${alpha})`;
 }
 
 function createImageData(buffer: {data: Uint8ClampedArray; width: number; height: number}): ImageData {

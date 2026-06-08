@@ -33,6 +33,18 @@ export type EditorState = {
   color: string;
   fillColor: string;
   fillEnabled: boolean;
+  fillOpacity: number;
   size: number;
+  canvasWidth: number;
+  canvasHeight: number;
   webSensitivity: number;
+  shadowEnabled: boolean;
+  shadowColor: string;
+  shadowBlur: number;
+  shadowOffsetX: number;
+  shadowOffsetY: number;
+  textFontFamily: string;
+  textAlign: CanvasTextAlign;
+  textBold: boolean;
+  textItalic: boolean;
 };

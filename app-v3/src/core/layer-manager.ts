@@ -61,6 +61,10 @@ export class LayerManager {
     return this.layers.filter((layer) => layer.visible);
   }
 
+  get allLayers(): Layer[] {
+    return [...this.layers];
+  }
+
   createLayer(width: number, height: number): Layer {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -95,6 +99,25 @@ export class LayerManager {
   clearActiveLayer(): void {
     const layer = this.activeLayer;
     layer.context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
+  }
+
+  resizeLayers(width: number, height: number): void {
+    for (const layer of this.layers) {
+      const source = document.createElement('canvas');
+      const sourceContext = source.getContext('2d');
+
+      if (!sourceContext) {
+        throw new Error('Canvas 2D context is unavailable.');
+      }
+
+      source.width = layer.canvas.width;
+      source.height = layer.canvas.height;
+      sourceContext.drawImage(layer.canvas, 0, 0);
+      layer.canvas.width = width;
+      layer.canvas.height = height;
+      layer.context.clearRect(0, 0, width, height);
+      layer.context.drawImage(source, 0, 0);
+    }
   }
 
   captureActiveLayer(): LayerSnapshot {

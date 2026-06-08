@@ -115,6 +115,83 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     onChange: (color) => editor.setFillColor(color),
   });
 
+  const fillOpacityControl = createRangeControl({
+    label: 'Fill opacity',
+    min: 0,
+    max: 100,
+    value: editor.state.fillOpacity,
+    onChange: (value) => editor.setFillOpacity(value),
+  });
+
+  const shadowToggle = createCheckboxControl('Shadow', editor.state.shadowEnabled, (enabled) => {
+    editor.setShadowEnabled(enabled);
+  });
+
+  const shadowColorPicker = createColorPicker({
+    label: 'Shadow color',
+    value: editor.state.shadowColor,
+    onChange: (color) => editor.setShadowColor(color),
+  });
+
+  const shadowBlurControl = createRangeControl({
+    label: 'Shadow blur',
+    min: 0,
+    max: 80,
+    value: editor.state.shadowBlur,
+    onChange: (value) => editor.setShadowBlur(value),
+  });
+
+  const shadowXControl = createRangeControl({
+    label: 'Shadow X',
+    min: -120,
+    max: 120,
+    value: editor.state.shadowOffsetX,
+    onChange: (value) => editor.setShadowOffsetX(value),
+  });
+
+  const shadowYControl = createRangeControl({
+    label: 'Shadow Y',
+    min: -120,
+    max: 120,
+    value: editor.state.shadowOffsetY,
+    onChange: (value) => editor.setShadowOffsetY(value),
+  });
+
+  const fontSelect = document.createElement('select');
+  fontSelect.className = 'select-control';
+  fontSelect.title = 'Text font';
+  for (const option of ['sans-serif', 'serif', 'monospace', 'cursive']) {
+    const item = document.createElement('option');
+    item.value = option;
+    item.textContent = option;
+    fontSelect.append(item);
+  }
+  fontSelect.addEventListener('change', () => editor.setTextFontFamily(fontSelect.value));
+
+  const alignSelect = document.createElement('select');
+  alignSelect.className = 'select-control';
+  alignSelect.title = 'Text alignment';
+  for (const option of ['left', 'center', 'right'] as CanvasTextAlign[]) {
+    const item = document.createElement('option');
+    item.value = option;
+    item.textContent = option;
+    alignSelect.append(item);
+  }
+  alignSelect.addEventListener('change', () => editor.setTextAlign(alignSelect.value as CanvasTextAlign));
+
+  const textBoldToggle = createCheckboxControl('Bold', editor.state.textBold, (enabled) => {
+    editor.setTextBold(enabled);
+  });
+  const textItalicToggle = createCheckboxControl('Italic', editor.state.textItalic, (enabled) => {
+    editor.setTextItalic(enabled);
+  });
+
+  const resizeWidthInput = createNumberInput('Width', editor.state.canvasWidth);
+  const resizeHeightInput = createNumberInput('Height', editor.state.canvasHeight);
+  const resizeButton = createCommandButton('Resize canvas', () => {
+    editor.resizeCanvas(Number(resizeWidthInput.value), Number(resizeHeightInput.value));
+  });
+
   const clearButton = document.createElement('button');
   clearButton.type = 'button';
   clearButton.className = 'command-button';
@@ -207,6 +284,14 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     void exportImage();
   });
 
+  const cameraButton = document.createElement('button');
+  cameraButton.type = 'button';
+  cameraButton.className = 'command-button';
+  cameraButton.textContent = 'Camera snap';
+  cameraButton.addEventListener('click', () => {
+    void editor.importCameraFrame();
+  });
+
   const renderState = () => {
     for (const [tool, button] of toolButtons) {
       button.classList.toggle('is-active', tool === editor.state.activeTool);
@@ -218,7 +303,19 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     webSensitivityValue.textContent = String(editor.state.webSensitivity);
     colorPicker.setValue(editor.state.color);
     fillColorPicker.setValue(editor.state.fillColor);
+    fillOpacityControl.setValue(editor.state.fillOpacity);
     fillCheckbox.checked = editor.state.fillEnabled;
+    shadowToggle.setChecked(editor.state.shadowEnabled);
+    shadowColorPicker.setValue(editor.state.shadowColor);
+    shadowBlurControl.setValue(editor.state.shadowBlur);
+    shadowXControl.setValue(editor.state.shadowOffsetX);
+    shadowYControl.setValue(editor.state.shadowOffsetY);
+    fontSelect.value = editor.state.textFontFamily;
+    alignSelect.value = editor.state.textAlign;
+    textBoldToggle.setChecked(editor.state.textBold);
+    textItalicToggle.setChecked(editor.state.textItalic);
+    resizeWidthInput.value = String(editor.state.canvasWidth);
+    resizeHeightInput.value = String(editor.state.canvasHeight);
     undoButton.disabled = !editor.canUndo;
     redoButton.disabled = !editor.canRedo;
     copyButton.disabled = !editor.hasSelection;
@@ -235,13 +332,24 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
 
   const fileGroup = document.createElement('div');
   fileGroup.className = 'toolbar__stack';
-  fileGroup.append(uploadButton, exportButton, fileInput);
+  fileGroup.append(uploadButton, cameraButton, exportButton, fileInput);
+
+  const resizeGroup = document.createElement('div');
+  resizeGroup.className = 'field-grid';
+  resizeGroup.append(resizeWidthInput, resizeHeightInput, resizeButton);
+
+  const textGroup = document.createElement('div');
+  textGroup.className = 'field-grid';
+  textGroup.append(fontSelect, alignSelect, textBoldToggle.element, textItalicToggle.element);
 
   toolbar.append(
     title,
     createToolbarSection(toolGroup),
-    createToolbarSection(colorPicker, fillToggle, fillColorPicker, sizeControl, webSensitivityControl),
+    createToolbarSection(colorPicker, fillToggle, fillColorPicker, fillOpacityControl.element, sizeControl, webSensitivityControl),
+    createToolbarSection(shadowToggle.element, shadowColorPicker, shadowBlurControl.element, shadowXControl.element, shadowYControl.element),
+    createToolbarSection(textGroup),
     createToolbarSection(editGroup, transformGroup),
+    createToolbarSection(resizeGroup),
     createToolbarSection(fileGroup),
     createToolbarSection(createLayersPanel(editor)),
   );
@@ -262,6 +370,81 @@ function createCommandButton(label: string, onClick: () => void): HTMLButtonElem
   button.addEventListener('click', onClick);
 
   return button;
+}
+
+function createNumberInput(label: string, value: number): HTMLInputElement {
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'number-control';
+  input.min = '64';
+  input.max = '4096';
+  input.step = '1';
+  input.value = String(value);
+  input.placeholder = label;
+  input.title = label;
+
+  return input;
+}
+
+function createCheckboxControl(
+  label: string,
+  checked: boolean,
+  onChange: (checked: boolean) => void,
+): {element: HTMLLabelElement; setChecked: (checked: boolean) => void} {
+  const element = document.createElement('label');
+  element.className = 'checkbox-control';
+
+  const input = document.createElement('input');
+  input.type = 'checkbox';
+  input.checked = checked;
+  input.addEventListener('change', () => onChange(input.checked));
+
+  const text = document.createElement('span');
+  text.textContent = label;
+  element.append(input, text);
+
+  return {
+    element,
+    setChecked: (nextChecked: boolean) => {
+      input.checked = nextChecked;
+    },
+  };
+}
+
+function createRangeControl(options: {
+  label: string;
+  min: number;
+  max: number;
+  value: number;
+  onChange: (value: number) => void;
+}): {element: HTMLLabelElement; setValue: (value: number) => void} {
+  const element = document.createElement('label');
+  element.className = 'range-control';
+  element.textContent = options.label;
+
+  const value = document.createElement('span');
+  value.textContent = String(options.value);
+
+  const input = document.createElement('input');
+  input.type = 'range';
+  input.min = String(options.min);
+  input.max = String(options.max);
+  input.value = String(options.value);
+  input.addEventListener('input', () => {
+    const nextValue = Number(input.value);
+    value.textContent = String(nextValue);
+    options.onChange(nextValue);
+  });
+
+  element.append(input, value);
+
+  return {
+    element,
+    setValue: (nextValue: number) => {
+      input.value = String(nextValue);
+      value.textContent = String(nextValue);
+    },
+  };
 }
 
 function createToolbarSection(...children: HTMLElement[]): HTMLElement {

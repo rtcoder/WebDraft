@@ -13,7 +13,7 @@
 - [x] Create an isolated rewrite directory.
 - [x] Add a lightweight Vite + TypeScript skeleton.
 - [x] Add the first canvas surface, layer manager, pencil, eraser, size control, clear command, and custom color input wrapper.
-- [ ] Recreate the current tool inventory from the old app.
+- [x] Recreate the current tool inventory from the old app.
 - [x] Rebuild layers UI without jQuery.
 - [x] Add upload image support.
 - [x] Add PNG export.
@@ -23,6 +23,7 @@
 - [x] Add text tool.
 - [x] Add web drawing tool.
 - [x] Add active-layer invert, mirror, and rotate actions.
+- [x] Add canvas resize, fill opacity, shadow controls, text options, and camera snap.
 - [x] Add undo/redo history.
 - [x] Add keyboard shortcuts.
 - [x] Add responsive layout polish.
