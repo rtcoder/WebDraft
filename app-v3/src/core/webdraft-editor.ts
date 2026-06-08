@@ -14,6 +14,10 @@ export class WebDraftEditor extends EventTarget {
   private shapeStartPoint: Point | null = null;
   private selectionStartPoint: Point | null = null;
   private selectionBounds: SizeWithPosition | null = null;
+  private textStartPoint: Point | null = null;
+  private textBounds: SizeWithPosition | null = null;
+  private textInput: HTMLTextAreaElement | null = null;
+  private skipNextTextPointerDown = false;
   private clipboard: ClipboardSnapshot | null = null;
   private pendingHistorySnapshot: LayerSnapshot | null = null;
   private readonly undoStack: HistoryEntry[] = [];
@@ -80,6 +84,7 @@ export class WebDraftEditor extends EventTarget {
   }
 
   setTool(tool: Tool): void {
+    this.commitTextInput();
     this.state.activeTool = tool;
     if (tool !== Tool.Select) {
       this.clearSelection();
@@ -272,6 +277,28 @@ export class WebDraftEditor extends EventTarget {
         return;
       }
 
+      if (this.state.activeTool === Tool.Text) {
+        if (this.textInput) {
+          this.commitTextInput();
+          this.isDrawing = false;
+          this.lastPoint = null;
+          return;
+        }
+
+        if (this.skipNextTextPointerDown) {
+          this.skipNextTextPointerDown = false;
+          this.isDrawing = false;
+          this.lastPoint = null;
+          return;
+        }
+
+        this.commitTextInput();
+        this.textStartPoint = this.lastPoint;
+        this.textBounds = null;
+        this.clearPreview();
+        return;
+      }
+
       this.pendingHistorySnapshot = this.layerManager.captureActiveLayer();
 
       if (this.isShapeTool()) {
@@ -294,6 +321,11 @@ export class WebDraftEditor extends EventTarget {
         return;
       }
 
+      if (this.state.activeTool === Tool.Text) {
+        this.renderTextPreview(nextPoint);
+        return;
+      }
+
       if (this.isShapeTool()) {
         this.renderShapePreview(nextPoint);
         return;
@@ -308,11 +340,15 @@ export class WebDraftEditor extends EventTarget {
         this.commitSelection(this.getPoint(event));
       }
 
+      if (this.state.activeTool === Tool.Text) {
+        this.showTextInput(this.getPoint(event));
+      }
+
       if (this.isShapeTool()) {
         this.commitShape(this.getPoint(event));
       }
 
-      if (this.state.activeTool !== Tool.Select) {
+      if (this.state.activeTool !== Tool.Select && this.state.activeTool !== Tool.Text) {
         this.commitPendingHistory();
       }
       this.eventLayer.releasePointerCapture(event.pointerId);
@@ -327,6 +363,7 @@ export class WebDraftEditor extends EventTarget {
       this.lastPoint = null;
       this.shapeStartPoint = null;
       this.selectionStartPoint = null;
+      this.textStartPoint = null;
       this.pendingHistorySnapshot = null;
       this.clearPreview();
     });
@@ -398,6 +435,109 @@ export class WebDraftEditor extends EventTarget {
 
     this.renderSelectionFrame();
     this.dispatchChange();
+  }
+
+  private renderTextPreview(point: Point): void {
+    if (!this.textStartPoint) {
+      return;
+    }
+
+    this.textBounds = this.getBounds(this.textStartPoint, point);
+    this.renderTextFrame();
+  }
+
+  private showTextInput(point: Point): void {
+    if (!this.textStartPoint) {
+      return;
+    }
+
+    const bounds = this.normalizeTextBounds(this.getBounds(this.textStartPoint, point));
+
+    this.textBounds = bounds;
+    this.clearPreview();
+    this.createTextInput(bounds);
+    this.textStartPoint = null;
+  }
+
+  private createTextInput(bounds: SizeWithPosition): void {
+    this.removeTextInput();
+
+    const input = document.createElement('textarea');
+    input.className = 'text-input-layer';
+    input.style.left = `${bounds.x}px`;
+    input.style.top = `${bounds.y}px`;
+    input.style.width = `${bounds.width}px`;
+    input.style.height = `${bounds.height}px`;
+    input.style.color = this.state.color;
+    input.style.font = this.getCanvasFont();
+    input.placeholder = 'Text';
+
+    input.addEventListener('keydown', (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        event.preventDefault();
+        this.commitTextInput();
+      }
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        this.removeTextInput();
+        this.clearPreview();
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      this.commitTextInput({skipNextPointerDown: true});
+    });
+
+    this.textInput = input;
+    this.root.append(input);
+    input.focus();
+  }
+
+  private commitTextInput(options: {skipNextPointerDown?: boolean} = {}): void {
+    if (!this.textInput || !this.textBounds) {
+      return;
+    }
+
+    const value = this.textInput.value.trimEnd();
+    const bounds = this.textBounds;
+
+    this.removeTextInput();
+    this.clearPreview();
+    this.skipNextTextPointerDown = options.skipNextPointerDown ?? false;
+
+    if (!value.trim()) {
+      this.textBounds = null;
+      return;
+    }
+
+    const before = this.layerManager.captureActiveLayer();
+    const {context} = this.layerManager.activeLayer;
+
+    this.drawText(context, value, bounds);
+    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.textBounds = null;
+  }
+
+  private removeTextInput(): void {
+    this.textInput?.remove();
+    this.textInput = null;
+  }
+
+  private renderTextFrame(): void {
+    if (!this.textBounds) {
+      return;
+    }
+
+    const bounds = this.normalizeTextBounds(this.textBounds);
+
+    this.clearPreview();
+    this.previewContext.save();
+    this.previewContext.setLineDash([4, 4]);
+    this.previewContext.lineWidth = 1;
+    this.previewContext.strokeStyle = '#6b9dff';
+    this.previewContext.strokeRect(bounds.x + 0.5, bounds.y + 0.5, bounds.width, bounds.height);
+    this.previewContext.restore();
   }
 
   private clearSelection(): void {
@@ -472,6 +612,46 @@ export class WebDraftEditor extends EventTarget {
     }
 
     return {x, y, width, height};
+  }
+
+  private normalizeTextBounds(bounds: SizeWithPosition): SizeWithPosition {
+    const x = Math.max(0, Math.round(bounds.x));
+    const y = Math.max(0, Math.round(bounds.y));
+    const width = Math.max(160, Math.min(this.options.width - x, Math.round(bounds.width)));
+    const height = Math.max(48, Math.min(this.options.height - y, Math.round(bounds.height)));
+
+    return {x, y, width, height};
+  }
+
+  private drawText(context: CanvasRenderingContext2D, value: string, bounds: SizeWithPosition): void {
+    context.save();
+    context.globalCompositeOperation = 'source-over';
+    context.fillStyle = this.state.color;
+    context.font = this.getCanvasFont();
+    context.textAlign = 'left';
+    context.textBaseline = 'top';
+
+    const fontSize = this.getTextFontSize();
+    const lineHeight = fontSize * 1.25;
+    const lines = value.split('\n');
+
+    lines.forEach((line, index) => {
+      const y = bounds.y + index * lineHeight;
+
+      if (y + lineHeight <= bounds.y + bounds.height) {
+        context.fillText(line, bounds.x, y, bounds.width);
+      }
+    });
+
+    context.restore();
+  }
+
+  private getCanvasFont(): string {
+    return `${this.getTextFontSize()}px sans-serif`;
+  }
+
+  private getTextFontSize(): number {
+    return Math.max(8, this.state.size * 2);
   }
 
   private drawShape(context: CanvasRenderingContext2D, bounds: SizeWithPosition): void {

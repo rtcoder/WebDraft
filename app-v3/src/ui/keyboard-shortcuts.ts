@@ -100,6 +100,8 @@ function getToolForKey(key: string): Tool | null {
       return Tool.Rectangle;
     case 'o':
       return Tool.Ellipse;
+    case 't':
+      return Tool.Text;
     default:
       return null;
   }

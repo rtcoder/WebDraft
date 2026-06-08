@@ -4,6 +4,7 @@ export enum Tool {
   Eraser = 'eraser',
   Rectangle = 'rectangle',
   Ellipse = 'ellipse',
+  Text = 'text',
 }
 
 export type Point = {

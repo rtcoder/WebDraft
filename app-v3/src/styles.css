@@ -94,6 +94,20 @@ input {
   cursor: crosshair;
 }
 
+.text-input-layer {
+  position: absolute;
+  z-index: 20;
+  min-width: 120px;
+  min-height: 40px;
+  padding: 6px;
+  resize: none;
+  border: 1px solid #5b9cff;
+  border-radius: 4px;
+  outline: 2px solid rgb(91 156 255 / 20%);
+  background: rgb(255 255 255 / 82%);
+  caret-color: #111111;
+}
+
 .toolbar {
   display: grid;
   gap: 18px;

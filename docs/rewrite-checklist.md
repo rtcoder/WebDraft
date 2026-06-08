@@ -19,7 +19,7 @@
 - [x] Add PNG export.
 - [x] Add selection, copy, cut, paste.
 - [x] Add shape tools.
-- [ ] Add text tool.
+- [x] Add text tool.
 - [x] Add undo/redo history.
 - [x] Add keyboard shortcuts.
 - [ ] Add responsive layout polish.
