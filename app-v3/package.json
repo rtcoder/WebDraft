@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "test": "node tests/layer-transforms.test.mjs && node tests/editor-geometry.test.mjs && node tests/history-manager.test.mjs",
+    "check": "npm test && npm run build",
     "build": "tsc && vite build",
     "preview": "vite preview --host 127.0.0.1"
   },

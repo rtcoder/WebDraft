@@ -37,3 +37,7 @@
 - `js/modules/Shapes.js` - rectangle and circle behavior.
 - `js/modules/Text.js` - text selection and rendering behavior.
 - `parts/*.part.html` - current UI inventory.
+
+## Release Readiness
+
+- Use `docs/manual-qa-checklist.md` before replacing the old entrypoint or after larger editor changes.
