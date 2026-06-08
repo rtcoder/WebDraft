@@ -311,6 +311,14 @@ export class WebDraftEditor extends EventTarget {
         return;
       }
 
+      if (this.state.activeTool === Tool.Sampler) {
+        this.sampleColor(this.lastPoint);
+        this.setTool(Tool.Pencil);
+        this.isDrawing = false;
+        this.lastPoint = null;
+        return;
+      }
+
       this.pendingHistorySnapshot = this.layerManager.captureActiveLayer();
 
       if (this.isShapeTool()) {
@@ -422,6 +430,37 @@ export class WebDraftEditor extends EventTarget {
 
   private isShapeTool(): boolean {
     return this.state.activeTool === Tool.Rectangle || this.state.activeTool === Tool.Ellipse;
+  }
+
+  private sampleColor(point: Point): void {
+    const x = Math.floor(point.x);
+    const y = Math.floor(point.y);
+
+    if (x < 0 || y < 0 || x >= this.options.width || y >= this.options.height) {
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    if (!context) {
+      throw new Error('Canvas 2D context is unavailable.');
+    }
+
+    canvas.width = this.options.width;
+    canvas.height = this.options.height;
+
+    for (const layer of this.layerManager.visibleLayers) {
+      context.drawImage(layer.canvas, 0, 0);
+    }
+
+    const [red, green, blue, alpha] = context.getImageData(x, y, 1, 1).data;
+
+    if (alpha === 0) {
+      return;
+    }
+
+    this.setColor(rgbToHex(red, green, blue));
   }
 
   private renderSelectionPreview(point: Point): void {
@@ -771,3 +810,11 @@ type ClipboardSnapshot = {
   bounds: SizeWithPosition;
   imageData: ImageData;
 };
+
+function rgbToHex(red: number, green: number, blue: number): string {
+  return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
+}
+
+function toHex(value: number): string {
+  return value.toString(16).padStart(2, '0');
+}

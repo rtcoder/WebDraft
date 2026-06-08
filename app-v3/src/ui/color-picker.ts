@@ -4,7 +4,11 @@ export type ColorPickerOptions = {
   onChange: (color: string) => void;
 };
 
-export function createColorPicker(options: ColorPickerOptions): HTMLElement {
+export type ColorPickerControl = HTMLElement & {
+  setValue: (color: string) => void;
+};
+
+export function createColorPicker(options: ColorPickerOptions): ColorPickerControl {
   const wrapper = document.createElement('label');
   wrapper.className = 'color-picker';
 
@@ -25,5 +29,10 @@ export function createColorPicker(options: ColorPickerOptions): HTMLElement {
 
   wrapper.append(swatch, text, input);
 
-  return wrapper;
+  return Object.assign(wrapper, {
+    setValue(color: string) {
+      input.value = color;
+      swatch.style.backgroundColor = color;
+    },
+  });
 }

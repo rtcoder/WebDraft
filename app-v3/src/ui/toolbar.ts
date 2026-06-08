@@ -14,6 +14,7 @@ const tools: ToolConfig[] = [
   {id: Tool.Select, label: 'Select', icon: 'S'},
   {id: Tool.Pencil, label: 'Pencil', icon: 'P'},
   {id: Tool.Eraser, label: 'Eraser', icon: 'E'},
+  {id: Tool.Sampler, label: 'Sampler', icon: 'C'},
   {id: Tool.Rectangle, label: 'Rectangle', icon: 'R'},
   {id: Tool.Ellipse, label: 'Ellipse', icon: 'O'},
   {id: Tool.Text, label: 'Text', icon: 'T'},
@@ -176,6 +177,8 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
 
     sizeInput.value = String(editor.state.size);
     sizeValue.textContent = String(editor.state.size);
+    colorPicker.setValue(editor.state.color);
+    fillColorPicker.setValue(editor.state.fillColor);
     fillCheckbox.checked = editor.state.fillEnabled;
     undoButton.disabled = !editor.canUndo;
     redoButton.disabled = !editor.canRedo;

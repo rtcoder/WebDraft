@@ -2,6 +2,7 @@ export enum Tool {
   Select = 'select',
   Pencil = 'pencil',
   Eraser = 'eraser',
+  Sampler = 'sampler',
   Rectangle = 'rectangle',
   Ellipse = 'ellipse',
   Text = 'text',
