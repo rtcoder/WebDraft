@@ -266,9 +266,9 @@ input {
 
 .layer-item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 34px;
+  grid-template-columns: 44px minmax(0, 1fr) 34px;
   align-items: center;
-  min-height: 38px;
+  min-height: 46px;
   border: 1px solid #343941;
   border-radius: 6px;
   overflow: hidden;
@@ -281,21 +281,49 @@ input {
 }
 
 .layer-select,
+.layer-preview,
+.layer-name-input,
 .layer-visibility {
-  min-height: 38px;
+  min-height: 46px;
   border: 0;
   color: #dce5f2;
   background: transparent;
   cursor: pointer;
 }
 
-.layer-select {
+.layer-preview {
+  display: grid;
+  place-items: center;
+  padding: 5px;
+  border-right: 1px solid #343941;
+}
+
+.layer-preview img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  background-image:
+    linear-gradient(45deg, #d6dae0 25%, transparent 25%),
+    linear-gradient(-45deg, #d6dae0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #d6dae0 75%),
+    linear-gradient(-45deg, transparent 75%, #d6dae0 75%);
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+  background-size: 8px 8px;
+}
+
+.layer-name-input {
   min-width: 0;
   padding: 0 10px;
   overflow: hidden;
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: text;
+}
+
+.layer-name-input:focus {
+  outline: 1px solid #5b9cff;
+  outline-offset: -1px;
 }
 
 .layer-visibility {

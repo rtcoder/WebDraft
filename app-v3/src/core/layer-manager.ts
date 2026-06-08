@@ -12,6 +12,7 @@ export type LayerSummary = {
   id: string;
   name: string;
   active: boolean;
+  preview: string;
   visible: boolean;
 };
 
@@ -50,6 +51,7 @@ export class LayerManager {
         id: layer.id,
         name: layer.name,
         active: layer.id === this.activeLayerId,
+        preview: layer.canvas.toDataURL('image/png'),
         visible: layer.visible
       }))
       .reverse();
@@ -127,6 +129,15 @@ export class LayerManager {
   selectLayer(id: string): void {
     this.assertLayer(id);
     this.activeLayerId = id;
+  }
+
+  renameLayer(id: string, name: string): void {
+    const layer = this.assertLayer(id);
+    const nextName = name.trim();
+
+    if (nextName) {
+      layer.name = nextName;
+    }
   }
 
   deleteActiveLayer(): Layer | null {

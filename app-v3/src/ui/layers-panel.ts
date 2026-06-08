@@ -31,11 +31,32 @@ export function createLayersPanel(editor: WebDraftEditor): HTMLElement {
         item.className = 'layer-item';
         item.classList.toggle('is-active', layer.active);
 
-        const selectButton = document.createElement('button');
-        selectButton.type = 'button';
-        selectButton.className = 'layer-select';
-        selectButton.textContent = layer.name;
-        selectButton.addEventListener('click', () => editor.selectLayer(layer.id));
+        const previewButton = document.createElement('button');
+        previewButton.type = 'button';
+        previewButton.className = 'layer-preview';
+        previewButton.title = `Select ${layer.name}`;
+        previewButton.addEventListener('click', () => editor.selectLayer(layer.id));
+
+        const previewImage = document.createElement('img');
+        previewImage.alt = '';
+        previewImage.src = layer.preview;
+        previewButton.append(previewImage);
+
+        const renameInput = document.createElement('input');
+        renameInput.className = 'layer-name-input';
+        renameInput.value = layer.name;
+        renameInput.title = 'Rename layer';
+        renameInput.addEventListener('focus', () => {
+          renameInput.select();
+        });
+        renameInput.addEventListener('blur', () => {
+          editor.renameLayer(layer.id, renameInput.value);
+        });
+        renameInput.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            renameInput.blur();
+          }
+        });
 
         const visibilityButton = document.createElement('button');
         visibilityButton.type = 'button';
@@ -44,7 +65,7 @@ export function createLayersPanel(editor: WebDraftEditor): HTMLElement {
         visibilityButton.textContent = layer.visible ? '●' : '○';
         visibilityButton.addEventListener('click', () => editor.toggleLayerVisibility(layer.id));
 
-        item.append(selectButton, visibilityButton);
+        item.append(previewButton, renameInput, visibilityButton);
 
         return item;
       })

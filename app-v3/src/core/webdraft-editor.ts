@@ -200,6 +200,11 @@ export class WebDraftEditor extends EventTarget {
     this.dispatchChange();
   }
 
+  renameLayer(id: string, name: string): void {
+    this.layerManager.renameLayer(id, name);
+    this.dispatchChange();
+  }
+
   toggleLayerVisibility(id: string): void {
     this.layerManager.toggleVisibility(id);
     this.dispatchChange();
