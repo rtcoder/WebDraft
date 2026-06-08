@@ -26,6 +26,7 @@ export function floodFillImageData(
   }
 
   const stack: Array<[number, number]> = [[startX, startY]];
+  const visited = new Uint8Array(imageData.width * imageData.height);
 
   while (stack.length > 0) {
     const [currentX, currentY] = stack.pop() as [number, number];
@@ -33,6 +34,14 @@ export function floodFillImageData(
     if (currentX < 0 || currentY < 0 || currentX >= imageData.width || currentY >= imageData.height) {
       continue;
     }
+
+    const visitIndex = currentY * imageData.width + currentX;
+
+    if (visited[visitIndex]) {
+      continue;
+    }
+
+    visited[visitIndex] = 1;
 
     if (!colorsMatch(getPixel(imageData, currentX, currentY), target, tolerance)) {
       continue;

@@ -78,6 +78,25 @@ test('floodFillImageData keeps similar colors outside a zero tolerance fill', ()
   ]);
 });
 
+test('floodFillImageData terminates when replacement color is inside tolerance', () => {
+  const imageData = image(2, 2, [
+    [10, 10, 10, 255],
+    [10, 10, 10, 255],
+    [10, 10, 10, 255],
+    [10, 10, 10, 255],
+  ]);
+
+  const changed = floodFillImageData(imageData, 0, 0, {red: 12, green: 10, blue: 10, alpha: 255}, 3);
+
+  assert.equal(changed, true);
+  assert.deepEqual(pixels(imageData), [
+    [12, 10, 10, 255],
+    [12, 10, 10, 255],
+    [12, 10, 10, 255],
+    [12, 10, 10, 255],
+  ]);
+});
+
 test('hexToRgbaColor clamps opacity into alpha channel', () => {
   assert.deepEqual(hexToRgbaColor('#336699', 0.5), {red: 51, green: 102, blue: 153, alpha: 128});
   assert.deepEqual(hexToRgbaColor('#336699', 2), {red: 51, green: 102, blue: 153, alpha: 255});
