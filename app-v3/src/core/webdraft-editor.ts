@@ -1,4 +1,4 @@
-import type {LayerSnapshot, LayerSummary} from './layer-manager';
+import type {LayerDocumentSnapshot, LayerSummary} from './layer-manager';
 import {
   drawLine,
   drawPoint,
@@ -34,7 +34,7 @@ export class WebDraftEditor extends EventTarget {
   private skipNextTextPointerDown = false;
   private webPoints: Point[] = [];
   private clipboard: ClipboardSnapshot | null = null;
-  private pendingHistorySnapshot: LayerSnapshot | null = null;
+  private pendingHistorySnapshot: HistorySnapshot | null = null;
   private readonly undoStack: HistoryEntry[] = [];
   private readonly redoStack: HistoryEntry[] = [];
 
@@ -204,20 +204,19 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
+    const before = this.captureHistorySnapshot();
     this.state.canvasWidth = nextWidth;
     this.state.canvasHeight = nextHeight;
     this.layerManager.resizeLayers(nextWidth, nextHeight);
     this.applyCanvasSize();
-    this.undoStack.length = 0;
-    this.redoStack.length = 0;
     this.clipboard = null;
-    this.dispatchChange();
+    this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   clear(): void {
-    const before = this.layerManager.captureActiveLayer();
+    const before = this.captureHistorySnapshot();
     this.layerManager.clearActiveLayer();
-    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   undo(): void {
@@ -227,7 +226,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    this.layerManager.restoreLayer(entry.before);
+    this.restoreHistorySnapshot(entry.before);
     this.redoStack.push(entry);
     this.dispatchChange();
   }
@@ -239,17 +238,18 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    this.layerManager.restoreLayer(entry.after);
+    this.restoreHistorySnapshot(entry.after);
     this.undoStack.push(entry);
     this.dispatchChange();
   }
 
   async importImage(file: File): Promise<void> {
+    const before = this.captureHistorySnapshot();
     const image = await this.loadImage(file);
     const target = fitNaturalSizeToCanvas(image, this.canvasSize);
 
     this.layerManager.drawImageOnNewLayer(image, this.state.canvasWidth, this.state.canvasHeight, target);
-    this.dispatchChange();
+    this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   async importCameraFrame(): Promise<void> {
@@ -277,9 +277,10 @@ export class WebDraftEditor extends EventTarget {
         video.addEventListener('loadedmetadata', () => resolve(), {once: true});
       });
 
+      const before = this.captureHistorySnapshot();
       const target = fitNaturalSizeToCanvas({naturalWidth: video.videoWidth, naturalHeight: video.videoHeight}, this.canvasSize);
       this.layerManager.drawImageOnNewLayer(video, this.state.canvasWidth, this.state.canvasHeight, target);
-      this.dispatchChange();
+      this.pushHistory(before, this.captureHistorySnapshot());
     } finally {
       stream.getTracks().forEach((track) => track.stop());
     }
@@ -312,13 +313,16 @@ export class WebDraftEditor extends EventTarget {
   }
 
   addLayer(): void {
+    const before = this.captureHistorySnapshot();
     this.layerManager.createLayer(this.state.canvasWidth, this.state.canvasHeight);
-    this.dispatchChange();
+    this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   deleteActiveLayer(): void {
-    this.layerManager.deleteActiveLayer();
-    this.dispatchChange();
+    const before = this.captureHistorySnapshot();
+    if (this.layerManager.deleteActiveLayer()) {
+      this.pushHistory(before, this.captureHistorySnapshot());
+    }
   }
 
   selectLayer(id: string): void {
@@ -327,24 +331,29 @@ export class WebDraftEditor extends EventTarget {
   }
 
   renameLayer(id: string, name: string): void {
-    this.layerManager.renameLayer(id, name);
-    this.dispatchChange();
+    const before = this.captureHistorySnapshot();
+    if (this.layerManager.renameLayer(id, name)) {
+      this.pushHistory(before, this.captureHistorySnapshot());
+    }
   }
 
   toggleLayerVisibility(id: string): void {
+    const before = this.captureHistorySnapshot();
     this.layerManager.toggleVisibility(id);
-    this.dispatchChange();
+    this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   moveActiveLayerUp(): void {
+    const before = this.captureHistorySnapshot();
     if (this.layerManager.moveActiveLayerUp()) {
-      this.dispatchChange();
+      this.pushHistory(before, this.captureHistorySnapshot());
     }
   }
 
   moveActiveLayerDown(): void {
+    const before = this.captureHistorySnapshot();
     if (this.layerManager.moveActiveLayerDown()) {
-      this.dispatchChange();
+      this.pushHistory(before, this.captureHistorySnapshot());
     }
   }
 
@@ -379,7 +388,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    const before = this.layerManager.captureActiveLayer();
+    const before = this.captureHistorySnapshot();
     const {context} = this.layerManager.activeLayer;
 
     this.clipboard = {
@@ -387,7 +396,7 @@ export class WebDraftEditor extends EventTarget {
       imageData: context.getImageData(bounds.x, bounds.y, bounds.width, bounds.height),
     };
     context.clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
-    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.pushHistory(before, this.captureHistorySnapshot());
     this.dispatchChange();
   }
 
@@ -396,7 +405,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    const before = this.layerManager.captureActiveLayer();
+    const before = this.captureHistorySnapshot();
     const {context} = this.layerManager.activeLayer;
     const target = this.selectionBounds ?? this.clipboard.bounds;
     const x = Math.round(target.x);
@@ -410,7 +419,7 @@ export class WebDraftEditor extends EventTarget {
       height: this.clipboard.bounds.height,
     };
     this.renderSelectionFrame();
-    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.pushHistory(before, this.captureHistorySnapshot());
     this.dispatchChange();
   }
 
@@ -418,39 +427,39 @@ export class WebDraftEditor extends EventTarget {
     this.commitTextInput();
     this.clearSelection();
 
-    const before = this.layerManager.captureActiveLayer();
+    const before = this.captureHistorySnapshot();
     const {canvas, context} = this.layerManager.activeLayer;
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const transformed = invertPixelBuffer(imageData);
 
     context.putImageData(createImageData(transformed), 0, 0);
-    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   rotateActiveLayer(direction: 'left' | 'right'): void {
     this.commitTextInput();
     this.clearSelection();
 
-    const before = this.layerManager.captureActiveLayer();
+    const before = this.captureHistorySnapshot();
     const {canvas, context} = this.layerManager.activeLayer;
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const transformed = rotatePixelBuffer(imageData, direction);
 
     context.putImageData(createImageData(transformed), 0, 0);
-    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   mirrorActiveLayer(axis: 'horizontal' | 'vertical'): void {
     this.commitTextInput();
     this.clearSelection();
 
-    const before = this.layerManager.captureActiveLayer();
+    const before = this.captureHistorySnapshot();
     const {canvas, context} = this.layerManager.activeLayer;
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const transformed = mirrorPixelBuffer(imageData, axis);
 
     context.putImageData(createImageData(transformed), 0, 0);
-    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   private bindPointerEvents(): void {
@@ -496,7 +505,7 @@ export class WebDraftEditor extends EventTarget {
         return;
       }
 
-      this.pendingHistorySnapshot = this.layerManager.captureActiveLayer();
+      this.pendingHistorySnapshot = this.captureHistorySnapshot();
 
       if (this.isShapeTool()) {
         this.shapeStartPoint = this.lastPoint;
@@ -757,11 +766,11 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    const before = this.layerManager.captureActiveLayer();
+    const before = this.captureHistorySnapshot();
     const {context} = this.layerManager.activeLayer;
 
     drawText(context, value, bounds, this.state);
-    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.pushHistory(before, this.captureHistorySnapshot());
     this.textBounds = null;
   }
 
@@ -841,11 +850,27 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    this.pushHistory(this.pendingHistorySnapshot, this.layerManager.captureActiveLayer());
+    this.pushHistory(this.pendingHistorySnapshot, this.captureHistorySnapshot());
     this.pendingHistorySnapshot = null;
   }
 
-  private pushHistory(before: LayerSnapshot, after: LayerSnapshot): void {
+  private captureHistorySnapshot(): HistorySnapshot {
+    return {
+      canvasWidth: this.state.canvasWidth,
+      canvasHeight: this.state.canvasHeight,
+      document: this.layerManager.captureDocument(),
+    };
+  }
+
+  private restoreHistorySnapshot(snapshot: HistorySnapshot): void {
+    this.state.canvasWidth = snapshot.canvasWidth;
+    this.state.canvasHeight = snapshot.canvasHeight;
+    this.layerManager.restoreDocument(snapshot.document);
+    this.applyCanvasSize();
+    this.clearSelection();
+  }
+
+  private pushHistory(before: HistorySnapshot, after: HistorySnapshot): void {
     this.undoStack.push({before, after});
     this.redoStack.length = 0;
     this.dispatchChange();
@@ -857,8 +882,14 @@ export class WebDraftEditor extends EventTarget {
 }
 
 type HistoryEntry = {
-  before: LayerSnapshot;
-  after: LayerSnapshot;
+  before: HistorySnapshot;
+  after: HistorySnapshot;
+};
+
+type HistorySnapshot = {
+  canvasWidth: number;
+  canvasHeight: number;
+  document: LayerDocumentSnapshot;
 };
 
 type ClipboardSnapshot = {

@@ -16,9 +16,20 @@ export type LayerSummary = {
   visible: boolean;
 };
 
-export type LayerSnapshot = {
+type LayerSnapshot = {
   layerId: string;
   imageData: ImageData;
+};
+
+export type LayerDocumentSnapshot = {
+  activeLayerId: string;
+  layerCount: number;
+  layers: LayerSnapshotWithMetadata[];
+};
+
+type LayerSnapshotWithMetadata = LayerSnapshot & {
+  name: string;
+  visible: boolean;
 };
 
 export class LayerManager {
@@ -120,22 +131,57 @@ export class LayerManager {
     }
   }
 
-  captureActiveLayer(): LayerSnapshot {
-    const layer = this.activeLayer;
-
+  captureDocument(): LayerDocumentSnapshot {
     return {
-      layerId: layer.id,
-      imageData: layer.context.getImageData(0, 0, layer.canvas.width, layer.canvas.height),
+      activeLayerId: this.activeLayerId,
+      layerCount: this.layerCount,
+      layers: this.layers.map((layer) => ({
+        layerId: layer.id,
+        name: layer.name,
+        visible: layer.visible,
+        imageData: layer.context.getImageData(0, 0, layer.canvas.width, layer.canvas.height),
+      })),
     };
   }
 
-  restoreLayer(snapshot: LayerSnapshot): void {
-    const layer = this.assertLayer(snapshot.layerId);
+  restoreDocument(snapshot: LayerDocumentSnapshot): void {
+    for (const layer of this.layers) {
+      layer.canvas.remove();
+    }
 
-    layer.context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
-    layer.context.putImageData(snapshot.imageData, 0, 0);
-    this.activeLayerId = layer.id;
+    this.layers.length = 0;
+    this.layerCount = snapshot.layerCount;
+
+    for (const layerSnapshot of snapshot.layers) {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+
+      if (!context) {
+        throw new Error('Canvas 2D context is unavailable.');
+      }
+
+      canvas.width = layerSnapshot.imageData.width;
+      canvas.height = layerSnapshot.imageData.height;
+      canvas.className = 'drawing-layer';
+      canvas.dataset.layerId = layerSnapshot.layerId;
+      canvas.hidden = !layerSnapshot.visible;
+      context.putImageData(layerSnapshot.imageData, 0, 0);
+
+      this.layers.push({
+        id: layerSnapshot.layerId,
+        name: layerSnapshot.name,
+        canvas,
+        context,
+        visible: layerSnapshot.visible,
+      });
+      this.root.append(canvas);
+    }
+
+    this.activeLayerId = snapshot.layers.some((layer) => layer.layerId === snapshot.activeLayerId)
+      ? snapshot.activeLayerId
+      : this.layers[0]?.id ?? '';
   }
+
 
   drawImageOnNewLayer(
     image: CanvasImageSource,
@@ -154,13 +200,16 @@ export class LayerManager {
     this.activeLayerId = id;
   }
 
-  renameLayer(id: string, name: string): void {
+  renameLayer(id: string, name: string): boolean {
     const layer = this.assertLayer(id);
     const nextName = name.trim();
 
-    if (nextName) {
-      layer.name = nextName;
+    if (!nextName || nextName === layer.name) {
+      return false;
     }
+
+    layer.name = nextName;
+    return true;
   }
 
   deleteActiveLayer(): Layer | null {
