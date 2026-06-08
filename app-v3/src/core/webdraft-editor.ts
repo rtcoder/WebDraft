@@ -9,6 +9,7 @@ import {
 } from './canvas-drawing';
 import {
   fitNaturalSizeToCanvas,
+  getClippedPasteBounds,
   getBounds,
   normalizeCanvasBounds,
   normalizeTextBounds,
@@ -413,13 +414,24 @@ export class WebDraftEditor extends EventTarget {
     const before = this.captureHistorySnapshot();
     const {context} = this.layerManager.activeLayer;
     const target = this.selectionBounds ?? this.clipboard.bounds;
-    const x = Math.round(target.x);
-    const y = Math.round(target.y);
+    const pasteBounds = getClippedPasteBounds(target, this.clipboard.bounds, this.canvasSize);
 
-    context.putImageData(this.clipboard.imageData, x, y);
+    if (!pasteBounds) {
+      return;
+    }
+
+    context.putImageData(
+      this.clipboard.imageData,
+      pasteBounds.targetX - pasteBounds.sourceX,
+      pasteBounds.targetY - pasteBounds.sourceY,
+      pasteBounds.sourceX,
+      pasteBounds.sourceY,
+      pasteBounds.width,
+      pasteBounds.height,
+    );
     this.selectionBounds = {
-      x,
-      y,
+      x: pasteBounds.targetX,
+      y: pasteBounds.targetY,
       width: this.clipboard.bounds.width,
       height: this.clipboard.bounds.height,
     };

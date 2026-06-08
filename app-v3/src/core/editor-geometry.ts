@@ -5,6 +5,15 @@ export type NaturalSize = {
   naturalHeight: number;
 };
 
+export type ClippedPasteBounds = {
+  targetX: number;
+  targetY: number;
+  sourceX: number;
+  sourceY: number;
+  width: number;
+  height: number;
+};
+
 export function getBounds(start: Point, end: Point): SizeWithPosition {
   const x = Math.min(start.x, end.x);
   const y = Math.min(start.y, end.y);
@@ -49,4 +58,30 @@ export function normalizeTextBounds(bounds: SizeWithPosition, canvasSize: Size):
   const height = Math.max(48, Math.min(canvasSize.height - y, Math.round(bounds.height)));
 
   return {x, y, width, height};
+}
+
+export function getClippedPasteBounds(target: Point, imageSize: Size, canvasSize: Size): ClippedPasteBounds | null {
+  const x = Math.round(target.x);
+  const y = Math.round(target.y);
+  const sourceX = Math.max(0, -x);
+  const sourceY = Math.max(0, -y);
+  const targetX = Math.max(0, x);
+  const targetY = Math.max(0, y);
+  const right = Math.min(canvasSize.width, x + imageSize.width);
+  const bottom = Math.min(canvasSize.height, y + imageSize.height);
+  const width = right - targetX;
+  const height = bottom - targetY;
+
+  if (width < 1 || height < 1) {
+    return null;
+  }
+
+  return {
+    targetX,
+    targetY,
+    sourceX,
+    sourceY,
+    width,
+    height,
+  };
 }
