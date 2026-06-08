@@ -98,6 +98,8 @@ function getToolForKey(key: string): Tool | null {
       return Tool.Eraser;
     case 'c':
       return Tool.Sampler;
+    case 'w':
+      return Tool.Web;
     case 'r':
       return Tool.Rectangle;
     case 'o':

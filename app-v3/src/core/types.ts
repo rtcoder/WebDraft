@@ -3,6 +3,7 @@ export enum Tool {
   Pencil = 'pencil',
   Eraser = 'eraser',
   Sampler = 'sampler',
+  Web = 'web',
   Rectangle = 'rectangle',
   Ellipse = 'ellipse',
   Text = 'text',
@@ -33,4 +34,5 @@ export type EditorState = {
   fillColor: string;
   fillEnabled: boolean;
   size: number;
+  webSensitivity: number;
 };

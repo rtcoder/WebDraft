@@ -18,6 +18,7 @@ export class WebDraftEditor extends EventTarget {
   private textBounds: SizeWithPosition | null = null;
   private textInput: HTMLTextAreaElement | null = null;
   private skipNextTextPointerDown = false;
+  private webPoints: Point[] = [];
   private clipboard: ClipboardSnapshot | null = null;
   private pendingHistorySnapshot: LayerSnapshot | null = null;
   private readonly undoStack: HistoryEntry[] = [];
@@ -50,6 +51,7 @@ export class WebDraftEditor extends EventTarget {
       fillColor: '#ffffff',
       fillEnabled: false,
       size: options.size,
+      webSensitivity: 100,
     };
   }
 
@@ -111,6 +113,11 @@ export class WebDraftEditor extends EventTarget {
 
   setSize(size: number): void {
     this.state.size = Math.min(Math.max(size, 1), 120);
+    this.dispatchChange();
+  }
+
+  setWebSensitivity(sensitivity: number): void {
+    this.state.webSensitivity = Math.min(Math.max(sensitivity, 20), 260);
     this.dispatchChange();
   }
 
@@ -326,6 +333,12 @@ export class WebDraftEditor extends EventTarget {
         return;
       }
 
+      if (this.state.activeTool === Tool.Web) {
+        this.webPoints = [this.lastPoint];
+        this.drawPoint(this.lastPoint);
+        return;
+      }
+
       this.drawPoint(this.lastPoint);
     });
 
@@ -348,6 +361,12 @@ export class WebDraftEditor extends EventTarget {
 
       if (this.isShapeTool()) {
         this.renderShapePreview(nextPoint);
+        return;
+      }
+
+      if (this.state.activeTool === Tool.Web) {
+        this.drawWebLine(nextPoint);
+        this.lastPoint = nextPoint;
         return;
       }
 
@@ -376,6 +395,7 @@ export class WebDraftEditor extends EventTarget {
       this.lastPoint = null;
       this.shapeStartPoint = null;
       this.selectionStartPoint = null;
+      this.webPoints = [];
     });
 
     this.eventLayer.addEventListener('pointercancel', () => {
@@ -384,6 +404,7 @@ export class WebDraftEditor extends EventTarget {
       this.shapeStartPoint = null;
       this.selectionStartPoint = null;
       this.textStartPoint = null;
+      this.webPoints = [];
       this.pendingHistorySnapshot = null;
       this.clearPreview();
     });
@@ -753,6 +774,39 @@ export class WebDraftEditor extends EventTarget {
     context.moveTo(start.x, start.y);
     context.lineTo(end.x, end.y);
     context.stroke();
+  }
+
+  private drawWebLine(point: Point): void {
+    const {context} = this.layerManager.activeLayer;
+    const previousPoint = this.webPoints[this.webPoints.length - 1];
+
+    if (!previousPoint) {
+      this.webPoints.push(point);
+      return;
+    }
+
+    this.applyBrush(context);
+    context.beginPath();
+    context.moveTo(previousPoint.x, previousPoint.y);
+    context.lineTo(point.x, point.y);
+    context.stroke();
+
+    const sensitivitySquared = this.state.webSensitivity * this.state.webSensitivity;
+
+    for (const pastPoint of this.webPoints) {
+      const dx = pastPoint.x - point.x;
+      const dy = pastPoint.y - point.y;
+      const distanceSquared = dx * dx + dy * dy;
+
+      if (distanceSquared > 0 && distanceSquared < sensitivitySquared) {
+        context.beginPath();
+        context.moveTo(point.x + dx * 0.2, point.y + dy * 0.2);
+        context.lineTo(pastPoint.x - dx * 0.2, pastPoint.y - dy * 0.2);
+        context.stroke();
+      }
+    }
+
+    this.webPoints.push(point);
   }
 
   private applyBrush(context: CanvasRenderingContext2D): void {

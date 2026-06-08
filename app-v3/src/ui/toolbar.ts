@@ -15,6 +15,7 @@ const tools: ToolConfig[] = [
   {id: Tool.Pencil, label: 'Pencil', icon: 'P'},
   {id: Tool.Eraser, label: 'Eraser', icon: 'E'},
   {id: Tool.Sampler, label: 'Sampler', icon: 'C'},
+  {id: Tool.Web, label: 'Web', icon: 'W'},
   {id: Tool.Rectangle, label: 'Rectangle', icon: 'R'},
   {id: Tool.Ellipse, label: 'Ellipse', icon: 'O'},
   {id: Tool.Text, label: 'Text', icon: 'T'},
@@ -67,6 +68,26 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   });
 
   sizeControl.append(sizeInput, sizeValue);
+
+  const webSensitivityControl = document.createElement('label');
+  webSensitivityControl.className = 'range-control';
+  webSensitivityControl.textContent = 'Web';
+
+  const webSensitivityValue = document.createElement('span');
+  webSensitivityValue.textContent = String(editor.state.webSensitivity);
+
+  const webSensitivityInput = document.createElement('input');
+  webSensitivityInput.type = 'range';
+  webSensitivityInput.min = '20';
+  webSensitivityInput.max = '260';
+  webSensitivityInput.value = String(editor.state.webSensitivity);
+  webSensitivityInput.addEventListener('input', () => {
+    const sensitivity = Number(webSensitivityInput.value);
+    webSensitivityValue.textContent = String(sensitivity);
+    editor.setWebSensitivity(sensitivity);
+  });
+
+  webSensitivityControl.append(webSensitivityInput, webSensitivityValue);
 
   const colorPicker = createColorPicker({
     label: 'Color',
@@ -177,6 +198,8 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
 
     sizeInput.value = String(editor.state.size);
     sizeValue.textContent = String(editor.state.size);
+    webSensitivityInput.value = String(editor.state.webSensitivity);
+    webSensitivityValue.textContent = String(editor.state.webSensitivity);
     colorPicker.setValue(editor.state.color);
     fillColorPicker.setValue(editor.state.fillColor);
     fillCheckbox.checked = editor.state.fillEnabled;
@@ -197,6 +220,7 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     fillToggle,
     fillColorPicker,
     sizeControl,
+    webSensitivityControl,
     clearButton,
     undoButton,
     redoButton,

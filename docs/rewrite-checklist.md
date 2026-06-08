@@ -21,6 +21,7 @@
 - [x] Add shape tools.
 - [x] Add fill options for shape tools.
 - [x] Add text tool.
+- [x] Add web drawing tool.
 - [x] Add undo/redo history.
 - [x] Add keyboard shortcuts.
 - [ ] Add responsive layout polish.
