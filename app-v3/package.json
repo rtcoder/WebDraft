@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "test": "node tests/layer-transforms.test.mjs",
+    "test": "node tests/layer-transforms.test.mjs && node tests/editor-geometry.test.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview --host 127.0.0.1"
   },

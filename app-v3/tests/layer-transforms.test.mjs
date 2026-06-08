@@ -1,7 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
-import {Buffer} from 'node:buffer';
-import ts from 'typescript';
+import {importTypescriptModule, test} from './test-support.mjs';
 
 const transformModule = await importTypescriptModule('../src/core/layer-transforms.ts');
 const {invertPixelBuffer, mirrorPixelBuffer, rotatePixelBuffer} = transformModule;
@@ -95,31 +93,6 @@ test('rotatePixelBuffer rotates square buffers right and left', () => {
 });
 
 console.log('Layer transform tests passed.');
-
-async function importTypescriptModule(path) {
-  const url = new URL(path, import.meta.url);
-  const source = await readFile(url, 'utf8');
-  const {outputText} = ts.transpileModule(source, {
-    compilerOptions: {
-      module: ts.ModuleKind.ES2022,
-      target: ts.ScriptTarget.ES2022,
-      strict: true,
-    },
-    fileName: url.pathname,
-  });
-  const encoded = Buffer.from(outputText).toString('base64');
-
-  return import(`data:text/javascript;base64,${encoded}`);
-}
-
-function test(name, run) {
-  try {
-    run();
-  } catch (error) {
-    error.message = `${name}: ${error.message}`;
-    throw error;
-  }
-}
 
 function pixelBuffer(width, height, pixels) {
   return {

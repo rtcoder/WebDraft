@@ -1,11 +1,24 @@
 import type {LayerSnapshot, LayerSummary} from './layer-manager';
+import {
+  drawLine,
+  drawPoint,
+  drawShape,
+  drawText,
+  drawWebLine,
+  getCanvasFont,
+} from './canvas-drawing';
+import {
+  fitNaturalSizeToCanvas,
+  getBounds,
+  normalizeCanvasBounds,
+  normalizeTextBounds,
+} from './editor-geometry';
 import {LayerManager} from './layer-manager';
 import {invertPixelBuffer, mirrorPixelBuffer, rotatePixelBuffer} from './layer-transforms';
 import {EditorOptions, EditorState, Point, SizeWithPosition, Tool} from './types';
 
 export class WebDraftEditor extends EventTarget {
   private readonly root: HTMLElement;
-  private readonly options: EditorOptions;
   private readonly layerManager: LayerManager;
   private readonly previewCanvas: HTMLCanvasElement;
   private readonly previewContext: CanvasRenderingContext2D;
@@ -31,7 +44,6 @@ export class WebDraftEditor extends EventTarget {
     super();
 
     this.root = root;
-    this.options = options;
     this.layerManager = new LayerManager(root);
     this.previewCanvas = document.createElement('canvas');
     this.previewCanvas.className = 'shape-preview-layer';
@@ -234,7 +246,7 @@ export class WebDraftEditor extends EventTarget {
 
   async importImage(file: File): Promise<void> {
     const image = await this.loadImage(file);
-    const target = this.fitImage(image);
+    const target = fitNaturalSizeToCanvas(image, this.canvasSize);
 
     this.layerManager.drawImageOnNewLayer(image, this.state.canvasWidth, this.state.canvasHeight, target);
     this.dispatchChange();
@@ -265,7 +277,7 @@ export class WebDraftEditor extends EventTarget {
         video.addEventListener('loadedmetadata', () => resolve(), {once: true});
       });
 
-      const target = this.fitImage({naturalWidth: video.videoWidth, naturalHeight: video.videoHeight});
+      const target = fitNaturalSizeToCanvas({naturalWidth: video.videoWidth, naturalHeight: video.videoHeight}, this.canvasSize);
       this.layerManager.drawImageOnNewLayer(video, this.state.canvasWidth, this.state.canvasHeight, target);
       this.dispatchChange();
     } finally {
@@ -341,7 +353,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    const bounds = this.normalizeCanvasBounds(this.selectionBounds);
+    const bounds = normalizeCanvasBounds(this.selectionBounds, this.canvasSize);
 
     if (!bounds) {
       return;
@@ -361,7 +373,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    const bounds = this.normalizeCanvasBounds(this.selectionBounds);
+    const bounds = normalizeCanvasBounds(this.selectionBounds, this.canvasSize);
 
     if (!bounds) {
       return;
@@ -493,11 +505,11 @@ export class WebDraftEditor extends EventTarget {
 
       if (this.state.activeTool === Tool.Web) {
         this.webPoints = [this.lastPoint];
-        this.drawPoint(this.lastPoint);
+        drawPoint(this.layerManager.activeLayer.context, this.lastPoint, this.state);
         return;
       }
 
-      this.drawPoint(this.lastPoint);
+      drawPoint(this.layerManager.activeLayer.context, this.lastPoint, this.state);
     });
 
     this.eventLayer.addEventListener('pointermove', (event) => {
@@ -523,12 +535,12 @@ export class WebDraftEditor extends EventTarget {
       }
 
       if (this.state.activeTool === Tool.Web) {
-        this.drawWebLine(nextPoint);
+        this.webPoints = drawWebLine(this.layerManager.activeLayer.context, nextPoint, this.webPoints, this.state);
         this.lastPoint = nextPoint;
         return;
       }
 
-      this.drawLine(this.lastPoint, nextPoint);
+      drawLine(this.layerManager.activeLayer.context, this.lastPoint, nextPoint, this.state);
       this.lastPoint = nextPoint;
     });
 
@@ -601,16 +613,10 @@ export class WebDraftEditor extends EventTarget {
     this.previewCanvas.height = this.state.canvasHeight;
   }
 
-  private fitImage(image: {naturalWidth: number; naturalHeight: number}): SizeWithPosition {
-    const ratio = Math.min(this.state.canvasWidth / image.naturalWidth, this.state.canvasHeight / image.naturalHeight, 1);
-    const width = image.naturalWidth * ratio;
-    const height = image.naturalHeight * ratio;
-
+  private get canvasSize(): {width: number; height: number} {
     return {
-      x: (this.state.canvasWidth - width) / 2,
-      y: (this.state.canvasHeight - height) / 2,
-      width,
-      height,
+      width: this.state.canvasWidth,
+      height: this.state.canvasHeight,
     };
   }
 
@@ -654,7 +660,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    this.selectionBounds = this.getBounds(this.selectionStartPoint, point);
+    this.selectionBounds = getBounds(this.selectionStartPoint, point);
     this.renderSelectionFrame();
   }
 
@@ -663,9 +669,9 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    this.selectionBounds = this.getBounds(this.selectionStartPoint, point);
+    this.selectionBounds = getBounds(this.selectionStartPoint, point);
 
-    if (!this.normalizeCanvasBounds(this.selectionBounds)) {
+    if (!normalizeCanvasBounds(this.selectionBounds, this.canvasSize)) {
       this.clearSelection();
       return;
     }
@@ -679,7 +685,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    this.textBounds = this.getBounds(this.textStartPoint, point);
+    this.textBounds = getBounds(this.textStartPoint, point);
     this.renderTextFrame();
   }
 
@@ -688,7 +694,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    const bounds = this.normalizeTextBounds(this.getBounds(this.textStartPoint, point));
+    const bounds = normalizeTextBounds(getBounds(this.textStartPoint, point), this.canvasSize);
 
     this.textBounds = bounds;
     this.clearPreview();
@@ -706,7 +712,7 @@ export class WebDraftEditor extends EventTarget {
     input.style.width = `${bounds.width}px`;
     input.style.height = `${bounds.height}px`;
     input.style.color = this.state.color;
-    input.style.font = this.getCanvasFont();
+    input.style.font = getCanvasFont(this.state);
     input.style.fontWeight = this.state.textBold ? '700' : '400';
     input.style.fontStyle = this.state.textItalic ? 'italic' : 'normal';
     input.style.textAlign = this.state.textAlign;
@@ -754,7 +760,7 @@ export class WebDraftEditor extends EventTarget {
     const before = this.layerManager.captureActiveLayer();
     const {context} = this.layerManager.activeLayer;
 
-    this.drawText(context, value, bounds);
+    drawText(context, value, bounds, this.state);
     this.pushHistory(before, this.layerManager.captureActiveLayer());
     this.textBounds = null;
   }
@@ -769,7 +775,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    const bounds = this.normalizeTextBounds(this.textBounds);
+    const bounds = normalizeTextBounds(this.textBounds, this.canvasSize);
 
     this.clearPreview();
     this.previewContext.save();
@@ -791,7 +797,7 @@ export class WebDraftEditor extends EventTarget {
       return;
     }
 
-    const bounds = this.normalizeCanvasBounds(this.selectionBounds);
+    const bounds = normalizeCanvasBounds(this.selectionBounds, this.canvasSize);
 
     if (!bounds) {
       this.clearPreview();
@@ -813,7 +819,7 @@ export class WebDraftEditor extends EventTarget {
     }
 
     this.clearPreview();
-    this.drawShape(this.previewContext, this.getBounds(this.shapeStartPoint, point));
+    drawShape(this.previewContext, getBounds(this.shapeStartPoint, point), this.state);
   }
 
   private commitShape(point: Point): void {
@@ -822,221 +828,12 @@ export class WebDraftEditor extends EventTarget {
     }
 
     const {context} = this.layerManager.activeLayer;
-    this.drawShape(context, this.getBounds(this.shapeStartPoint, point));
+    drawShape(context, getBounds(this.shapeStartPoint, point), this.state);
     this.clearPreview();
   }
 
   private clearPreview(): void {
     this.previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
-  }
-
-  private getBounds(start: Point, end: Point): SizeWithPosition {
-    const x = Math.min(start.x, end.x);
-    const y = Math.min(start.y, end.y);
-    const width = Math.abs(end.x - start.x);
-    const height = Math.abs(end.y - start.y);
-
-    return {x, y, width, height};
-  }
-
-  private normalizeCanvasBounds(bounds: SizeWithPosition): SizeWithPosition | null {
-    const x = Math.max(0, Math.round(bounds.x));
-    const y = Math.max(0, Math.round(bounds.y));
-    const right = Math.min(this.state.canvasWidth, Math.round(bounds.x + bounds.width));
-    const bottom = Math.min(this.state.canvasHeight, Math.round(bounds.y + bounds.height));
-    const width = right - x;
-    const height = bottom - y;
-
-    if (width < 1 || height < 1) {
-      return null;
-    }
-
-    return {x, y, width, height};
-  }
-
-  private normalizeTextBounds(bounds: SizeWithPosition): SizeWithPosition {
-    const x = Math.max(0, Math.round(bounds.x));
-    const y = Math.max(0, Math.round(bounds.y));
-    const width = Math.max(160, Math.min(this.state.canvasWidth - x, Math.round(bounds.width)));
-    const height = Math.max(48, Math.min(this.state.canvasHeight - y, Math.round(bounds.height)));
-
-    return {x, y, width, height};
-  }
-
-  private drawText(context: CanvasRenderingContext2D, value: string, bounds: SizeWithPosition): void {
-    context.save();
-    context.globalCompositeOperation = 'source-over';
-    context.fillStyle = this.state.color;
-    this.applyShadow(context);
-    context.font = this.getCanvasFont();
-    context.textAlign = this.state.textAlign;
-    context.textBaseline = 'top';
-
-    const fontSize = this.getTextFontSize();
-    const lineHeight = fontSize * 1.25;
-    const lines = value.split('\n');
-    const x = this.getTextLineX(bounds);
-
-    lines.forEach((line, index) => {
-      const y = bounds.y + index * lineHeight;
-
-      if (y + lineHeight <= bounds.y + bounds.height) {
-        context.fillText(line, x, y, bounds.width);
-      }
-    });
-
-    context.restore();
-  }
-
-  private getCanvasFont(): string {
-    const style = this.state.textItalic ? 'italic' : 'normal';
-    const weight = this.state.textBold ? '700' : '400';
-
-    return `${style} ${weight} ${this.getTextFontSize()}px ${this.state.textFontFamily}`;
-  }
-
-  private getTextFontSize(): number {
-    return Math.max(8, this.state.size * 2);
-  }
-
-  private drawShape(context: CanvasRenderingContext2D, bounds: SizeWithPosition): void {
-    if (bounds.width < 1 || bounds.height < 1) {
-      return;
-    }
-
-    this.applyStroke(context);
-    context.beginPath();
-
-    if (this.state.activeTool === Tool.Rectangle) {
-      context.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-    }
-
-    if (this.state.activeTool === Tool.Ellipse) {
-      context.ellipse(
-        bounds.x + bounds.width / 2,
-        bounds.y + bounds.height / 2,
-        bounds.width / 2,
-        bounds.height / 2,
-        0,
-        0,
-        Math.PI * 2,
-      );
-    }
-
-    if (this.state.fillEnabled) {
-      context.fill();
-    }
-
-    context.stroke();
-  }
-
-  private drawPoint(point: Point): void {
-    const {context} = this.layerManager.activeLayer;
-    this.applyBrush(context);
-
-    context.beginPath();
-    context.arc(point.x, point.y, this.state.size / 2, 0, Math.PI * 2);
-    context.fill();
-  }
-
-  private drawLine(start: Point, end: Point): void {
-    const {context} = this.layerManager.activeLayer;
-    this.applyBrush(context);
-
-    context.beginPath();
-    context.moveTo(start.x, start.y);
-    context.lineTo(end.x, end.y);
-    context.stroke();
-  }
-
-  private drawWebLine(point: Point): void {
-    const {context} = this.layerManager.activeLayer;
-    const previousPoint = this.webPoints[this.webPoints.length - 1];
-
-    if (!previousPoint) {
-      this.webPoints.push(point);
-      return;
-    }
-
-    this.applyBrush(context);
-    context.beginPath();
-    context.moveTo(previousPoint.x, previousPoint.y);
-    context.lineTo(point.x, point.y);
-    context.stroke();
-
-    const sensitivitySquared = this.state.webSensitivity * this.state.webSensitivity;
-
-    for (const pastPoint of this.webPoints) {
-      const dx = pastPoint.x - point.x;
-      const dy = pastPoint.y - point.y;
-      const distanceSquared = dx * dx + dy * dy;
-
-      if (distanceSquared > 0 && distanceSquared < sensitivitySquared) {
-        context.beginPath();
-        context.moveTo(point.x + dx * 0.2, point.y + dy * 0.2);
-        context.lineTo(pastPoint.x - dx * 0.2, pastPoint.y - dy * 0.2);
-        context.stroke();
-      }
-    }
-
-    this.webPoints.push(point);
-  }
-
-  private applyBrush(context: CanvasRenderingContext2D): void {
-    context.lineCap = 'round';
-    context.lineJoin = 'round';
-    context.lineWidth = this.state.size;
-
-    if (this.state.activeTool === Tool.Eraser) {
-      context.globalCompositeOperation = 'destination-out';
-      context.shadowBlur = 0;
-      context.shadowOffsetX = 0;
-      context.shadowOffsetY = 0;
-      context.strokeStyle = '#000000';
-      context.fillStyle = '#000000';
-      return;
-    }
-
-    context.globalCompositeOperation = 'source-over';
-    context.strokeStyle = this.state.color;
-    context.fillStyle = this.state.color;
-    this.applyShadow(context);
-  }
-
-  private applyStroke(context: CanvasRenderingContext2D): void {
-    context.globalCompositeOperation = 'source-over';
-    context.lineCap = 'round';
-    context.lineJoin = 'round';
-    context.lineWidth = this.state.size;
-    context.strokeStyle = this.state.color;
-    context.fillStyle = hexToRgba(this.state.fillColor, this.state.fillOpacity / 100);
-    this.applyShadow(context);
-  }
-
-  private applyShadow(context: CanvasRenderingContext2D): void {
-    if (!this.state.shadowEnabled) {
-      context.shadowBlur = 0;
-      context.shadowOffsetX = 0;
-      context.shadowOffsetY = 0;
-      return;
-    }
-
-    context.shadowColor = this.state.shadowColor;
-    context.shadowBlur = this.state.shadowBlur;
-    context.shadowOffsetX = this.state.shadowOffsetX;
-    context.shadowOffsetY = this.state.shadowOffsetY;
-  }
-
-  private getTextLineX(bounds: SizeWithPosition): number {
-    if (this.state.textAlign === 'center') {
-      return bounds.x + bounds.width / 2;
-    }
-
-    if (this.state.textAlign === 'right' || this.state.textAlign === 'end') {
-      return bounds.x + bounds.width;
-    }
-
-    return bounds.x;
   }
 
   private commitPendingHistory(): void {
@@ -1075,15 +872,6 @@ function rgbToHex(red: number, green: number, blue: number): string {
 
 function toHex(value: number): string {
   return value.toString(16).padStart(2, '0');
-}
-
-function hexToRgba(hex: string, alpha: number): string {
-  const normalized = hex.replace('#', '');
-  const red = Number.parseInt(normalized.slice(0, 2), 16);
-  const green = Number.parseInt(normalized.slice(2, 4), 16);
-  const blue = Number.parseInt(normalized.slice(4, 6), 16);
-
-  return `rgb(${red} ${green} ${blue} / ${alpha})`;
 }
 
 function createImageData(buffer: {data: Uint8ClampedArray; width: number; height: number}): ImageData {
