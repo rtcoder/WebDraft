@@ -1,4 +1,5 @@
 import { LayerManager } from './layer-manager';
+import type { LayerSummary } from './layer-manager';
 import type { EditorOptions, EditorState, Point, ToolId } from './types';
 
 export class WebDraftEditor extends EventTarget {
@@ -33,6 +34,11 @@ export class WebDraftEditor extends EventTarget {
     this.layerManager.createLayer(this.options.width, this.options.height);
     this.root.append(this.eventLayer);
     this.bindPointerEvents();
+    this.dispatchChange();
+  }
+
+  get layers(): LayerSummary[] {
+    return this.layerManager.summaries;
   }
 
   setTool(tool: ToolId): void {
@@ -52,6 +58,38 @@ export class WebDraftEditor extends EventTarget {
 
   clear(): void {
     this.layerManager.clearActiveLayer();
+  }
+
+  addLayer(): void {
+    this.layerManager.createLayer(this.options.width, this.options.height);
+    this.dispatchChange();
+  }
+
+  deleteActiveLayer(): void {
+    this.layerManager.deleteActiveLayer();
+    this.dispatchChange();
+  }
+
+  selectLayer(id: string): void {
+    this.layerManager.selectLayer(id);
+    this.dispatchChange();
+  }
+
+  toggleLayerVisibility(id: string): void {
+    this.layerManager.toggleVisibility(id);
+    this.dispatchChange();
+  }
+
+  moveActiveLayerUp(): void {
+    if (this.layerManager.moveActiveLayerUp()) {
+      this.dispatchChange();
+    }
+  }
+
+  moveActiveLayerDown(): void {
+    if (this.layerManager.moveActiveLayerDown()) {
+      this.dispatchChange();
+    }
   }
 
   private bindPointerEvents(): void {

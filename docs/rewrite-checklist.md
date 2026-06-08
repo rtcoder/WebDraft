@@ -14,7 +14,7 @@
 - [x] Add a lightweight Vite + TypeScript skeleton.
 - [x] Add the first canvas surface, layer manager, pencil, eraser, size control, clear command, and custom color input wrapper.
 - [ ] Recreate the current tool inventory from the old app.
-- [ ] Rebuild layers UI without jQuery.
+- [x] Rebuild layers UI without jQuery.
 - [ ] Add upload image support.
 - [ ] Add PNG export.
 - [ ] Add selection, copy, cut, paste.

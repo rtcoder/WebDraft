@@ -1,6 +1,7 @@
 import type { WebDraftEditor } from '../core/webdraft-editor';
 import type { ToolId } from '../core/types';
 import { createColorPicker } from './color-picker';
+import { createLayersPanel } from './layers-panel';
 
 type ToolConfig = {
   id: ToolId;
@@ -82,7 +83,7 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   editor.addEventListener('change', renderState);
   renderState();
 
-  toolbar.append(title, toolGroup, colorPicker, sizeControl, clearButton);
+  toolbar.append(title, toolGroup, colorPicker, sizeControl, clearButton, createLayersPanel(editor));
 
   return toolbar;
 }
