@@ -108,12 +108,21 @@ export function createStyleSection(editor: WebDraftEditor): ToolbarSection {
     onChange: (value) => editor.setFillOpacity(value),
   });
 
+  const fillToleranceControl = createRangeControl({
+    label: 'Bucket tolerance',
+    min: 0,
+    max: 255,
+    value: editor.state.fillTolerance,
+    onChange: (value) => editor.setFillTolerance(value),
+  });
+
   return {
     element: createToolbarSection(
       colorPicker,
       fillToggle.element,
       fillColorPicker,
       fillOpacityControl.element,
+      fillToleranceControl.element,
       sizeControl.element,
       webSensitivityControl.element,
     ),
@@ -122,6 +131,7 @@ export function createStyleSection(editor: WebDraftEditor): ToolbarSection {
       fillToggle.setChecked(editor.state.fillEnabled);
       fillColorPicker.setValue(editor.state.fillColor);
       fillOpacityControl.setValue(editor.state.fillOpacity);
+      fillToleranceControl.setValue(editor.state.fillTolerance);
       sizeControl.setValue(editor.state.size);
       webSensitivityControl.setValue(editor.state.webSensitivity);
     },

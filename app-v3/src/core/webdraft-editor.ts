@@ -65,6 +65,7 @@ export class WebDraftEditor extends EventTarget {
       fillColor: '#ffffff',
       fillEnabled: false,
       fillOpacity: 100,
+      fillTolerance: 0,
       size: options.size,
       canvasWidth: options.width,
       canvasHeight: options.height,
@@ -136,6 +137,11 @@ export class WebDraftEditor extends EventTarget {
 
   setFillOpacity(opacity: number): void {
     this.state.fillOpacity = Math.min(Math.max(opacity, 0), 100);
+    this.dispatchChange();
+  }
+
+  setFillTolerance(tolerance: number): void {
+    this.state.fillTolerance = Math.min(Math.max(tolerance, 0), 255);
     this.dispatchChange();
   }
 
@@ -679,6 +685,7 @@ export class WebDraftEditor extends EventTarget {
       point.x,
       point.y,
       hexToRgbaColor(this.state.fillColor, this.state.fillOpacity / 100),
+      this.state.fillTolerance,
     );
 
     if (!changed) {

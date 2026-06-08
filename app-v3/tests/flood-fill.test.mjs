@@ -47,6 +47,37 @@ test('floodFillImageData ignores points outside image bounds', () => {
   assert.deepEqual(pixels(imageData), [[4, 5, 6, 255]]);
 });
 
+test('floodFillImageData fills similar colors when tolerance allows it', () => {
+  const imageData = image(3, 1, [
+    [10, 10, 10, 255],
+    [12, 9, 10, 255],
+    [30, 30, 30, 255],
+  ]);
+
+  const changed = floodFillImageData(imageData, 0, 0, {red: 200, green: 0, blue: 0, alpha: 255}, 3);
+
+  assert.equal(changed, true);
+  assert.deepEqual(pixels(imageData), [
+    [200, 0, 0, 255],
+    [200, 0, 0, 255],
+    [30, 30, 30, 255],
+  ]);
+});
+
+test('floodFillImageData keeps similar colors outside a zero tolerance fill', () => {
+  const imageData = image(2, 1, [
+    [10, 10, 10, 255],
+    [11, 10, 10, 255],
+  ]);
+
+  floodFillImageData(imageData, 0, 0, {red: 200, green: 0, blue: 0, alpha: 255});
+
+  assert.deepEqual(pixels(imageData), [
+    [200, 0, 0, 255],
+    [11, 10, 10, 255],
+  ]);
+});
+
 test('hexToRgbaColor clamps opacity into alpha channel', () => {
   assert.deepEqual(hexToRgbaColor('#336699', 0.5), {red: 51, green: 102, blue: 153, alpha: 128});
   assert.deepEqual(hexToRgbaColor('#336699', 2), {red: 51, green: 102, blue: 153, alpha: 255});

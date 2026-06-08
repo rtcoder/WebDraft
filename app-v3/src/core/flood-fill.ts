@@ -5,7 +5,13 @@ export type RgbaColor = {
   alpha: number;
 };
 
-export function floodFillImageData(imageData: ImageData, x: number, y: number, color: RgbaColor): boolean {
+export function floodFillImageData(
+  imageData: ImageData,
+  x: number,
+  y: number,
+  color: RgbaColor,
+  tolerance = 0,
+): boolean {
   const startX = Math.floor(x);
   const startY = Math.floor(y);
 
@@ -15,7 +21,7 @@ export function floodFillImageData(imageData: ImageData, x: number, y: number, c
 
   const target = getPixel(imageData, startX, startY);
 
-  if (colorsMatch(target, color)) {
+  if (colorsMatch(target, color, 0)) {
     return false;
   }
 
@@ -28,7 +34,7 @@ export function floodFillImageData(imageData: ImageData, x: number, y: number, c
       continue;
     }
 
-    if (!colorsMatch(getPixel(imageData, currentX, currentY), target)) {
+    if (!colorsMatch(getPixel(imageData, currentX, currentY), target, tolerance)) {
       continue;
     }
 
@@ -77,12 +83,14 @@ function setPixel(imageData: ImageData, x: number, y: number, color: RgbaColor):
   data[index + 3] = color.alpha;
 }
 
-function colorsMatch(first: RgbaColor, second: RgbaColor): boolean {
+function colorsMatch(first: RgbaColor, second: RgbaColor, tolerance: number): boolean {
+  const threshold = Math.min(Math.max(tolerance, 0), 255);
+
   return (
-    first.red === second.red &&
-    first.green === second.green &&
-    first.blue === second.blue &&
-    first.alpha === second.alpha
+    Math.abs(first.red - second.red) <= threshold &&
+    Math.abs(first.green - second.green) <= threshold &&
+    Math.abs(first.blue - second.blue) <= threshold &&
+    Math.abs(first.alpha - second.alpha) <= threshold
   );
 }
 

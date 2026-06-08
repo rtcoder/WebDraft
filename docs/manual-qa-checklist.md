@@ -15,7 +15,7 @@ Use this before replacing the old entrypoint or after larger editor changes.
 - [ ] Size slider changes brush width.
 - [ ] Color picker changes stroke color.
 - [ ] Sampler picks a visible non-transparent color and returns to Pencil.
-- [ ] Fill bucket fills a contiguous active-layer region using Fill color and Fill opacity.
+- [ ] Fill bucket fills a contiguous active-layer region using Fill color, Fill opacity, and Bucket tolerance.
 - [ ] Web tool draws the main stroke plus nearby connecting lines.
 
 ## Shapes And Text

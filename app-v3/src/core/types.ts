@@ -35,6 +35,7 @@ export type EditorState = {
   fillColor: string;
   fillEnabled: boolean;
   fillOpacity: number;
+  fillTolerance: number;
   size: number;
   canvasWidth: number;
   canvasHeight: number;
