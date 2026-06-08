@@ -25,7 +25,7 @@
 - [x] Add active-layer invert, mirror, and rotate actions.
 - [x] Add undo/redo history.
 - [x] Add keyboard shortcuts.
-- [ ] Add responsive layout polish.
+- [x] Add responsive layout polish.
 - [ ] Add final smoke tests and regression tests.
 
 ## Old Code References

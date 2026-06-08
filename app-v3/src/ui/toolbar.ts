@@ -229,25 +229,21 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   editor.addEventListener('change', renderState);
   renderState();
 
+  const editGroup = document.createElement('div');
+  editGroup.className = 'command-grid';
+  editGroup.append(clearButton, undoButton, redoButton, copyButton, cutButton, pasteButton);
+
+  const fileGroup = document.createElement('div');
+  fileGroup.className = 'toolbar__stack';
+  fileGroup.append(uploadButton, exportButton, fileInput);
+
   toolbar.append(
     title,
-    toolGroup,
-    colorPicker,
-    fillToggle,
-    fillColorPicker,
-    sizeControl,
-    webSensitivityControl,
-    clearButton,
-    undoButton,
-    redoButton,
-    copyButton,
-    cutButton,
-    pasteButton,
-    transformGroup,
-    uploadButton,
-    exportButton,
-    fileInput,
-    createLayersPanel(editor),
+    createToolbarSection(toolGroup),
+    createToolbarSection(colorPicker, fillToggle, fillColorPicker, sizeControl, webSensitivityControl),
+    createToolbarSection(editGroup, transformGroup),
+    createToolbarSection(fileGroup),
+    createToolbarSection(createLayersPanel(editor)),
   );
 
   bindKeyboardShortcuts(editor, {
@@ -266,4 +262,12 @@ function createCommandButton(label: string, onClick: () => void): HTMLButtonElem
   button.addEventListener('click', onClick);
 
   return button;
+}
+
+function createToolbarSection(...children: HTMLElement[]): HTMLElement {
+  const section = document.createElement('section');
+  section.className = 'toolbar__section';
+  section.append(...children);
+
+  return section;
 }
