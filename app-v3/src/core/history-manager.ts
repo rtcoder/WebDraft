@@ -7,6 +7,8 @@ export class HistoryManager<TSnapshot> {
   private readonly undoStack: HistoryEntry<TSnapshot>[] = [];
   private readonly redoStack: HistoryEntry<TSnapshot>[] = [];
 
+  constructor(private readonly limit = 30) {}
+
   get canUndo(): boolean {
     return this.undoStack.length > 0;
   }
@@ -17,6 +19,7 @@ export class HistoryManager<TSnapshot> {
 
   push(before: TSnapshot, after: TSnapshot): void {
     this.undoStack.push({before, after});
+    this.trimUndoStack();
     this.redoStack.length = 0;
   }
 
@@ -39,6 +42,20 @@ export class HistoryManager<TSnapshot> {
     }
 
     this.undoStack.push(entry);
+    this.trimUndoStack();
     return entry.after;
+  }
+
+  private trimUndoStack(): void {
+    if (this.limit < 1) {
+      this.undoStack.length = 0;
+      return;
+    }
+
+    const excessEntries = this.undoStack.length - this.limit;
+
+    if (excessEntries > 0) {
+      this.undoStack.splice(0, excessEntries);
+    }
   }
 }

@@ -31,4 +31,25 @@ test('HistoryManager clears redo stack after a new branch', () => {
   assert.equal(history.undo(), 'a');
 });
 
+test('HistoryManager trims the oldest undo entries when the limit is exceeded', () => {
+  const history = new HistoryManager(2);
+
+  history.push('a', 'b');
+  history.push('b', 'c');
+  history.push('c', 'd');
+
+  assert.equal(history.undo(), 'c');
+  assert.equal(history.undo(), 'b');
+  assert.equal(history.undo(), null);
+});
+
+test('HistoryManager can disable history with a zero limit', () => {
+  const history = new HistoryManager(0);
+
+  history.push('a', 'b');
+
+  assert.equal(history.canUndo, false);
+  assert.equal(history.undo(), null);
+});
+
 console.log('History manager tests passed.');

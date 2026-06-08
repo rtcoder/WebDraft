@@ -36,7 +36,7 @@ export class WebDraftEditor extends EventTarget {
   private webPoints: Point[] = [];
   private clipboard: ClipboardSnapshot | null = null;
   private pendingHistorySnapshot: HistorySnapshot | null = null;
-  private readonly history = new HistoryManager<HistorySnapshot>();
+  private readonly history = new HistoryManager<HistorySnapshot>(30);
 
   readonly state: EditorState;
 
