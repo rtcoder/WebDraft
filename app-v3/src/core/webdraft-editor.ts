@@ -1,4 +1,4 @@
-import type {LayerSummary} from './layer-manager';
+import type {LayerSnapshot, LayerSummary} from './layer-manager';
 import {LayerManager} from './layer-manager';
 import {EditorOptions, EditorState, Point, SizeWithPosition, Tool} from './types';
 
@@ -12,6 +12,9 @@ export class WebDraftEditor extends EventTarget {
   private isDrawing = false;
   private lastPoint: Point | null = null;
   private shapeStartPoint: Point | null = null;
+  private pendingHistorySnapshot: LayerSnapshot | null = null;
+  private readonly undoStack: HistoryEntry[] = [];
+  private readonly redoStack: HistoryEntry[] = [];
 
   readonly state: EditorState;
 
@@ -57,6 +60,14 @@ export class WebDraftEditor extends EventTarget {
     return this.layerManager.summaries;
   }
 
+  get canUndo(): boolean {
+    return this.undoStack.length > 0;
+  }
+
+  get canRedo(): boolean {
+    return this.redoStack.length > 0;
+  }
+
   setTool(tool: Tool): void {
     this.state.activeTool = tool;
     this.dispatchChange();
@@ -73,7 +84,33 @@ export class WebDraftEditor extends EventTarget {
   }
 
   clear(): void {
+    const before = this.layerManager.captureActiveLayer();
     this.layerManager.clearActiveLayer();
+    this.pushHistory(before, this.layerManager.captureActiveLayer());
+  }
+
+  undo(): void {
+    const entry = this.undoStack.pop();
+
+    if (!entry) {
+      return;
+    }
+
+    this.layerManager.restoreLayer(entry.before);
+    this.redoStack.push(entry);
+    this.dispatchChange();
+  }
+
+  redo(): void {
+    const entry = this.redoStack.pop();
+
+    if (!entry) {
+      return;
+    }
+
+    this.layerManager.restoreLayer(entry.after);
+    this.undoStack.push(entry);
+    this.dispatchChange();
   }
 
   async importImage(file: File): Promise<void> {
@@ -147,6 +184,7 @@ export class WebDraftEditor extends EventTarget {
       this.eventLayer.setPointerCapture(event.pointerId);
       this.isDrawing = true;
       this.lastPoint = this.getPoint(event);
+      this.pendingHistorySnapshot = this.layerManager.captureActiveLayer();
 
       if (this.isShapeTool()) {
         this.shapeStartPoint = this.lastPoint;
@@ -177,6 +215,7 @@ export class WebDraftEditor extends EventTarget {
         this.commitShape(this.getPoint(event));
       }
 
+      this.commitPendingHistory();
       this.eventLayer.releasePointerCapture(event.pointerId);
       this.isDrawing = false;
       this.lastPoint = null;
@@ -187,6 +226,7 @@ export class WebDraftEditor extends EventTarget {
       this.isDrawing = false;
       this.lastPoint = null;
       this.shapeStartPoint = null;
+      this.pendingHistorySnapshot = null;
       this.clearShapePreview();
     });
   }
@@ -338,7 +378,27 @@ export class WebDraftEditor extends EventTarget {
     context.fillStyle = this.state.color;
   }
 
+  private commitPendingHistory(): void {
+    if (!this.pendingHistorySnapshot) {
+      return;
+    }
+
+    this.pushHistory(this.pendingHistorySnapshot, this.layerManager.captureActiveLayer());
+    this.pendingHistorySnapshot = null;
+  }
+
+  private pushHistory(before: LayerSnapshot, after: LayerSnapshot): void {
+    this.undoStack.push({before, after});
+    this.redoStack.length = 0;
+    this.dispatchChange();
+  }
+
   private dispatchChange(): void {
     this.dispatchEvent(new CustomEvent('change', {detail: this.state}));
   }
 }
+
+type HistoryEntry = {
+  before: LayerSnapshot;
+  after: LayerSnapshot;
+};

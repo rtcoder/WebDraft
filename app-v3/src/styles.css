@@ -132,6 +132,17 @@ input {
   border-color: #5b9cff;
 }
 
+.tool-button:disabled,
+.command-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tool-button:disabled:hover,
+.command-button:disabled:hover {
+  border-color: #343941;
+}
+
 .tool-button.is-active {
   border-color: #5b9cff;
   background: #173d76;

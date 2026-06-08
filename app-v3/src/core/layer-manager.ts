@@ -15,6 +15,11 @@ export type LayerSummary = {
   visible: boolean;
 };
 
+export type LayerSnapshot = {
+  layerId: string;
+  imageData: ImageData;
+};
+
 export class LayerManager {
   private readonly root: HTMLElement;
   private readonly layers: Layer[] = [];
@@ -88,6 +93,23 @@ export class LayerManager {
   clearActiveLayer(): void {
     const layer = this.activeLayer;
     layer.context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
+  }
+
+  captureActiveLayer(): LayerSnapshot {
+    const layer = this.activeLayer;
+
+    return {
+      layerId: layer.id,
+      imageData: layer.context.getImageData(0, 0, layer.canvas.width, layer.canvas.height),
+    };
+  }
+
+  restoreLayer(snapshot: LayerSnapshot): void {
+    const layer = this.assertLayer(snapshot.layerId);
+
+    layer.context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
+    layer.context.putImageData(snapshot.imageData, 0, 0);
+    this.activeLayerId = layer.id;
   }
 
   drawImageOnNewLayer(

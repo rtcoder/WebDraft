@@ -77,6 +77,18 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   clearButton.textContent = 'Clear';
   clearButton.addEventListener('click', () => editor.clear());
 
+  const undoButton = document.createElement('button');
+  undoButton.type = 'button';
+  undoButton.className = 'command-button';
+  undoButton.textContent = 'Undo';
+  undoButton.addEventListener('click', () => editor.undo());
+
+  const redoButton = document.createElement('button');
+  redoButton.type = 'button';
+  redoButton.className = 'command-button';
+  redoButton.textContent = 'Redo';
+  redoButton.addEventListener('click', () => editor.redo());
+
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = 'image/*';
@@ -124,6 +136,8 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
 
     sizeInput.value = String(editor.state.size);
     sizeValue.textContent = String(editor.state.size);
+    undoButton.disabled = !editor.canUndo;
+    redoButton.disabled = !editor.canRedo;
   };
 
   editor.addEventListener('change', renderState);
@@ -135,6 +149,8 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     colorPicker,
     sizeControl,
     clearButton,
+    undoButton,
+    redoButton,
     uploadButton,
     exportButton,
     fileInput,

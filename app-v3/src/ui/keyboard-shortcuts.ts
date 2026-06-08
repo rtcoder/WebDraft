@@ -15,6 +15,22 @@ export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutO
     const key = event.key.toLowerCase();
     const isCommand = event.metaKey || event.ctrlKey;
 
+    if (isCommand && key === 'z') {
+      event.preventDefault();
+      if (event.shiftKey) {
+        editor.redo();
+      } else {
+        editor.undo();
+      }
+      return;
+    }
+
+    if (isCommand && key === 'y') {
+      event.preventDefault();
+      editor.redo();
+      return;
+    }
+
     if (isCommand && key === 'o') {
       event.preventDefault();
       options.openImagePicker();

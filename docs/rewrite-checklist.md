@@ -20,7 +20,7 @@
 - [ ] Add selection, copy, cut, paste.
 - [x] Add shape tools.
 - [ ] Add text tool.
-- [ ] Add undo/redo history.
+- [x] Add undo/redo history.
 - [x] Add keyboard shortcuts.
 - [ ] Add responsive layout polish.
 - [ ] Add final smoke tests and regression tests.
