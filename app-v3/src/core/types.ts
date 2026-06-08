@@ -1,9 +1,19 @@
-export type ToolId = 'pencil' | 'eraser';
+export enum Tool {
+  Pencil = 'pencil',
+  Eraser = 'eraser',
+}
 
 export type Point = {
   x: number;
   y: number;
 };
+
+export type Size = {
+  width: number;
+  height: number;
+};
+
+export type SizeWithPosition = Size & Point;
 
 export type EditorOptions = {
   width: number;
@@ -13,7 +23,7 @@ export type EditorOptions = {
 };
 
 export type EditorState = {
-  activeTool: ToolId;
+  activeTool: Tool;
   color: string;
   size: number;
 };

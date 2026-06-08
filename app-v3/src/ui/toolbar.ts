@@ -1,17 +1,17 @@
-import type { WebDraftEditor } from '../core/webdraft-editor';
-import type { ToolId } from '../core/types';
-import { createColorPicker } from './color-picker';
-import { createLayersPanel } from './layers-panel';
+import {Tool} from '../core/types';
+import type {WebDraftEditor} from '../core/webdraft-editor';
+import {createColorPicker} from './color-picker';
+import {createLayersPanel} from './layers-panel';
 
 type ToolConfig = {
-  id: ToolId;
+  id: Tool;
   label: string;
   icon: string;
 };
 
 const tools: ToolConfig[] = [
-  { id: 'pencil', label: 'Pencil', icon: 'P' },
-  { id: 'eraser', label: 'Eraser', icon: 'E' }
+  {id: Tool.Pencil, label: 'Pencil', icon: 'P'},
+  {id: Tool.Eraser, label: 'Eraser', icon: 'E'},
 ];
 
 export function createToolbar(editor: WebDraftEditor): HTMLElement {
@@ -24,7 +24,7 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   const toolGroup = document.createElement('div');
   toolGroup.className = 'toolbar__group';
 
-  const toolButtons = new Map<ToolId, HTMLButtonElement>();
+  const toolButtons = new Map<Tool, HTMLButtonElement>();
 
   for (const tool of tools) {
     const button = document.createElement('button');
@@ -65,7 +65,7 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   const colorPicker = createColorPicker({
     label: 'Color',
     value: editor.state.color,
-    onChange: (color) => editor.setColor(color)
+    onChange: (color) => editor.setColor(color),
   });
 
   const clearButton = document.createElement('button');
@@ -73,6 +73,42 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   clearButton.className = 'command-button';
   clearButton.textContent = 'Clear';
   clearButton.addEventListener('click', () => editor.clear());
+
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.className = 'visually-hidden';
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    await editor.importImage(file);
+    fileInput.value = '';
+  });
+
+  const uploadButton = document.createElement('button');
+  uploadButton.type = 'button';
+  uploadButton.className = 'command-button';
+  uploadButton.textContent = 'Upload image';
+  uploadButton.addEventListener('click', () => fileInput.click());
+
+  const exportButton = document.createElement('button');
+  exportButton.type = 'button';
+  exportButton.className = 'command-button';
+  exportButton.textContent = 'Export PNG';
+  exportButton.addEventListener('click', async () => {
+    const blob = await editor.exportPng();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = 'webdraft-image.png';
+    link.click();
+    URL.revokeObjectURL(url);
+  });
 
   const renderState = () => {
     for (const [tool, button] of toolButtons) {
@@ -83,7 +119,17 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   editor.addEventListener('change', renderState);
   renderState();
 
-  toolbar.append(title, toolGroup, colorPicker, sizeControl, clearButton, createLayersPanel(editor));
+  toolbar.append(
+    title,
+    toolGroup,
+    colorPicker,
+    sizeControl,
+    clearButton,
+    uploadButton,
+    exportButton,
+    fileInput,
+    createLayersPanel(editor),
+  );
 
   return toolbar;
 }

@@ -15,8 +15,8 @@
 - [x] Add the first canvas surface, layer manager, pencil, eraser, size control, clear command, and custom color input wrapper.
 - [ ] Recreate the current tool inventory from the old app.
 - [x] Rebuild layers UI without jQuery.
-- [ ] Add upload image support.
-- [ ] Add PNG export.
+- [x] Add upload image support.
+- [x] Add PNG export.
 - [ ] Add selection, copy, cut, paste.
 - [ ] Add shape tools.
 - [ ] Add text tool.

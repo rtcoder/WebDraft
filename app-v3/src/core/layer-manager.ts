@@ -1,3 +1,5 @@
+import {SizeWithPosition} from './types.ts';
+
 export type Layer = {
   id: string;
   name: string;
@@ -48,6 +50,10 @@ export class LayerManager {
       .reverse();
   }
 
+  get visibleLayers(): Layer[] {
+    return this.layers.filter((layer) => layer.visible);
+  }
+
   createLayer(width: number, height: number): Layer {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -82,6 +88,18 @@ export class LayerManager {
   clearActiveLayer(): void {
     const layer = this.activeLayer;
     layer.context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
+  }
+
+  drawImageOnNewLayer(
+    image: CanvasImageSource,
+    width: number,
+    height: number,
+    target: SizeWithPosition
+  ): Layer {
+    const layer = this.createLayer(width, height);
+    layer.context.drawImage(image, target.x, target.y, target.width, target.height);
+
+    return layer;
   }
 
   selectLayer(id: string): void {
