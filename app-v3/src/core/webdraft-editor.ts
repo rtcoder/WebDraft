@@ -6,9 +6,12 @@ export class WebDraftEditor extends EventTarget {
   private readonly root: HTMLElement;
   private readonly options: EditorOptions;
   private readonly layerManager: LayerManager;
+  private readonly previewCanvas: HTMLCanvasElement;
+  private readonly previewContext: CanvasRenderingContext2D;
   private readonly eventLayer: HTMLDivElement;
   private isDrawing = false;
   private lastPoint: Point | null = null;
+  private shapeStartPoint: Point | null = null;
 
   readonly state: EditorState;
 
@@ -18,8 +21,18 @@ export class WebDraftEditor extends EventTarget {
     this.root = root;
     this.options = options;
     this.layerManager = new LayerManager(root);
+    this.previewCanvas = document.createElement('canvas');
+    this.previewCanvas.className = 'shape-preview-layer';
     this.eventLayer = document.createElement('div');
     this.eventLayer.className = 'event-layer';
+
+    const previewContext = this.previewCanvas.getContext('2d');
+
+    if (!previewContext) {
+      throw new Error('Canvas 2D context is unavailable.');
+    }
+
+    this.previewContext = previewContext;
 
     this.state = {
       activeTool: Tool.Pencil,
@@ -31,7 +44,10 @@ export class WebDraftEditor extends EventTarget {
   mount(): void {
     this.root.style.setProperty('--canvas-width', `${this.options.width}px`);
     this.root.style.setProperty('--canvas-height', `${this.options.height}px`);
+    this.previewCanvas.width = this.options.width;
+    this.previewCanvas.height = this.options.height;
     this.layerManager.createLayer(this.options.width, this.options.height);
+    this.root.append(this.previewCanvas);
     this.root.append(this.eventLayer);
     this.bindPointerEvents();
     this.dispatchChange();
@@ -131,6 +147,12 @@ export class WebDraftEditor extends EventTarget {
       this.eventLayer.setPointerCapture(event.pointerId);
       this.isDrawing = true;
       this.lastPoint = this.getPoint(event);
+
+      if (this.isShapeTool()) {
+        this.shapeStartPoint = this.lastPoint;
+        return;
+      }
+
       this.drawPoint(this.lastPoint);
     });
 
@@ -140,19 +162,32 @@ export class WebDraftEditor extends EventTarget {
       }
 
       const nextPoint = this.getPoint(event);
+
+      if (this.isShapeTool()) {
+        this.renderShapePreview(nextPoint);
+        return;
+      }
+
       this.drawLine(this.lastPoint, nextPoint);
       this.lastPoint = nextPoint;
     });
 
     this.eventLayer.addEventListener('pointerup', (event) => {
+      if (this.isShapeTool()) {
+        this.commitShape(this.getPoint(event));
+      }
+
       this.eventLayer.releasePointerCapture(event.pointerId);
       this.isDrawing = false;
       this.lastPoint = null;
+      this.shapeStartPoint = null;
     });
 
     this.eventLayer.addEventListener('pointercancel', () => {
       this.isDrawing = false;
       this.lastPoint = null;
+      this.shapeStartPoint = null;
+      this.clearShapePreview();
     });
   }
 
@@ -195,6 +230,69 @@ export class WebDraftEditor extends EventTarget {
     };
   }
 
+  private isShapeTool(): boolean {
+    return this.state.activeTool === Tool.Rectangle || this.state.activeTool === Tool.Ellipse;
+  }
+
+  private renderShapePreview(point: Point): void {
+    if (!this.shapeStartPoint) {
+      return;
+    }
+
+    this.clearShapePreview();
+    this.drawShape(this.previewContext, this.getBounds(this.shapeStartPoint, point));
+  }
+
+  private commitShape(point: Point): void {
+    if (!this.shapeStartPoint) {
+      return;
+    }
+
+    const {context} = this.layerManager.activeLayer;
+    this.drawShape(context, this.getBounds(this.shapeStartPoint, point));
+    this.clearShapePreview();
+  }
+
+  private clearShapePreview(): void {
+    this.previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
+  }
+
+  private getBounds(start: Point, end: Point): SizeWithPosition {
+    const x = Math.min(start.x, end.x);
+    const y = Math.min(start.y, end.y);
+    const width = Math.abs(end.x - start.x);
+    const height = Math.abs(end.y - start.y);
+
+    return {x, y, width, height};
+  }
+
+  private drawShape(context: CanvasRenderingContext2D, bounds: SizeWithPosition): void {
+    if (bounds.width < 1 || bounds.height < 1) {
+      return;
+    }
+
+    this.applyStroke(context);
+    context.beginPath();
+
+    if (this.state.activeTool === Tool.Rectangle) {
+      context.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+    }
+
+    if (this.state.activeTool === Tool.Ellipse) {
+      context.ellipse(
+        bounds.x + bounds.width / 2,
+        bounds.y + bounds.height / 2,
+        bounds.width / 2,
+        bounds.height / 2,
+        0,
+        0,
+        Math.PI * 2,
+      );
+    }
+
+    context.stroke();
+  }
+
   private drawPoint(point: Point): void {
     const {context} = this.layerManager.activeLayer;
     this.applyBrush(context);
@@ -227,6 +325,15 @@ export class WebDraftEditor extends EventTarget {
     }
 
     context.globalCompositeOperation = 'source-over';
+    context.strokeStyle = this.state.color;
+    context.fillStyle = this.state.color;
+  }
+
+  private applyStroke(context: CanvasRenderingContext2D): void {
+    context.globalCompositeOperation = 'source-over';
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.lineWidth = this.state.size;
     context.strokeStyle = this.state.color;
     context.fillStyle = this.state.color;
   }

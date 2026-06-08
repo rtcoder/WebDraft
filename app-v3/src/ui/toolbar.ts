@@ -12,6 +12,8 @@ type ToolConfig = {
 const tools: ToolConfig[] = [
   {id: Tool.Pencil, label: 'Pencil', icon: 'P'},
   {id: Tool.Eraser, label: 'Eraser', icon: 'E'},
+  {id: Tool.Rectangle, label: 'Rectangle', icon: 'R'},
+  {id: Tool.Ellipse, label: 'Ellipse', icon: 'O'},
 ];
 
 export function createToolbar(editor: WebDraftEditor): HTMLElement {

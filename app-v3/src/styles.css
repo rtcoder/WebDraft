@@ -70,6 +70,7 @@ input {
 }
 
 .drawing-layer,
+.shape-preview-layer,
 .event-layer {
   position: absolute;
   inset: 0;
@@ -79,6 +80,11 @@ input {
 
 .drawing-layer {
   z-index: 1;
+  pointer-events: none;
+}
+
+.shape-preview-layer {
+  z-index: 5;
   pointer-events: none;
 }
 

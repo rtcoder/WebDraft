@@ -18,7 +18,7 @@
 - [x] Add upload image support.
 - [x] Add PNG export.
 - [ ] Add selection, copy, cut, paste.
-- [ ] Add shape tools.
+- [x] Add shape tools.
 - [ ] Add text tool.
 - [ ] Add undo/redo history.
 - [ ] Add keyboard shortcuts.
