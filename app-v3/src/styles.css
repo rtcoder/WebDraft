@@ -396,6 +396,40 @@ select {
   border-left: 1px solid #343941;
 }
 
+.status-toasts {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 50;
+  display: grid;
+  justify-items: end;
+  width: min(360px, calc(100vw - 36px));
+  pointer-events: none;
+}
+
+.status-toast {
+  width: fit-content;
+  max-width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #3d4654;
+  border-radius: 6px;
+  color: #f4f7fb;
+  background: #1b1e24;
+  box-shadow: 0 16px 42px rgb(0 0 0 / 35%);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.status-toast--success {
+  border-color: #2f8f5b;
+  background: #173425;
+}
+
+.status-toast--error {
+  border-color: #b64d5a;
+  background: #3a1d24;
+}
+
 @media (max-width: 760px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -444,6 +478,17 @@ select {
 
   .layers-panel {
     min-width: 0;
+  }
+
+  .status-toasts {
+    right: 10px;
+    bottom: 10px;
+    width: calc(100vw - 20px);
+    justify-items: stretch;
+  }
+
+  .status-toast {
+    width: 100%;
   }
 }
 

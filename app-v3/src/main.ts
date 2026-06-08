@@ -1,4 +1,5 @@
 import { WebDraftEditor } from './core/webdraft-editor';
+import { createStatusToasts } from './ui/status-toasts';
 import { createToolbar } from './ui/toolbar';
 import './styles.css';
 
@@ -20,9 +21,11 @@ workspace.className = 'workspace';
 const surface = document.createElement('div');
 surface.className = 'canvas-surface';
 
+const statusToasts = createStatusToasts();
+
 workspace.append(surface);
 shell.append(sidebar, workspace);
-app.append(shell);
+app.append(shell, statusToasts);
 
 const editor = new WebDraftEditor(surface, {
   width: 900,
@@ -31,5 +34,5 @@ const editor = new WebDraftEditor(surface, {
   size: 10
 });
 
-sidebar.append(createToolbar(editor));
+sidebar.append(createToolbar(editor, statusToasts));
 editor.mount();

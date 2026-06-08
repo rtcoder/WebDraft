@@ -1,6 +1,8 @@
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {bindKeyboardShortcuts} from './keyboard-shortcuts';
 import {createLayersPanel} from './layers-panel';
+import type {StatusReporter} from './status-toasts';
+import {getErrorMessage} from './status-toasts';
 import {
   createEditSection,
   createFileSection,
@@ -13,23 +15,28 @@ import {
 } from './toolbar-sections';
 import {createToolbarSection} from './toolbar-controls';
 
-export function createToolbar(editor: WebDraftEditor): HTMLElement {
+export function createToolbar(editor: WebDraftEditor, status: StatusReporter): HTMLElement {
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
 
   const title = document.createElement('h1');
   title.textContent = 'WebDraft';
 
-  const fileInput = createFileInput(editor);
+  const fileInput = createFileInput(editor, status);
   const exportImage = async () => {
-    const blob = await editor.exportPng();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    try {
+      const blob = await editor.exportPng();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
 
-    link.href = url;
-    link.download = 'webdraft-image.png';
-    link.click();
-    URL.revokeObjectURL(url);
+      link.href = url;
+      link.download = 'webdraft-image.png';
+      link.click();
+      URL.revokeObjectURL(url);
+      status.show('PNG exported.', 'success');
+    } catch (error) {
+      status.show(getErrorMessage(error), 'error');
+    }
   };
 
   const sections = [
@@ -38,8 +45,8 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     createShadowSection(editor),
     createTextSection(editor),
     createEditSection(editor),
-    createResizeSection(editor),
-    createFileSection(editor, fileInput, exportImage),
+    createResizeSection(editor, status),
+    createFileSection(editor, fileInput, exportImage, status),
     {
       element: createToolbarSection(createLayersPanel(editor)),
       sync: () => {},
@@ -59,7 +66,7 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   return toolbar;
 }
 
-function createFileInput(editor: WebDraftEditor): HTMLInputElement {
+function createFileInput(editor: WebDraftEditor, status: StatusReporter): HTMLInputElement {
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = 'image/*';
@@ -71,8 +78,14 @@ function createFileInput(editor: WebDraftEditor): HTMLInputElement {
       return;
     }
 
-    await editor.importImage(file);
-    fileInput.value = '';
+    try {
+      await editor.importImage(file);
+      status.show('Image imported.', 'success');
+    } catch (error) {
+      status.show(getErrorMessage(error), 'error');
+    } finally {
+      fileInput.value = '';
+    }
   });
 
   return fileInput;

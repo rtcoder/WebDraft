@@ -1,6 +1,8 @@
 import {Tool} from '../core/types';
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {createColorPicker} from './color-picker';
+import type {StatusReporter} from './status-toasts';
+import {getErrorMessage} from './status-toasts';
 import {
   createCheckboxControl,
   createCommandButton,
@@ -249,11 +251,12 @@ export function createEditSection(editor: WebDraftEditor): ToolbarSection {
   };
 }
 
-export function createResizeSection(editor: WebDraftEditor): ToolbarSection {
+export function createResizeSection(editor: WebDraftEditor, status?: StatusReporter): ToolbarSection {
   const resizeWidthInput = createNumberInput('Width', editor.state.canvasWidth);
   const resizeHeightInput = createNumberInput('Height', editor.state.canvasHeight);
   const resizeButton = createCommandButton('Resize canvas', () => {
     editor.resizeCanvas(Number(resizeWidthInput.value), Number(resizeHeightInput.value));
+    status?.show(`Canvas resized to ${editor.state.canvasWidth} x ${editor.state.canvasHeight}.`, 'success');
   });
 
   return {
@@ -269,10 +272,11 @@ export function createFileSection(
   editor: WebDraftEditor,
   fileInput: HTMLInputElement,
   exportImage: () => Promise<void>,
+  status: StatusReporter,
 ): ToolbarSection {
   const uploadButton = createCommandButton('Upload image', () => fileInput.click());
   const cameraButton = createCommandButton('Camera snap', () => {
-    void editor.importCameraFrame();
+    void importCameraFrame(editor, status);
   });
   const exportButton = createCommandButton('Export PNG', () => {
     void exportImage();
@@ -282,6 +286,15 @@ export function createFileSection(
     element: createToolbarSection(createGrid('toolbar__stack', uploadButton, cameraButton, exportButton, fileInput)),
     sync: () => {},
   };
+}
+
+async function importCameraFrame(editor: WebDraftEditor, status: StatusReporter): Promise<void> {
+  try {
+    await editor.importCameraFrame();
+    status.show('Camera frame added.', 'success');
+  } catch (error) {
+    status.show(getErrorMessage(error), 'error');
+  }
 }
 
 export function syncToolbarSections(sections: ToolbarSection[]): void {
