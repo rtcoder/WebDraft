@@ -29,5 +29,7 @@ export type EditorOptions = {
 export type EditorState = {
   activeTool: Tool;
   color: string;
+  fillColor: string;
+  fillEnabled: boolean;
   size: number;
 };

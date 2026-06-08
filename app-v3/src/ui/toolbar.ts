@@ -73,6 +73,26 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     onChange: (color) => editor.setColor(color),
   });
 
+  const fillToggle = document.createElement('label');
+  fillToggle.className = 'checkbox-control';
+
+  const fillCheckbox = document.createElement('input');
+  fillCheckbox.type = 'checkbox';
+  fillCheckbox.checked = editor.state.fillEnabled;
+  fillCheckbox.addEventListener('change', () => {
+    editor.setFillEnabled(fillCheckbox.checked);
+  });
+
+  const fillText = document.createElement('span');
+  fillText.textContent = 'Fill shapes';
+  fillToggle.append(fillCheckbox, fillText);
+
+  const fillColorPicker = createColorPicker({
+    label: 'Fill color',
+    value: editor.state.fillColor,
+    onChange: (color) => editor.setFillColor(color),
+  });
+
   const clearButton = document.createElement('button');
   clearButton.type = 'button';
   clearButton.className = 'command-button';
@@ -156,6 +176,7 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
 
     sizeInput.value = String(editor.state.size);
     sizeValue.textContent = String(editor.state.size);
+    fillCheckbox.checked = editor.state.fillEnabled;
     undoButton.disabled = !editor.canUndo;
     redoButton.disabled = !editor.canRedo;
     copyButton.disabled = !editor.hasSelection;
@@ -170,6 +191,8 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     title,
     toolGroup,
     colorPicker,
+    fillToggle,
+    fillColorPicker,
     sizeControl,
     clearButton,
     undoButton,

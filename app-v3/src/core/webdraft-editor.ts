@@ -47,6 +47,8 @@ export class WebDraftEditor extends EventTarget {
     this.state = {
       activeTool: Tool.Pencil,
       color: options.color,
+      fillColor: '#ffffff',
+      fillEnabled: false,
       size: options.size,
     };
   }
@@ -94,6 +96,16 @@ export class WebDraftEditor extends EventTarget {
 
   setColor(color: string): void {
     this.state.color = color;
+    this.dispatchChange();
+  }
+
+  setFillColor(color: string): void {
+    this.state.fillColor = color;
+    this.dispatchChange();
+  }
+
+  setFillEnabled(enabled: boolean): void {
+    this.state.fillEnabled = enabled;
     this.dispatchChange();
   }
 
@@ -678,6 +690,10 @@ export class WebDraftEditor extends EventTarget {
       );
     }
 
+    if (this.state.fillEnabled) {
+      context.fill();
+    }
+
     context.stroke();
   }
 
@@ -723,7 +739,7 @@ export class WebDraftEditor extends EventTarget {
     context.lineJoin = 'round';
     context.lineWidth = this.state.size;
     context.strokeStyle = this.state.color;
-    context.fillStyle = this.state.color;
+    context.fillStyle = this.state.fillColor;
   }
 
   private commitPendingHistory(): void {

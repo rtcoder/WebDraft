@@ -163,11 +163,24 @@ input {
 }
 
 .color-picker,
+.checkbox-control,
 .range-control {
   display: grid;
   gap: 8px;
   color: #c9d1dc;
   font-size: 13px;
+}
+
+.checkbox-control {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox-control input {
+  width: 16px;
+  height: 16px;
+  accent-color: #5b9cff;
 }
 
 .color-picker {
