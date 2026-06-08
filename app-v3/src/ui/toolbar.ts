@@ -151,6 +151,22 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   pasteButton.textContent = 'Paste';
   pasteButton.addEventListener('click', () => editor.pasteSelection());
 
+  const transformGroup = document.createElement('div');
+  transformGroup.className = 'command-grid';
+
+  const invertButton = createCommandButton('Invert', () => editor.invertActiveLayer());
+  const rotateLeftButton = createCommandButton('Rotate L', () => editor.rotateActiveLayer('left'));
+  const rotateRightButton = createCommandButton('Rotate R', () => editor.rotateActiveLayer('right'));
+  const mirrorHorizontalButton = createCommandButton('Mirror H', () => editor.mirrorActiveLayer('horizontal'));
+  const mirrorVerticalButton = createCommandButton('Mirror V', () => editor.mirrorActiveLayer('vertical'));
+
+  invertButton.title = 'Invert colors';
+  rotateLeftButton.title = 'Rotate left';
+  rotateRightButton.title = 'Rotate right';
+  mirrorHorizontalButton.title = 'Mirror horizontally';
+  mirrorVerticalButton.title = 'Mirror vertically';
+  transformGroup.append(invertButton, rotateLeftButton, rotateRightButton, mirrorHorizontalButton, mirrorVerticalButton);
+
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = 'image/*';
@@ -227,6 +243,7 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     copyButton,
     cutButton,
     pasteButton,
+    transformGroup,
     uploadButton,
     exportButton,
     fileInput,
@@ -239,4 +256,14 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   });
 
   return toolbar;
+}
+
+function createCommandButton(label: string, onClick: () => void): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'command-button';
+  button.textContent = label;
+  button.addEventListener('click', onClick);
+
+  return button;
 }

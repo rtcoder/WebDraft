@@ -288,6 +288,43 @@ export class WebDraftEditor extends EventTarget {
     this.dispatchChange();
   }
 
+  invertActiveLayer(): void {
+    this.commitTextInput();
+    this.clearSelection();
+
+    const before = this.layerManager.captureActiveLayer();
+    const {canvas, context} = this.layerManager.activeLayer;
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const {data} = imageData;
+
+    for (let index = 0; index < data.length; index += 4) {
+      data[index] = 255 - data[index];
+      data[index + 1] = 255 - data[index + 1];
+      data[index + 2] = 255 - data[index + 2];
+    }
+
+    context.putImageData(imageData, 0, 0);
+    this.pushHistory(before, this.layerManager.captureActiveLayer());
+  }
+
+  rotateActiveLayer(direction: 'left' | 'right'): void {
+    this.transformActiveLayer((context, source, width, height) => {
+      const angle = direction === 'left' ? -Math.PI / 2 : Math.PI / 2;
+
+      context.translate(width / 2, height / 2);
+      context.rotate(angle);
+      context.drawImage(source, -width / 2, -height / 2);
+    });
+  }
+
+  mirrorActiveLayer(axis: 'horizontal' | 'vertical'): void {
+    this.transformActiveLayer((context, source, width, height) => {
+      context.translate(width / 2, height / 2);
+      context.scale(axis === 'horizontal' ? -1 : 1, axis === 'vertical' ? -1 : 1);
+      context.drawImage(source, -width / 2, -height / 2);
+    });
+  }
+
   private bindPointerEvents(): void {
     this.eventLayer.addEventListener('pointerdown', (event) => {
       this.eventLayer.setPointerCapture(event.pointerId);
@@ -812,6 +849,33 @@ export class WebDraftEditor extends EventTarget {
     }
 
     this.webPoints.push(point);
+  }
+
+  private transformActiveLayer(
+    draw: (context: CanvasRenderingContext2D, source: HTMLCanvasElement, width: number, height: number) => void,
+  ): void {
+    this.commitTextInput();
+    this.clearSelection();
+
+    const before = this.layerManager.captureActiveLayer();
+    const {canvas, context} = this.layerManager.activeLayer;
+    const source = document.createElement('canvas');
+    const sourceContext = source.getContext('2d');
+
+    if (!sourceContext) {
+      throw new Error('Canvas 2D context is unavailable.');
+    }
+
+    source.width = canvas.width;
+    source.height = canvas.height;
+    sourceContext.drawImage(canvas, 0, 0);
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.save();
+    context.globalCompositeOperation = 'source-over';
+    draw(context, source, canvas.width, canvas.height);
+    context.restore();
+    this.pushHistory(before, this.layerManager.captureActiveLayer());
   }
 
   private applyBrush(context: CanvasRenderingContext2D): void {

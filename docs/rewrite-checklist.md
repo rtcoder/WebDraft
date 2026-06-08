@@ -22,6 +22,7 @@
 - [x] Add fill options for shape tools.
 - [x] Add text tool.
 - [x] Add web drawing tool.
+- [x] Add active-layer invert, mirror, and rotate actions.
 - [x] Add undo/redo history.
 - [x] Add keyboard shortcuts.
 - [ ] Add responsive layout polish.

@@ -79,6 +79,36 @@ export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutO
       return;
     }
 
+    if (key === 'i') {
+      event.preventDefault();
+      editor.invertActiveLayer();
+      return;
+    }
+
+    if (key === ',') {
+      event.preventDefault();
+      editor.rotateActiveLayer('left');
+      return;
+    }
+
+    if (key === '.') {
+      event.preventDefault();
+      editor.rotateActiveLayer('right');
+      return;
+    }
+
+    if (key === 'h') {
+      event.preventDefault();
+      editor.mirrorActiveLayer('horizontal');
+      return;
+    }
+
+    if (key === 'v') {
+      event.preventDefault();
+      editor.mirrorActiveLayer('vertical');
+      return;
+    }
+
     const tool = getToolForKey(key);
 
     if (tool) {
