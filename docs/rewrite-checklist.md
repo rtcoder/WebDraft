@@ -17,7 +17,7 @@
 - [x] Rebuild layers UI without jQuery.
 - [x] Add upload image support.
 - [x] Add PNG export.
-- [ ] Add selection, copy, cut, paste.
+- [x] Add selection, copy, cut, paste.
 - [x] Add shape tools.
 - [ ] Add text tool.
 - [x] Add undo/redo history.

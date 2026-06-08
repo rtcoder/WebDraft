@@ -43,6 +43,24 @@ export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutO
       return;
     }
 
+    if (isCommand && key === 'c') {
+      event.preventDefault();
+      editor.copySelection();
+      return;
+    }
+
+    if (isCommand && key === 'x') {
+      event.preventDefault();
+      editor.cutSelection();
+      return;
+    }
+
+    if (isCommand && key === 'v') {
+      event.preventDefault();
+      editor.pasteSelection();
+      return;
+    }
+
     if (event.key === 'Delete' || event.key === 'Backspace') {
       event.preventDefault();
       editor.clear();
@@ -72,6 +90,8 @@ export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutO
 
 function getToolForKey(key: string): Tool | null {
   switch (key) {
+    case 's':
+      return Tool.Select;
     case 'p':
       return Tool.Pencil;
     case 'e':

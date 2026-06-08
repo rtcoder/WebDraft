@@ -11,6 +11,7 @@ type ToolConfig = {
 };
 
 const tools: ToolConfig[] = [
+  {id: Tool.Select, label: 'Select', icon: 'S'},
   {id: Tool.Pencil, label: 'Pencil', icon: 'P'},
   {id: Tool.Eraser, label: 'Eraser', icon: 'E'},
   {id: Tool.Rectangle, label: 'Rectangle', icon: 'R'},
@@ -89,6 +90,24 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
   redoButton.textContent = 'Redo';
   redoButton.addEventListener('click', () => editor.redo());
 
+  const copyButton = document.createElement('button');
+  copyButton.type = 'button';
+  copyButton.className = 'command-button';
+  copyButton.textContent = 'Copy';
+  copyButton.addEventListener('click', () => editor.copySelection());
+
+  const cutButton = document.createElement('button');
+  cutButton.type = 'button';
+  cutButton.className = 'command-button';
+  cutButton.textContent = 'Cut';
+  cutButton.addEventListener('click', () => editor.cutSelection());
+
+  const pasteButton = document.createElement('button');
+  pasteButton.type = 'button';
+  pasteButton.className = 'command-button';
+  pasteButton.textContent = 'Paste';
+  pasteButton.addEventListener('click', () => editor.pasteSelection());
+
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = 'image/*';
@@ -138,6 +157,9 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     sizeValue.textContent = String(editor.state.size);
     undoButton.disabled = !editor.canUndo;
     redoButton.disabled = !editor.canRedo;
+    copyButton.disabled = !editor.hasSelection;
+    cutButton.disabled = !editor.hasSelection;
+    pasteButton.disabled = !editor.canPaste;
   };
 
   editor.addEventListener('change', renderState);
@@ -151,6 +173,9 @@ export function createToolbar(editor: WebDraftEditor): HTMLElement {
     clearButton,
     undoButton,
     redoButton,
+    copyButton,
+    cutButton,
+    pasteButton,
     uploadButton,
     exportButton,
     fileInput,

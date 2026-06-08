@@ -12,6 +12,9 @@ export class WebDraftEditor extends EventTarget {
   private isDrawing = false;
   private lastPoint: Point | null = null;
   private shapeStartPoint: Point | null = null;
+  private selectionStartPoint: Point | null = null;
+  private selectionBounds: SizeWithPosition | null = null;
+  private clipboard: ClipboardSnapshot | null = null;
   private pendingHistorySnapshot: LayerSnapshot | null = null;
   private readonly undoStack: HistoryEntry[] = [];
   private readonly redoStack: HistoryEntry[] = [];
@@ -68,8 +71,19 @@ export class WebDraftEditor extends EventTarget {
     return this.redoStack.length > 0;
   }
 
+  get hasSelection(): boolean {
+    return this.selectionBounds !== null;
+  }
+
+  get canPaste(): boolean {
+    return this.clipboard !== null;
+  }
+
   setTool(tool: Tool): void {
     this.state.activeTool = tool;
+    if (tool !== Tool.Select) {
+      this.clearSelection();
+    }
     this.dispatchChange();
   }
 
@@ -179,11 +193,85 @@ export class WebDraftEditor extends EventTarget {
     }
   }
 
+  copySelection(): void {
+    if (!this.selectionBounds) {
+      return;
+    }
+
+    const bounds = this.normalizeCanvasBounds(this.selectionBounds);
+
+    if (!bounds) {
+      return;
+    }
+
+    const {context} = this.layerManager.activeLayer;
+
+    this.clipboard = {
+      bounds,
+      imageData: context.getImageData(bounds.x, bounds.y, bounds.width, bounds.height),
+    };
+    this.dispatchChange();
+  }
+
+  cutSelection(): void {
+    if (!this.selectionBounds) {
+      return;
+    }
+
+    const bounds = this.normalizeCanvasBounds(this.selectionBounds);
+
+    if (!bounds) {
+      return;
+    }
+
+    const before = this.layerManager.captureActiveLayer();
+    const {context} = this.layerManager.activeLayer;
+
+    this.clipboard = {
+      bounds,
+      imageData: context.getImageData(bounds.x, bounds.y, bounds.width, bounds.height),
+    };
+    context.clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
+    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.dispatchChange();
+  }
+
+  pasteSelection(): void {
+    if (!this.clipboard) {
+      return;
+    }
+
+    const before = this.layerManager.captureActiveLayer();
+    const {context} = this.layerManager.activeLayer;
+    const target = this.selectionBounds ?? this.clipboard.bounds;
+    const x = Math.round(target.x);
+    const y = Math.round(target.y);
+
+    context.putImageData(this.clipboard.imageData, x, y);
+    this.selectionBounds = {
+      x,
+      y,
+      width: this.clipboard.bounds.width,
+      height: this.clipboard.bounds.height,
+    };
+    this.renderSelectionFrame();
+    this.pushHistory(before, this.layerManager.captureActiveLayer());
+    this.dispatchChange();
+  }
+
   private bindPointerEvents(): void {
     this.eventLayer.addEventListener('pointerdown', (event) => {
       this.eventLayer.setPointerCapture(event.pointerId);
       this.isDrawing = true;
       this.lastPoint = this.getPoint(event);
+
+      if (this.state.activeTool === Tool.Select) {
+        this.selectionStartPoint = this.lastPoint;
+        this.selectionBounds = null;
+        this.clearPreview();
+        return;
+      }
+
       this.pendingHistorySnapshot = this.layerManager.captureActiveLayer();
 
       if (this.isShapeTool()) {
@@ -201,6 +289,11 @@ export class WebDraftEditor extends EventTarget {
 
       const nextPoint = this.getPoint(event);
 
+      if (this.state.activeTool === Tool.Select) {
+        this.renderSelectionPreview(nextPoint);
+        return;
+      }
+
       if (this.isShapeTool()) {
         this.renderShapePreview(nextPoint);
         return;
@@ -211,23 +304,31 @@ export class WebDraftEditor extends EventTarget {
     });
 
     this.eventLayer.addEventListener('pointerup', (event) => {
+      if (this.state.activeTool === Tool.Select) {
+        this.commitSelection(this.getPoint(event));
+      }
+
       if (this.isShapeTool()) {
         this.commitShape(this.getPoint(event));
       }
 
-      this.commitPendingHistory();
+      if (this.state.activeTool !== Tool.Select) {
+        this.commitPendingHistory();
+      }
       this.eventLayer.releasePointerCapture(event.pointerId);
       this.isDrawing = false;
       this.lastPoint = null;
       this.shapeStartPoint = null;
+      this.selectionStartPoint = null;
     });
 
     this.eventLayer.addEventListener('pointercancel', () => {
       this.isDrawing = false;
       this.lastPoint = null;
       this.shapeStartPoint = null;
+      this.selectionStartPoint = null;
       this.pendingHistorySnapshot = null;
-      this.clearShapePreview();
+      this.clearPreview();
     });
   }
 
@@ -274,12 +375,64 @@ export class WebDraftEditor extends EventTarget {
     return this.state.activeTool === Tool.Rectangle || this.state.activeTool === Tool.Ellipse;
   }
 
+  private renderSelectionPreview(point: Point): void {
+    if (!this.selectionStartPoint) {
+      return;
+    }
+
+    this.selectionBounds = this.getBounds(this.selectionStartPoint, point);
+    this.renderSelectionFrame();
+  }
+
+  private commitSelection(point: Point): void {
+    if (!this.selectionStartPoint) {
+      return;
+    }
+
+    this.selectionBounds = this.getBounds(this.selectionStartPoint, point);
+
+    if (!this.normalizeCanvasBounds(this.selectionBounds)) {
+      this.clearSelection();
+      return;
+    }
+
+    this.renderSelectionFrame();
+    this.dispatchChange();
+  }
+
+  private clearSelection(): void {
+    this.selectionStartPoint = null;
+    this.selectionBounds = null;
+    this.clearPreview();
+  }
+
+  private renderSelectionFrame(): void {
+    if (!this.selectionBounds) {
+      return;
+    }
+
+    const bounds = this.normalizeCanvasBounds(this.selectionBounds);
+
+    if (!bounds) {
+      this.clearPreview();
+      return;
+    }
+
+    this.clearPreview();
+    this.previewContext.save();
+    this.previewContext.setLineDash([6, 4]);
+    this.previewContext.lineWidth = 1;
+    this.previewContext.strokeStyle = '#1b6cff';
+    this.previewContext.strokeRect(bounds.x + 0.5, bounds.y + 0.5, bounds.width, bounds.height);
+    this.previewContext.restore();
+  }
+
   private renderShapePreview(point: Point): void {
     if (!this.shapeStartPoint) {
       return;
     }
 
-    this.clearShapePreview();
+    this.clearPreview();
     this.drawShape(this.previewContext, this.getBounds(this.shapeStartPoint, point));
   }
 
@@ -290,10 +443,10 @@ export class WebDraftEditor extends EventTarget {
 
     const {context} = this.layerManager.activeLayer;
     this.drawShape(context, this.getBounds(this.shapeStartPoint, point));
-    this.clearShapePreview();
+    this.clearPreview();
   }
 
-  private clearShapePreview(): void {
+  private clearPreview(): void {
     this.previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
   }
 
@@ -302,6 +455,21 @@ export class WebDraftEditor extends EventTarget {
     const y = Math.min(start.y, end.y);
     const width = Math.abs(end.x - start.x);
     const height = Math.abs(end.y - start.y);
+
+    return {x, y, width, height};
+  }
+
+  private normalizeCanvasBounds(bounds: SizeWithPosition): SizeWithPosition | null {
+    const x = Math.max(0, Math.round(bounds.x));
+    const y = Math.max(0, Math.round(bounds.y));
+    const right = Math.min(this.options.width, Math.round(bounds.x + bounds.width));
+    const bottom = Math.min(this.options.height, Math.round(bounds.y + bounds.height));
+    const width = right - x;
+    const height = bottom - y;
+
+    if (width < 1 || height < 1) {
+      return null;
+    }
 
     return {x, y, width, height};
   }
@@ -401,4 +569,9 @@ export class WebDraftEditor extends EventTarget {
 type HistoryEntry = {
   before: LayerSnapshot;
   after: LayerSnapshot;
+};
+
+type ClipboardSnapshot = {
+  bounds: SizeWithPosition;
+  imageData: ImageData;
 };
