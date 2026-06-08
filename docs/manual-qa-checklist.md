@@ -15,6 +15,7 @@ Use this before replacing the old entrypoint or after larger editor changes.
 - [ ] Size slider changes brush width.
 - [ ] Color picker changes stroke color.
 - [ ] Sampler picks a visible non-transparent color and returns to Pencil.
+- [ ] Fill bucket fills a contiguous active-layer region using Fill color and Fill opacity.
 - [ ] Web tool draws the main stroke plus nearby connecting lines.
 
 ## Shapes And Text
@@ -79,7 +80,7 @@ Use this before replacing the old entrypoint or after larger editor changes.
 
 ## Keyboard Shortcuts
 
-- [ ] `S`, `P`, `E`, `C`, `W`, `R`, `O`, `T` switch tools.
+- [ ] `S`, `P`, `E`, `C`, `B`, `W`, `R`, `O`, `T` switch tools.
 - [ ] `[` and `]` change brush size.
 - [ ] Cmd/Ctrl+Z and Cmd/Ctrl+Shift+Z undo/redo.
 - [ ] Cmd/Ctrl+Y redoes.

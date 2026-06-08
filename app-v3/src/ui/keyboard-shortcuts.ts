@@ -128,6 +128,8 @@ function getToolForKey(key: string): Tool | null {
       return Tool.Eraser;
     case 'c':
       return Tool.Sampler;
+    case 'b':
+      return Tool.FillBucket;
     case 'w':
       return Tool.Web;
     case 'r':

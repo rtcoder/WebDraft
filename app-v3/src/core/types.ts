@@ -3,6 +3,7 @@ export enum Tool {
   Pencil = 'pencil',
   Eraser = 'eraser',
   Sampler = 'sampler',
+  FillBucket = 'fill-bucket',
   Web = 'web',
   Rectangle = 'rectangle',
   Ellipse = 'ellipse',

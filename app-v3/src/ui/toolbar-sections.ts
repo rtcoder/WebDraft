@@ -29,6 +29,7 @@ const tools: ToolConfig[] = [
   {id: Tool.Pencil, label: 'Pencil', icon: 'P'},
   {id: Tool.Eraser, label: 'Eraser', icon: 'E'},
   {id: Tool.Sampler, label: 'Sampler', icon: 'C'},
+  {id: Tool.FillBucket, label: 'Fill bucket', icon: 'B'},
   {id: Tool.Web, label: 'Web', icon: 'W'},
   {id: Tool.Rectangle, label: 'Rectangle', icon: 'R'},
   {id: Tool.Ellipse, label: 'Ellipse', icon: 'O'},

@@ -22,6 +22,7 @@
 - [x] Add fill options for shape tools.
 - [x] Add text tool.
 - [x] Add web drawing tool.
+- [x] Add fill bucket tool.
 - [x] Add active-layer invert, mirror, and rotate actions.
 - [x] Add canvas resize, fill opacity, shadow controls, text options, and camera snap.
 - [x] Add undo/redo history.

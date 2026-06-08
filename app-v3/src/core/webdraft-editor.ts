@@ -13,6 +13,7 @@ import {
   normalizeCanvasBounds,
   normalizeTextBounds,
 } from './editor-geometry';
+import {floodFillImageData, hexToRgbaColor} from './flood-fill';
 import {HistoryManager} from './history-manager';
 import {LayerManager} from './layer-manager';
 import {invertPixelBuffer, mirrorPixelBuffer, rotatePixelBuffer} from './layer-transforms';
@@ -503,6 +504,13 @@ export class WebDraftEditor extends EventTarget {
         return;
       }
 
+      if (this.state.activeTool === Tool.FillBucket) {
+        this.fillActiveLayer(this.lastPoint);
+        this.isDrawing = false;
+        this.lastPoint = null;
+        return;
+      }
+
       this.pendingHistorySnapshot = this.captureHistorySnapshot();
 
       if (this.isShapeTool()) {
@@ -660,6 +668,25 @@ export class WebDraftEditor extends EventTarget {
     }
 
     this.setColor(rgbToHex(red, green, blue));
+  }
+
+  private fillActiveLayer(point: Point): void {
+    const before = this.captureHistorySnapshot();
+    const {canvas, context} = this.layerManager.activeLayer;
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const changed = floodFillImageData(
+      imageData,
+      point.x,
+      point.y,
+      hexToRgbaColor(this.state.fillColor, this.state.fillOpacity / 100),
+    );
+
+    if (!changed) {
+      return;
+    }
+
+    context.putImageData(imageData, 0, 0);
+    this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   private renderSelectionPreview(point: Point): void {
