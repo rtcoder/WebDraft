@@ -497,3 +497,61 @@ select {
     flex-basis: min(252px, 86vw);
   }
 }
+
+.camera-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 59;
+  background: rgb(0 0 0 / 50%);
+}
+
+.camera-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 60;
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  width: min(480px, 96vw);
+  background: #17191d;
+  border: 1px solid #343941;
+  border-radius: 8px;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 60%);
+}
+
+.camera-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.camera-panel__title {
+  font-weight: 600;
+}
+
+.camera-panel__close {
+  padding: 0 10px;
+  min-height: 32px;
+}
+
+.camera-panel__canvas {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border-radius: 4px;
+  display: block;
+}
+
+.camera-panel__filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.camera-panel__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}

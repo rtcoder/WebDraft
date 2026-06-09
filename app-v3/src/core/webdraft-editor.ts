@@ -292,6 +292,17 @@ export class WebDraftEditor extends EventTarget {
     }
   }
 
+  importCanvasAsLayer(source: HTMLCanvasElement): void {
+    const before = this.captureHistorySnapshot();
+    const target = fitNaturalSizeToCanvas(
+      {naturalWidth: source.width, naturalHeight: source.height},
+      this.canvasSize,
+    );
+    this.layerManager.drawImageOnNewLayer(source, this.state.canvasWidth, this.state.canvasHeight, target);
+    this.pushHistory(before, this.captureHistorySnapshot());
+    this.dispatchChange();
+  }
+
   async exportPng(): Promise<Blob> {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');

@@ -1,5 +1,6 @@
 import {Tool} from '../core/types';
 import type {WebDraftEditor} from '../core/webdraft-editor';
+import {openCameraPanel} from './camera-panel';
 import {createColorPicker} from './color-picker';
 import type {StatusReporter} from './status-toasts';
 import {getErrorMessage} from './status-toasts';
@@ -286,8 +287,8 @@ export function createFileSection(
   status: StatusReporter,
 ): ToolbarSection {
   const uploadButton = createCommandButton('Upload image', () => fileInput.click());
-  const cameraButton = createCommandButton('Camera snap', () => {
-    void importCameraFrame(editor, status);
+  const cameraButton = createCommandButton('Camera', () => {
+    openCameraPanel(editor, status);
   });
   const exportButton = createCommandButton('Export PNG', () => {
     void exportImage();
@@ -299,14 +300,6 @@ export function createFileSection(
   };
 }
 
-async function importCameraFrame(editor: WebDraftEditor, status: StatusReporter): Promise<void> {
-  try {
-    await editor.importCameraFrame();
-    status.show('Camera frame added.', 'success');
-  } catch (error) {
-    status.show(getErrorMessage(error), 'error');
-  }
-}
 
 export function syncToolbarSections(sections: ToolbarSection[]): void {
   for (const section of sections) {
