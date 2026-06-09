@@ -26,16 +26,67 @@ type ToolConfig = {
 };
 
 const tools: ToolConfig[] = [
-  {id: Tool.Select, label: 'Select', icon: 'S'},
-  {id: Tool.Pencil, label: 'Pencil', icon: 'P'},
-  {id: Tool.Eraser, label: 'Eraser', icon: 'E'},
-  {id: Tool.Sampler, label: 'Sampler', icon: 'C'},
-  {id: Tool.FillBucket, label: 'Fill bucket', icon: 'B'},
-  {id: Tool.Web, label: 'Web', icon: 'W'},
-  {id: Tool.Rectangle, label: 'Rectangle', icon: 'R'},
-  {id: Tool.Ellipse, label: 'Ellipse', icon: 'O'},
-  {id: Tool.Text, label: 'Text', icon: 'T'},
+  {
+    id: Tool.Select,
+    label: 'Select — S',
+    icon: '<path d="M4 2L4 18L8 13L11 20L13 19L9 12L15 12Z" fill="currentColor" stroke="none"/>',
+  },
+  {
+    id: Tool.Pencil,
+    label: 'Pencil — P',
+    icon: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+  },
+  {
+    id: Tool.Eraser,
+    label: 'Eraser — E',
+    icon: '<path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/>',
+  },
+  {
+    id: Tool.Sampler,
+    label: 'Sampler — C',
+    icon: '<path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/>',
+  },
+  {
+    id: Tool.FillBucket,
+    label: 'Fill bucket — B',
+    icon: '<path d="m19 11-8-8-8.5 8.5a5.5 5.5 0 0 0 7.78 7.78L19 11Z"/><path d="m20 12 2 2a7 7 0 0 1-7 7"/><circle cx="20.5" cy="20.5" r="1.5" fill="currentColor" stroke="none"/>',
+  },
+  {
+    id: Tool.Web,
+    label: 'Web — W',
+    icon: '<circle cx="6" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="18" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="2" fill="currentColor" stroke="none"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="7" y1="7.7" x2="11.3" y2="17.3"/><line x1="17" y1="7.7" x2="12.7" y2="17.3"/>',
+  },
+  {
+    id: Tool.Rectangle,
+    label: 'Rectangle — R',
+    icon: '<rect x="3" y="6" width="18" height="12" rx="2"/>',
+  },
+  {
+    id: Tool.Ellipse,
+    label: 'Ellipse — O',
+    icon: '<ellipse cx="12" cy="12" rx="10" ry="7"/>',
+  },
+  {
+    id: Tool.Text,
+    label: 'Text — T',
+    icon: '<path d="M4 7V5h16v2"/><path d="M9 20h6"/><path d="M12 5v15"/>',
+  },
 ];
+
+function createSvgIcon(content: string): SVGSVGElement {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('width', '18');
+  svg.setAttribute('height', '18');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.innerHTML = content;
+  return svg;
+}
 
 export function createToolSection(editor: WebDraftEditor): ToolbarSection {
   const toolGroup = document.createElement('div');
@@ -49,7 +100,7 @@ export function createToolSection(editor: WebDraftEditor): ToolbarSection {
     button.className = 'tool-button';
     button.dataset.tool = tool.id;
     button.title = tool.label;
-    button.textContent = tool.icon;
+    button.append(createSvgIcon(tool.icon));
     button.addEventListener('click', () => {
       editor.setTool(tool.id);
     });
