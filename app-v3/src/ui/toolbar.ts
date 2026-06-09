@@ -3,7 +3,6 @@ import {bindKeyboardShortcuts} from './keyboard-shortcuts';
 import type {StatusReporter} from './status-toasts';
 import {getErrorMessage} from './status-toasts';
 import {
-  createEditSection,
   createFileSection,
   createResizeSection,
   createShadowSection,
@@ -42,7 +41,6 @@ export function createToolbar(editor: WebDraftEditor, status: StatusReporter): H
     createStyleSection(editor),
     createShadowSection(editor),
     createTextSection(editor),
-    createEditSection(editor),
     createResizeSection(editor, status),
     createFileSection(editor, fileInput, exportImage, status),
   ];

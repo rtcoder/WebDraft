@@ -88,6 +88,16 @@ function createSvgIcon(content: string): SVGSVGElement {
   return svg;
 }
 
+function createEditButton(title: string, svgContent: string, onClick: () => void): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'command-button';
+  button.title = title;
+  button.append(createSvgIcon(svgContent));
+  button.addEventListener('click', onClick);
+  return button;
+}
+
 export function createToolSection(editor: WebDraftEditor): ToolbarSection {
   const toolGroup = document.createElement('div');
   toolGroup.className = 'toolbar__group';
@@ -109,8 +119,37 @@ export function createToolSection(editor: WebDraftEditor): ToolbarSection {
     toolGroup.append(button);
   }
 
+  const transformGroup = createGrid(
+    'toolbar__group',
+    createEditButton(
+      'Invert colors — I',
+      '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18V3z" fill="currentColor" stroke="none"/>',
+      () => editor.invertActiveLayer(),
+    ),
+    createEditButton(
+      'Rotate left — ,',
+      '<path d="M2.5 2v6h6"/><path d="M2.66 15.57a10 10 0 1 0 .57-8.38"/>',
+      () => editor.rotateActiveLayer('left'),
+    ),
+    createEditButton(
+      'Rotate right — .',
+      '<path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/>',
+      () => editor.rotateActiveLayer('right'),
+    ),
+    createEditButton(
+      'Mirror horizontally — H',
+      '<path d="M12 3v18"/><path d="M4 7 1 12l3 5"/><path d="M20 7l3 5-3 5"/>',
+      () => editor.mirrorActiveLayer('horizontal'),
+    ),
+    createEditButton(
+      'Mirror vertically — V',
+      '<path d="M3 12h18"/><path d="M7 4l5-3 5 3"/><path d="M7 20l5 3 5-3"/>',
+      () => editor.mirrorActiveLayer('vertical'),
+    ),
+  );
+
   return {
-    element: createToolbarSection(toolGroup),
+    element: createToolbarSection(toolGroup, transformGroup),
     sync: () => {
       for (const [tool, button] of toolButtons) {
         button.classList.toggle('is-active', tool === editor.state.activeTool);
@@ -305,16 +344,6 @@ export function createTextSection(editor: WebDraftEditor): ToolbarSection {
   };
 }
 
-function createEditButton(title: string, svgContent: string, onClick: () => void): HTMLButtonElement {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'command-button';
-  button.title = title;
-  button.append(createSvgIcon(svgContent));
-  button.addEventListener('click', onClick);
-  return button;
-}
-
 export function createEditSection(editor: WebDraftEditor): ToolbarSection {
   const clearButton = createEditButton(
     'Clear',
@@ -346,43 +375,9 @@ export function createEditSection(editor: WebDraftEditor): ToolbarSection {
     '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>',
     () => editor.pasteSelection(),
   );
-  const invertButton = createEditButton(
-    'Invert colors — I',
-    '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18V3z" fill="currentColor" stroke="none"/>',
-    () => editor.invertActiveLayer(),
-  );
-  const rotateLeftButton = createEditButton(
-    'Rotate left — ,',
-    '<path d="M2.5 2v6h6"/><path d="M2.66 15.57a10 10 0 1 0 .57-8.38"/>',
-    () => editor.rotateActiveLayer('left'),
-  );
-  const rotateRightButton = createEditButton(
-    'Rotate right — .',
-    '<path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/>',
-    () => editor.rotateActiveLayer('right'),
-  );
-  const mirrorHorizontalButton = createEditButton(
-    'Mirror horizontally — H',
-    '<path d="M12 3v18"/><path d="M4 7 1 12l3 5"/><path d="M20 7l3 5-3 5"/>',
-    () => editor.mirrorActiveLayer('horizontal'),
-  );
-  const mirrorVerticalButton = createEditButton(
-    'Mirror vertically — V',
-    '<path d="M3 12h18"/><path d="M7 4l5-3 5 3"/><path d="M7 20l5 3 5-3"/>',
-    () => editor.mirrorActiveLayer('vertical'),
-  );
-
   return {
     element: createToolbarSection(
       createGrid('command-grid', clearButton, undoButton, redoButton, copyButton, cutButton, pasteButton),
-      createGrid(
-        'command-grid',
-        invertButton,
-        rotateLeftButton,
-        rotateRightButton,
-        mirrorHorizontalButton,
-        mirrorVerticalButton,
-      ),
     ),
     sync: () => {
       undoButton.disabled = !editor.canUndo;
