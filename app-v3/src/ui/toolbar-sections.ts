@@ -1,3 +1,4 @@
+import {parseWdraftFile} from '../core/project-file';
 import {Tool} from '../core/types';
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {openCameraPanel} from './camera-panel';
@@ -426,6 +427,56 @@ export function createFileSection(
   };
 }
 
+
+export function createProjectSection(editor: WebDraftEditor, status: StatusReporter): ToolbarSection {
+  const saveButton = createCommandButton('Save project', () => {
+    void (async () => {
+      try {
+        const blob = await editor.exportProject();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'project.wdraft';
+        link.click();
+        URL.revokeObjectURL(url);
+        status.show('Project saved.', 'success');
+      } catch (error) {
+        status.show(getErrorMessage(error), 'error');
+      }
+    })();
+  });
+
+  const wdraftInput = document.createElement('input');
+  wdraftInput.type = 'file';
+  wdraftInput.accept = '.wdraft';
+  wdraftInput.className = 'visually-hidden';
+  wdraftInput.addEventListener('change', () => {
+    const file = wdraftInput.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      void (async () => {
+        try {
+          const parsed = parseWdraftFile(reader.result as string);
+          await editor.importProject(parsed);
+          status.show('Project opened.', 'success');
+        } catch (error) {
+          status.show(getErrorMessage(error), 'error');
+        } finally {
+          wdraftInput.value = '';
+        }
+      })();
+    };
+    reader.readAsText(file);
+  });
+
+  const openButton = createCommandButton('Open project', () => wdraftInput.click());
+
+  return {
+    element: createToolbarSection(createGrid('toolbar__stack', saveButton, openButton, wdraftInput)),
+    sync: () => {},
+  };
+}
 
 export function syncToolbarSections(sections: ToolbarSection[]): void {
   for (const section of sections) {

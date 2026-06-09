@@ -1,4 +1,5 @@
 import type {LayerDocumentSnapshot, LayerSummary} from './layer-manager';
+import {WDRAFT_MIME_TYPE, WDRAFT_VERSION, type WdraftFile, type WdraftLayer} from './project-file';
 import {
   drawLine,
   drawPoint,
@@ -299,6 +300,57 @@ export class WebDraftEditor extends EventTarget {
       this.canvasSize,
     );
     this.layerManager.drawImageOnNewLayer(source, this.state.canvasWidth, this.state.canvasHeight, target);
+    this.pushHistory(before, this.captureHistorySnapshot());
+    this.dispatchChange();
+  }
+
+  async exportProject(): Promise<Blob> {
+    const snapshot = this.layerManager.captureDocument();
+    const layers: WdraftLayer[] = snapshot.layers.map((layer) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = layer.imageData.width;
+      canvas.height = layer.imageData.height;
+      canvas.getContext('2d')!.putImageData(layer.imageData, 0, 0);
+      return {
+        id: layer.layerId,
+        name: layer.name,
+        visible: layer.visible,
+        width: layer.imageData.width,
+        height: layer.imageData.height,
+        imageDataUrl: canvas.toDataURL('image/png'),
+      };
+    });
+    const file: WdraftFile = {
+      version: WDRAFT_VERSION,
+      canvasWidth: this.state.canvasWidth,
+      canvasHeight: this.state.canvasHeight,
+      activeLayerId: snapshot.activeLayerId,
+      layerCount: snapshot.layerCount,
+      layers,
+    };
+    return new Blob([JSON.stringify(file)], {type: WDRAFT_MIME_TYPE});
+  }
+
+  async importProject(file: WdraftFile): Promise<void> {
+    const before = this.captureHistorySnapshot();
+    const imageDataList = await Promise.all(
+      file.layers.map((l) => loadDataUrlAsImageData(l.imageDataUrl, l.width, l.height)),
+    );
+    const newDocument = {
+      activeLayerId: file.activeLayerId,
+      layerCount: file.layerCount,
+      layers: file.layers.map((l, i) => ({
+        layerId: l.id,
+        name: l.name,
+        visible: l.visible,
+        imageData: imageDataList[i],
+      })),
+    };
+    this.state.canvasWidth = file.canvasWidth;
+    this.state.canvasHeight = file.canvasHeight;
+    this.layerManager.restoreDocument(newDocument);
+    this.applyCanvasSize();
+    this.clearSelection();
     this.pushHistory(before, this.captureHistorySnapshot());
     this.dispatchChange();
   }
@@ -959,4 +1011,20 @@ function createImageData(buffer: {data: Uint8ClampedArray; width: number; height
   data.set(buffer.data);
 
   return new ImageData(data, buffer.width, buffer.height);
+}
+
+function loadDataUrlAsImageData(dataUrl: string, width: number, height: number): Promise<ImageData> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0);
+      resolve(ctx.getImageData(0, 0, width, height));
+    };
+    img.onerror = () => reject(new Error('Failed to load layer image.'));
+    img.src = dataUrl;
+  });
 }

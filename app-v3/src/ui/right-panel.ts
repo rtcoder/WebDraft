@@ -1,13 +1,15 @@
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {createLayersPanel} from './layers-panel';
-import {createEditSection, syncToolbarSections} from './toolbar-sections';
+import type {StatusReporter} from './status-toasts';
+import {createEditSection, createProjectSection, syncToolbarSections} from './toolbar-sections';
 import {createToolbarSection} from './toolbar-controls';
 
-export function createRightPanel(editor: WebDraftEditor): HTMLElement {
+export function createRightPanel(editor: WebDraftEditor, status: StatusReporter): HTMLElement {
   const panel = document.createElement('div');
   panel.className = 'toolbar';
 
   const sections = [
+    createProjectSection(editor, status),
     createEditSection(editor),
     {
       element: createToolbarSection(createLayersPanel(editor)),

@@ -39,5 +39,5 @@ const editor = new WebDraftEditor(surface, {
 });
 
 sidebar.append(createToolbar(editor, statusToasts));
-rightPanel.append(createRightPanel(editor));
+rightPanel.append(createRightPanel(editor, statusToasts));
 editor.mount();
