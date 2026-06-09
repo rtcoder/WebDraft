@@ -168,6 +168,22 @@ export function createStyleSection(editor: WebDraftEditor): ToolbarSection {
     onChange: (value) => editor.setFillTolerance(value),
   });
 
+  const syncVisibility = () => {
+    const tool = editor.state.activeTool;
+    const isShape = tool === Tool.Rectangle || tool === Tool.Ellipse;
+    const isBucket = tool === Tool.FillBucket;
+    const isWeb = tool === Tool.Web;
+    const hasBrushSize = tool === Tool.Pencil || tool === Tool.Eraser;
+    fillToggle.element.hidden = !isShape;
+    fillColorPicker.hidden = !isShape;
+    fillOpacityControl.element.hidden = !isShape;
+    fillToleranceControl.element.hidden = !isBucket;
+    webSensitivityControl.element.hidden = !isWeb;
+    sizeControl.element.hidden = !hasBrushSize && !isWeb && !isShape;
+  };
+
+  syncVisibility();
+
   return {
     element: createToolbarSection(
       colorPicker,
@@ -179,6 +195,7 @@ export function createStyleSection(editor: WebDraftEditor): ToolbarSection {
       webSensitivityControl.element,
     ),
     sync: () => {
+      syncVisibility();
       colorPicker.setValue(editor.state.color);
       fillToggle.setChecked(editor.state.fillEnabled);
       fillColorPicker.setValue(editor.state.fillColor);
@@ -225,6 +242,16 @@ export function createShadowSection(editor: WebDraftEditor): ToolbarSection {
     onChange: (value) => editor.setShadowOffsetY(value),
   });
 
+  const syncShadowDetails = () => {
+    const visible = editor.state.shadowEnabled;
+    shadowColorPicker.hidden = !visible;
+    shadowBlurControl.element.hidden = !visible;
+    shadowXControl.element.hidden = !visible;
+    shadowYControl.element.hidden = !visible;
+  };
+
+  syncShadowDetails();
+
   return {
     element: createToolbarSection(
       shadowToggle.element,
@@ -234,6 +261,7 @@ export function createShadowSection(editor: WebDraftEditor): ToolbarSection {
       shadowYControl.element,
     ),
     sync: () => {
+      syncShadowDetails();
       shadowToggle.setChecked(editor.state.shadowEnabled);
       shadowColorPicker.setValue(editor.state.shadowColor);
       shadowBlurControl.setValue(editor.state.shadowBlur);
@@ -259,11 +287,16 @@ export function createTextSection(editor: WebDraftEditor): ToolbarSection {
     editor.setTextItalic(enabled);
   });
 
+  const element = createToolbarSection(
+    createGrid('field-grid', fontSelect, alignSelect, textBoldToggle.element, textItalicToggle.element),
+  );
+
+  element.hidden = editor.state.activeTool !== Tool.Text;
+
   return {
-    element: createToolbarSection(
-      createGrid('field-grid', fontSelect, alignSelect, textBoldToggle.element, textItalicToggle.element),
-    ),
+    element,
     sync: () => {
+      element.hidden = editor.state.activeTool !== Tool.Text;
       fontSelect.value = editor.state.textFontFamily;
       alignSelect.value = editor.state.textAlign;
       textBoldToggle.setChecked(editor.state.textBold);
