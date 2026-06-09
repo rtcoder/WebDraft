@@ -1,6 +1,8 @@
 import { WebDraftEditor } from './core/webdraft-editor';
+import { createLayersPanel } from './ui/layers-panel';
 import { createStatusToasts } from './ui/status-toasts';
 import { createToolbar } from './ui/toolbar';
+import { createToolbarSection } from './ui/toolbar-controls';
 import './styles.css';
 
 const app = document.querySelector<HTMLDivElement>('#app');
@@ -21,10 +23,13 @@ workspace.className = 'workspace';
 const surface = document.createElement('div');
 surface.className = 'canvas-surface';
 
+const rightPanel = document.createElement('aside');
+rightPanel.className = 'right-panel';
+
 const statusToasts = createStatusToasts();
 
 workspace.append(surface);
-shell.append(sidebar, workspace);
+shell.append(sidebar, workspace, rightPanel);
 app.append(shell, statusToasts);
 
 const editor = new WebDraftEditor(surface, {
@@ -35,4 +40,8 @@ const editor = new WebDraftEditor(surface, {
 });
 
 sidebar.append(createToolbar(editor, statusToasts));
+const rightToolbar = document.createElement('div');
+rightToolbar.className = 'toolbar';
+rightToolbar.append(createToolbarSection(createLayersPanel(editor)));
+rightPanel.append(rightToolbar);
 editor.mount();

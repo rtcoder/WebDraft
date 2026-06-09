@@ -305,25 +305,72 @@ export function createTextSection(editor: WebDraftEditor): ToolbarSection {
   };
 }
 
+function createEditButton(title: string, svgContent: string, onClick: () => void): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'command-button';
+  button.title = title;
+  button.append(createSvgIcon(svgContent));
+  button.addEventListener('click', onClick);
+  return button;
+}
+
 export function createEditSection(editor: WebDraftEditor): ToolbarSection {
-  const clearButton = createCommandButton('Clear', () => editor.clear());
-  const undoButton = createCommandButton('Undo', () => editor.undo());
-  const redoButton = createCommandButton('Redo', () => editor.redo());
-  const copyButton = createCommandButton('Copy', () => editor.copySelection());
-  const cutButton = createCommandButton('Cut', () => editor.cutSelection());
-  const pasteButton = createCommandButton('Paste', () => editor.pasteSelection());
-
-  const invertButton = createCommandButton('Invert', () => editor.invertActiveLayer());
-  const rotateLeftButton = createCommandButton('Rotate L', () => editor.rotateActiveLayer('left'));
-  const rotateRightButton = createCommandButton('Rotate R', () => editor.rotateActiveLayer('right'));
-  const mirrorHorizontalButton = createCommandButton('Mirror H', () => editor.mirrorActiveLayer('horizontal'));
-  const mirrorVerticalButton = createCommandButton('Mirror V', () => editor.mirrorActiveLayer('vertical'));
-
-  invertButton.title = 'Invert colors';
-  rotateLeftButton.title = 'Rotate left';
-  rotateRightButton.title = 'Rotate right';
-  mirrorHorizontalButton.title = 'Mirror horizontally';
-  mirrorVerticalButton.title = 'Mirror vertically';
+  const clearButton = createEditButton(
+    'Clear',
+    '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+    () => editor.clear(),
+  );
+  const undoButton = createEditButton(
+    'Undo — Ctrl+Z',
+    '<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+    () => editor.undo(),
+  );
+  const redoButton = createEditButton(
+    'Redo — Ctrl+Shift+Z',
+    '<path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',
+    () => editor.redo(),
+  );
+  const copyButton = createEditButton(
+    'Copy — Ctrl+C',
+    '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+    () => editor.copySelection(),
+  );
+  const cutButton = createEditButton(
+    'Cut — Ctrl+X',
+    '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.12 15.88M14.47 9.53L20 20M8.12 8.12L12 12"/>',
+    () => editor.cutSelection(),
+  );
+  const pasteButton = createEditButton(
+    'Paste — Ctrl+V',
+    '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>',
+    () => editor.pasteSelection(),
+  );
+  const invertButton = createEditButton(
+    'Invert colors — I',
+    '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18V3z" fill="currentColor" stroke="none"/>',
+    () => editor.invertActiveLayer(),
+  );
+  const rotateLeftButton = createEditButton(
+    'Rotate left — ,',
+    '<path d="M2.5 2v6h6"/><path d="M2.66 15.57a10 10 0 1 0 .57-8.38"/>',
+    () => editor.rotateActiveLayer('left'),
+  );
+  const rotateRightButton = createEditButton(
+    'Rotate right — .',
+    '<path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/>',
+    () => editor.rotateActiveLayer('right'),
+  );
+  const mirrorHorizontalButton = createEditButton(
+    'Mirror horizontally — H',
+    '<path d="M12 3v18"/><path d="M4 7 1 12l3 5"/><path d="M20 7l3 5-3 5"/>',
+    () => editor.mirrorActiveLayer('horizontal'),
+  );
+  const mirrorVerticalButton = createEditButton(
+    'Mirror vertically — V',
+    '<path d="M3 12h18"/><path d="M7 4l5-3 5 3"/><path d="M7 20l5 3 5-3"/>',
+    () => editor.mirrorActiveLayer('vertical'),
+  );
 
   return {
     element: createToolbarSection(

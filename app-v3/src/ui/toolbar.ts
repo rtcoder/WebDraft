@@ -1,6 +1,5 @@
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {bindKeyboardShortcuts} from './keyboard-shortcuts';
-import {createLayersPanel} from './layers-panel';
 import type {StatusReporter} from './status-toasts';
 import {getErrorMessage} from './status-toasts';
 import {
@@ -13,7 +12,6 @@ import {
   createToolSection,
   syncToolbarSections,
 } from './toolbar-sections';
-import {createToolbarSection} from './toolbar-controls';
 
 export function createToolbar(editor: WebDraftEditor, status: StatusReporter): HTMLElement {
   const toolbar = document.createElement('div');
@@ -47,10 +45,6 @@ export function createToolbar(editor: WebDraftEditor, status: StatusReporter): H
     createEditSection(editor),
     createResizeSection(editor, status),
     createFileSection(editor, fileInput, exportImage, status),
-    {
-      element: createToolbarSection(createLayersPanel(editor)),
-      sync: () => {},
-    },
   ];
 
   editor.addEventListener('change', () => syncToolbarSections(sections));
