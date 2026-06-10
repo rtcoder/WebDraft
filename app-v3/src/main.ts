@@ -1,4 +1,5 @@
 import { WebDraftEditor } from './core/webdraft-editor';
+import { createMenuBar } from './ui/menu-bar';
 import { createRightPanel } from './ui/right-panel';
 import { createStatusToasts } from './ui/status-toasts';
 import { createToolbar } from './ui/toolbar';
@@ -9,6 +10,9 @@ const app = document.querySelector<HTMLDivElement>('#app');
 if (!app) {
   throw new Error('Missing #app root element.');
 }
+
+const appWrap = document.createElement('div');
+appWrap.className = 'app-wrap';
 
 const shell = document.createElement('main');
 shell.className = 'app-shell';
@@ -29,7 +33,8 @@ const statusToasts = createStatusToasts();
 
 workspace.append(surface);
 shell.append(sidebar, workspace, rightPanel);
-app.append(shell, statusToasts);
+appWrap.append(shell);
+app.append(appWrap, statusToasts);
 
 const editor = new WebDraftEditor(surface, {
   width: 900,
@@ -38,6 +43,7 @@ const editor = new WebDraftEditor(surface, {
   size: 10
 });
 
+appWrap.prepend(createMenuBar(editor, statusToasts));
 sidebar.append(createToolbar(editor, statusToasts));
 rightPanel.append(createRightPanel(editor, statusToasts));
 editor.mount();
