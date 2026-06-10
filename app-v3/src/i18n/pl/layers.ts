@@ -1,0 +1,13 @@
+import type {LayersTranslations} from '../types.ts';
+
+export const layersTranslations: LayersTranslations = {
+  title: 'Warstwy',
+  addLayer: 'Dodaj warstwę',
+  deleteLayer: 'Usuń warstwę',
+  moveLayerUp: 'Przesuń warstwę w górę',
+  moveLayerDown: 'Przesuń warstwę w dół',
+  selectLayer: (name) => `Zaznacz ${name}`,
+  renameLayer: 'Zmień nazwę warstwy',
+  hideLayer: 'Ukryj warstwę',
+  showLayer: 'Pokaż warstwę',
+};
