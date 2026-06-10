@@ -3,6 +3,7 @@ import { createMenuBar } from './ui/menu-bar';
 import { createRightPanel } from './ui/right-panel';
 import { createStatusToasts } from './ui/status-toasts';
 import { createToolbar } from './ui/toolbar';
+import { restoreStateAfterReload } from './ui/lang-state';
 import './styles.css';
 
 const app = document.querySelector<HTMLDivElement>('#app');
@@ -47,3 +48,4 @@ appWrap.prepend(createMenuBar(editor, statusToasts));
 sidebar.append(createToolbar(editor, statusToasts));
 rightPanel.append(createRightPanel(editor, statusToasts));
 editor.mount();
+void restoreStateAfterReload(editor);

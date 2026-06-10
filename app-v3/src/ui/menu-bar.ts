@@ -1,8 +1,10 @@
 import { parseWdraftBinary } from '../core/project-file';
-import { t } from '../core/i18n';
+import { lang, setLang, t } from '../core/i18n';
+import type { Lang } from '../core/i18n';
 import type { WebDraftEditor } from '../core/webdraft-editor';
 import type { StatusReporter } from './status-toasts';
 import { getErrorMessage } from './status-toasts';
+import { saveStateForReload } from './lang-state';
 
 type MenuItem =
   | { type: 'action'; label: string; action: () => void; shortcut?: string; disabled?: () => boolean }
@@ -103,6 +105,81 @@ function createMenuButton(menu: Menu): HTMLButtonElement {
   });
 
   return btn;
+}
+
+const LANG_LABELS: Record<Lang, string> = {
+  pl: '🇵🇱 PL',
+  en: '🇬🇧 EN',
+};
+
+const ALL_LANGS: Lang[] = ['pl', 'en'];
+
+function createLangSelector(editor: WebDraftEditor): HTMLElement {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'menu-lang-selector';
+
+  const btn = document.createElement('button');
+  btn.className = 'menu-btn menu-lang-btn';
+  btn.textContent = LANG_LABELS[lang];
+  btn.setAttribute('aria-haspopup', 'true');
+  btn.setAttribute('aria-expanded', 'false');
+
+  let dropdown: HTMLElement | null = null;
+
+  function closeLangMenu(): void {
+    dropdown?.remove();
+    dropdown = null;
+    btn.classList.remove('menu-btn--active');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (dropdown) { closeLangMenu(); return; }
+
+    closeOpenMenu();
+
+    dropdown = document.createElement('ul');
+    dropdown.className = 'menu-dropdown menu-lang-dropdown';
+    dropdown.setAttribute('role', 'menu');
+
+    for (const l of ALL_LANGS) {
+      const li = document.createElement('li');
+      li.setAttribute('role', 'none');
+      li.className = 'menu-dropdown__item' + (l === lang ? ' menu-dropdown__item--active' : '');
+
+      const item = document.createElement('button');
+      item.setAttribute('role', 'menuitem');
+      item.tabIndex = -1;
+      item.textContent = LANG_LABELS[l];
+      item.addEventListener('click', () => {
+        closeLangMenu();
+        if (l !== lang) {
+          void saveStateForReload(editor).then(() => {
+            setLang(l);
+            location.reload();
+          });
+        }
+      });
+
+      li.append(item);
+      dropdown.append(li);
+    }
+
+    const rect = btn.getBoundingClientRect();
+    dropdown.style.left = `${rect.right}px`;
+    dropdown.style.top = `${rect.bottom}px`;
+    dropdown.style.transform = 'translateX(-100%)';
+
+    document.body.append(dropdown);
+    btn.classList.add('menu-btn--active');
+    btn.setAttribute('aria-expanded', 'true');
+
+    document.addEventListener('click', closeLangMenu, { once: true });
+  });
+
+  wrapper.append(btn);
+  return wrapper;
 }
 
 export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): HTMLElement {
@@ -353,6 +430,8 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
   for (const menu of menus) {
     bar.append(createMenuButton(menu));
   }
+
+  bar.append(createLangSelector(editor));
 
   document.addEventListener('click', closeOpenMenu);
   document.addEventListener('keydown', (e) => {

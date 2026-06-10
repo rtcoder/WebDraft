@@ -68,6 +68,26 @@ select {
   z-index: 100;
 }
 
+.menu-lang-selector {
+  margin-left: auto;
+  display: flex;
+  align-items: stretch;
+}
+
+.menu-lang-btn {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.menu-lang-dropdown {
+  min-width: 100px;
+}
+
+.menu-dropdown__item--active button {
+  color: #fff;
+  background: #2e6fb7;
+}
+
 .menu-btn {
   display: flex;
   align-items: center;
