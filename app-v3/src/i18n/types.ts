@@ -98,6 +98,7 @@ export type LayersTranslations = {
   title: string;
   addLayer: string;
   deleteLayer: string;
+  layerName: (suffix: string) => string;
   moveLayerUp: string;
   moveLayerDown: string;
   selectLayer: (name: string) => string;

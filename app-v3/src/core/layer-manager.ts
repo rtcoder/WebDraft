@@ -1,3 +1,4 @@
+import {t} from './i18n.ts';
 import {SizeWithPosition} from './types.ts';
 
 export type Layer = {
@@ -91,9 +92,11 @@ export class LayerManager {
     canvas.className = 'drawing-layer';
     canvas.dataset.layerId = id;
 
+    const name = t.layers.layerName(`${this.layerCount + 1}`)
+
     const layer: Layer = {
       id,
-      name: `Layer ${this.layerCount + 1}`,
+      name,
       canvas,
       context,
       visible: true

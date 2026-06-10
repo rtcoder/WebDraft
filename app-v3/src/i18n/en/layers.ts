@@ -4,6 +4,7 @@ export const layersTranslations: LayersTranslations = {
   title: 'Layers',
   addLayer: 'Add layer',
   deleteLayer: 'Delete layer',
+  layerName: (suffix) => `Layer ${suffix}`,
   moveLayerUp: 'Move layer up',
   moveLayerDown: 'Move layer down',
   selectLayer: (name) => `Select ${name}`,
