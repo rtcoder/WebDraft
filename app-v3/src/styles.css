@@ -1119,3 +1119,107 @@ input[type="number"].cp-field-input::-webkit-inner-spin-button {
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+
+/* ── Save dialog ────────────────────────────────────────── */
+
+.save-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgb(0 0 0 / 55%);
+}
+
+.save-dialog {
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background: #1e2126;
+  border: 1px solid #343941;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 16px 48px rgb(0 0 0 / 55%);
+}
+
+.save-dialog__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #f4f7fb;
+}
+
+.save-dialog__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.save-dialog__btn {
+  padding: 9px 14px;
+  border: 1px solid #3a4049;
+  border-radius: 5px;
+  background: #262b32;
+  color: #c8cdd4;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s, color 0.1s;
+}
+
+.save-dialog__btn:hover {
+  background: #2e3640;
+  color: #f4f7fb;
+}
+
+.save-dialog__btn--primary {
+  background: #2e6fb7;
+  border-color: #2e6fb7;
+  color: #fff;
+}
+
+.save-dialog__btn--primary:hover {
+  background: #3880cc;
+  border-color: #3880cc;
+}
+
+.save-dialog__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.save-dialog__remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #8a9099;
+  cursor: pointer;
+  user-select: none;
+}
+
+.save-dialog__remember input {
+  accent-color: #2e6fb7;
+  cursor: pointer;
+}
+
+.save-dialog__cancel {
+  background: none;
+  border: none;
+  color: #8a9099;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.save-dialog__cancel:hover {
+  color: #c8cdd4;
+  background: #2c3038;
+}

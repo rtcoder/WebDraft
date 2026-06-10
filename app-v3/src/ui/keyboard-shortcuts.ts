@@ -4,6 +4,7 @@ import type {WebDraftEditor} from '../core/webdraft-editor';
 type ShortcutOptions = {
   openImagePicker: () => void;
   exportImage: () => Promise<void>;
+  onSave: () => void;
 };
 
 export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutOptions): void {
@@ -39,7 +40,7 @@ export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutO
 
     if (isCommand && key === 's') {
       event.preventDefault();
-      void options.exportImage();
+      options.onSave();
       return;
     }
 

@@ -134,6 +134,13 @@ export type CommonTranslations = {
   somethingWentWrong: string;
   appTitle: string;
 };
+export type SaveDialogTranslations = {
+  title: string;
+  exportPng: string;
+  saveProject: string;
+  rememberChoice: string;
+  cancel: string;
+};
 export type Translations = {
   menu: MenuTranslations;
   file: FileTranslations;
@@ -145,4 +152,5 @@ export type Translations = {
   camera: CameraTranslations;
   picker: PickerTranslations;
   common: CommonTranslations;
+  saveDialog: SaveDialogTranslations;
 };

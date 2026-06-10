@@ -180,7 +180,6 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
         {
           type: 'action',
           label: t.file.save,
-          shortcut: 'Ctrl+S',
           action: () => {
             void (async () => {
               try {
@@ -207,7 +206,6 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
         {
           type: 'action',
           label: t.file.exportPng,
-          shortcut: 'Ctrl+Shift+E',
           action: () => {
             void (async () => {
               try {

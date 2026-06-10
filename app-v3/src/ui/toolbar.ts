@@ -1,6 +1,7 @@
 import {t} from '../core/i18n';
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {bindKeyboardShortcuts} from './keyboard-shortcuts';
+import {openSaveDialog} from './save-dialog';
 import type {StatusReporter} from './status-toasts';
 import {getErrorMessage} from './status-toasts';
 import {
@@ -51,9 +52,28 @@ export function createToolbar(editor: WebDraftEditor, status: StatusReporter): H
 
   toolbar.append(title, ...sections.map((section) => section.element));
 
+  const saveProject = async () => {
+    try {
+      const blob = await editor.exportProject();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = t.file.projectFilename;
+      link.click();
+      URL.revokeObjectURL(url);
+      status.show(t.file.savedOk, 'success');
+    } catch (error) {
+      status.show(getErrorMessage(error), 'error');
+    }
+  };
+
   bindKeyboardShortcuts(editor, {
     openImagePicker: () => fileInput.click(),
     exportImage,
+    onSave: () => openSaveDialog((action) => {
+      if (action === 'png') void exportImage();
+      else void saveProject();
+    }),
   });
 
   return toolbar;

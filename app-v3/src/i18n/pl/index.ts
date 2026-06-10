@@ -8,6 +8,7 @@ import {layerTranslations} from './layer.ts';
 import {layersTranslations} from './layers.ts';
 import {menuTranslations} from './menu.ts';
 import {pickerTranslations} from './picker.ts';
+import {saveDialogTranslations} from './saveDialog.ts';
 import {toolbarTranslations} from './toolbar.ts';
 
 export const pl: Translations = {
@@ -21,4 +22,5 @@ export const pl: Translations = {
   camera: cameraTranslations,
   picker: pickerTranslations,
   common: commonTranslations,
+  saveDialog: saveDialogTranslations,
 };
