@@ -1,5 +1,10 @@
 import type {LayerDocumentSnapshot, LayerSummary} from './layer-manager';
-import {WDRAFT_MIME_TYPE, WDRAFT_VERSION, type WdraftFile, type WdraftLayer} from './project-file';
+import {
+  serializeWdraftBinary,
+  WDRAFT_VERSION,
+  type ParsedWdraftFile,
+  type WdraftFileMeta,
+} from './project-file';
 import {
   drawLine,
   drawPoint,
@@ -306,48 +311,56 @@ export class WebDraftEditor extends EventTarget {
 
   async exportProject(): Promise<Blob> {
     const snapshot = this.layerManager.captureDocument();
-    const layers: WdraftLayer[] = snapshot.layers.map((layer) => {
-      const canvas = document.createElement('canvas');
-      canvas.width = layer.imageData.width;
-      canvas.height = layer.imageData.height;
-      canvas.getContext('2d')!.putImageData(layer.imageData, 0, 0);
-      return {
-        id: layer.layerId,
-        name: layer.name,
-        visible: layer.visible,
-        width: layer.imageData.width,
-        height: layer.imageData.height,
-        imageDataUrl: canvas.toDataURL('image/png'),
-      };
-    });
-    const file: WdraftFile = {
+    const pngBuffers = await Promise.all(
+      snapshot.layers.map(async (layer) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = layer.imageData.width;
+        canvas.height = layer.imageData.height;
+        canvas.getContext('2d')!.putImageData(layer.imageData, 0, 0);
+        const blob = await new Promise<Blob>((resolve, reject) =>
+          canvas.toBlob(
+            (b) => (b ? resolve(b) : reject(new Error('toBlob failed'))),
+            'image/png',
+          ),
+        );
+        return new Uint8Array(await blob.arrayBuffer());
+      }),
+    );
+    const meta: WdraftFileMeta = {
       version: WDRAFT_VERSION,
       canvasWidth: this.state.canvasWidth,
       canvasHeight: this.state.canvasHeight,
       activeLayerId: snapshot.activeLayerId,
       layerCount: snapshot.layerCount,
-      layers,
+      layers: snapshot.layers.map((l) => ({
+        id: l.layerId,
+        name: l.name,
+        visible: l.visible,
+        width: l.imageData.width,
+        height: l.imageData.height,
+      })),
     };
-    return new Blob([JSON.stringify(file)], {type: WDRAFT_MIME_TYPE});
+    return serializeWdraftBinary(meta, pngBuffers);
   }
 
-  async importProject(file: WdraftFile): Promise<void> {
+  async importProject(parsed: ParsedWdraftFile): Promise<void> {
+    const {meta, pngBuffers} = parsed;
     const before = this.captureHistorySnapshot();
     const imageDataList = await Promise.all(
-      file.layers.map((l) => loadDataUrlAsImageData(l.imageDataUrl, l.width, l.height)),
+      meta.layers.map((l, i) => loadPngBytesAsImageData(pngBuffers[i], l.width, l.height)),
     );
     const newDocument = {
-      activeLayerId: file.activeLayerId,
-      layerCount: file.layerCount,
-      layers: file.layers.map((l, i) => ({
+      activeLayerId: meta.activeLayerId,
+      layerCount: meta.layerCount,
+      layers: meta.layers.map((l, i) => ({
         layerId: l.id,
         name: l.name,
         visible: l.visible,
         imageData: imageDataList[i],
       })),
     };
-    this.state.canvasWidth = file.canvasWidth;
-    this.state.canvasHeight = file.canvasHeight;
+    this.state.canvasWidth = meta.canvasWidth;
+    this.state.canvasHeight = meta.canvasHeight;
     this.layerManager.restoreDocument(newDocument);
     this.applyCanvasSize();
     this.clearSelection();
@@ -1013,10 +1026,12 @@ function createImageData(buffer: {data: Uint8ClampedArray; width: number; height
   return new ImageData(data, buffer.width, buffer.height);
 }
 
-function loadDataUrlAsImageData(dataUrl: string, width: number, height: number): Promise<ImageData> {
+function loadPngBytesAsImageData(bytes: Uint8Array, width: number, height: number): Promise<ImageData> {
   return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(new Blob([(bytes.buffer as ArrayBuffer).slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)], {type: 'image/png'}));
     const img = new Image();
     img.onload = () => {
+      URL.revokeObjectURL(url);
       const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
@@ -1024,7 +1039,10 @@ function loadDataUrlAsImageData(dataUrl: string, width: number, height: number):
       ctx.drawImage(img, 0, 0);
       resolve(ctx.getImageData(0, 0, width, height));
     };
-    img.onerror = () => reject(new Error('Failed to load layer image.'));
-    img.src = dataUrl;
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Failed to load layer image.'));
+    };
+    img.src = url;
   });
 }

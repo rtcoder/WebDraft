@@ -1,4 +1,4 @@
-import {parseWdraftFile} from '../core/project-file';
+import {parseWdraftBinary} from '../core/project-file';
 import {Tool} from '../core/types';
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {openCameraPanel} from './camera-panel';
@@ -457,7 +457,7 @@ export function createProjectSection(editor: WebDraftEditor, status: StatusRepor
     reader.onload = () => {
       void (async () => {
         try {
-          const parsed = parseWdraftFile(reader.result as string);
+          const parsed = parseWdraftBinary(reader.result as ArrayBuffer);
           await editor.importProject(parsed);
           status.show('Project opened.', 'success');
         } catch (error) {
@@ -467,7 +467,7 @@ export function createProjectSection(editor: WebDraftEditor, status: StatusRepor
         }
       })();
     };
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
   });
 
   const openButton = createCommandButton('Open project', () => wdraftInput.click());
