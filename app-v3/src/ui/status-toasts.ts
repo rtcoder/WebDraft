@@ -1,3 +1,5 @@
+import { t } from '../core/i18n';
+
 export type StatusTone = 'info' | 'success' | 'error';
 
 export type StatusReporter = {
@@ -31,5 +33,5 @@ export function getErrorMessage(error: unknown): string {
     return error.message;
   }
 
-  return 'Something went wrong.';
+  return t.common.somethingWentWrong;
 }

@@ -1,4 +1,5 @@
 import { parseWdraftBinary } from '../core/project-file';
+import { t } from '../core/i18n';
 import type { WebDraftEditor } from '../core/webdraft-editor';
 import type { StatusReporter } from './status-toasts';
 import { getErrorMessage } from './status-toasts';
@@ -107,14 +108,14 @@ function createMenuButton(menu: Menu): HTMLButtonElement {
 export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): HTMLElement {
   const bar = document.createElement('nav');
   bar.className = 'menu-bar';
-  bar.setAttribute('aria-label', 'Main menu');
+  bar.setAttribute('aria-label', t.menu.file);
 
-  const plikInput = document.createElement('input');
-  plikInput.type = 'file';
-  plikInput.accept = '.wdraft';
-  plikInput.className = 'visually-hidden';
-  plikInput.addEventListener('change', () => {
-    const file = plikInput.files?.[0];
+  const projectInput = document.createElement('input');
+  projectInput.type = 'file';
+  projectInput.accept = '.wdraft';
+  projectInput.className = 'visually-hidden';
+  projectInput.addEventListener('change', () => {
+    const file = projectInput.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
@@ -122,11 +123,11 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
         try {
           const parsed = parseWdraftBinary(reader.result as ArrayBuffer);
           await editor.importProject(parsed);
-          status.show('Projekt otwarty.', 'success');
+          status.show(t.file.openedOk, 'success');
         } catch (err) {
           status.show(getErrorMessage(err), 'error');
         } finally {
-          plikInput.value = '';
+          projectInput.value = '';
         }
       })();
     };
@@ -143,7 +144,7 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
     void (async () => {
       try {
         await editor.importImage(file);
-        status.show('Obraz zaimportowany.', 'success');
+        status.show(t.file.importedOk, 'success');
       } catch (err) {
         status.show(getErrorMessage(err), 'error');
       } finally {
@@ -152,33 +153,33 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
     })();
   });
 
-  bar.append(plikInput, imageInput);
+  bar.append(projectInput, imageInput);
 
   const menus: Menu[] = [
     {
-      label: 'Plik',
+      label: t.menu.file,
       items: [
         {
           type: 'action',
-          label: 'Nowy projekt',
+          label: t.file.new,
           shortcut: 'Ctrl+N',
           action: () => {
-            if (confirm('Nowy projekt? Niezapisane zmiany zostaną utracone.')) {
+            if (confirm(t.file.newConfirm)) {
               editor.clear();
-              status.show('Nowy projekt.', 'success');
+              status.show(t.file.new, 'success');
             }
           },
         },
         {
           type: 'action',
-          label: 'Otwórz projekt…',
+          label: t.file.open,
           shortcut: 'Ctrl+O',
-          action: () => plikInput.click(),
+          action: () => projectInput.click(),
         },
         { type: 'separator' },
         {
           type: 'action',
-          label: 'Zapisz projekt',
+          label: t.file.save,
           shortcut: 'Ctrl+S',
           action: () => {
             void (async () => {
@@ -187,10 +188,10 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'projekt.wdraft';
+                a.download = t.file.projectFilename;
                 a.click();
                 URL.revokeObjectURL(url);
-                status.show('Projekt zapisany.', 'success');
+                status.show(t.file.savedOk, 'success');
               } catch (err) {
                 status.show(getErrorMessage(err), 'error');
               }
@@ -200,12 +201,12 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
         { type: 'separator' },
         {
           type: 'action',
-          label: 'Importuj obraz…',
+          label: t.file.importImage,
           action: () => imageInput.click(),
         },
         {
           type: 'action',
-          label: 'Eksportuj PNG',
+          label: t.file.exportPng,
           shortcut: 'Ctrl+Shift+E',
           action: () => {
             void (async () => {
@@ -214,10 +215,10 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'obraz.png';
+                a.download = t.file.imageFilename;
                 a.click();
                 URL.revokeObjectURL(url);
-                status.show('PNG wyeksportowany.', 'success');
+                status.show(t.file.exportedOk, 'success');
               } catch (err) {
                 status.show(getErrorMessage(err), 'error');
               }
@@ -227,18 +228,18 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
       ],
     },
     {
-      label: 'Edycja',
+      label: t.menu.edit,
       items: [
         {
           type: 'action',
-          label: 'Cofnij',
+          label: t.edit.undo,
           shortcut: 'Ctrl+Z',
           disabled: () => !editor.canUndo,
           action: () => editor.undo(),
         },
         {
           type: 'action',
-          label: 'Ponów',
+          label: t.edit.redo,
           shortcut: 'Ctrl+Y',
           disabled: () => !editor.canRedo,
           action: () => editor.redo(),
@@ -246,105 +247,105 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
         { type: 'separator' },
         {
           type: 'action',
-          label: 'Wytnij',
+          label: t.edit.cut,
           shortcut: 'Ctrl+X',
           action: () => editor.cutSelection(),
         },
         {
           type: 'action',
-          label: 'Kopiuj',
+          label: t.edit.copy,
           shortcut: 'Ctrl+C',
           action: () => editor.copySelection(),
         },
         {
           type: 'action',
-          label: 'Wklej',
+          label: t.edit.paste,
           shortcut: 'Ctrl+V',
           action: () => editor.pasteSelection(),
         },
         { type: 'separator' },
         {
           type: 'action',
-          label: 'Wyczyść warstwę',
+          label: t.edit.clearLayer,
           action: () => editor.clear(),
         },
       ],
     },
     {
-      label: 'Obraz',
+      label: t.menu.image,
       items: [
         {
           type: 'action',
-          label: 'Zmień rozmiar płótna…',
+          label: t.image.resizeCanvas,
           action: () => {
-            const w = prompt('Szerokość (px):', '900');
-            const h = prompt('Wysokość (px):', '620');
+            const w = prompt(t.image.widthPrompt, '900');
+            const h = prompt(t.image.heightPrompt, '620');
             const nw = parseInt(w ?? '', 10);
             const nh = parseInt(h ?? '', 10);
             if (nw > 0 && nh > 0) {
               editor.resizeCanvas(nw, nh);
-              status.show(`Płótno: ${nw}×${nh}`, 'success');
+              status.show(t.image.resizedOk(nw, nh), 'success');
             }
           },
         },
         { type: 'separator' },
         {
           type: 'action',
-          label: 'Odwróć kolory',
+          label: t.image.invertColors,
           action: () => editor.invertActiveLayer(),
         },
         {
           type: 'action',
-          label: 'Lustro poziome',
+          label: t.image.mirrorH,
           action: () => editor.mirrorActiveLayer('horizontal'),
         },
         {
           type: 'action',
-          label: 'Lustro pionowe',
+          label: t.image.mirrorV,
           action: () => editor.mirrorActiveLayer('vertical'),
         },
         { type: 'separator' },
         {
           type: 'action',
-          label: 'Obróć w lewo',
+          label: t.image.rotateLeft,
           action: () => editor.rotateActiveLayer('left'),
         },
         {
           type: 'action',
-          label: 'Obróć w prawo',
+          label: t.image.rotateRight,
           action: () => editor.rotateActiveLayer('right'),
         },
       ],
     },
     {
-      label: 'Warstwa',
+      label: t.menu.layer,
       items: [
         {
           type: 'action',
-          label: 'Nowa warstwa',
+          label: t.layer.new,
           action: () => {
             editor.addLayer();
-            status.show('Warstwa dodana.', 'success');
+            status.show(t.layer.addedOk, 'success');
           },
         },
         {
           type: 'action',
-          label: 'Usuń warstwę',
+          label: t.layer.delete,
           disabled: () => editor.layers.length <= 1,
           action: () => {
             editor.deleteActiveLayer();
-            status.show('Warstwa usunięta.', 'success');
+            status.show(t.layer.deletedOk, 'success');
           },
         },
         { type: 'separator' },
         {
           type: 'action',
-          label: 'Przesuń warstwę w górę',
+          label: t.layer.moveUp,
           action: () => editor.moveActiveLayerUp(),
         },
         {
           type: 'action',
-          label: 'Przesuń warstwę w dół',
+          label: t.layer.moveDown,
           action: () => editor.moveActiveLayerDown(),
         },
       ],

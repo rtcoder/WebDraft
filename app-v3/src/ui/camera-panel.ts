@@ -1,3 +1,4 @@
+import {t} from '../core/i18n';
 import type {WebDraftEditor} from '../core/webdraft-editor.ts';
 import type {StatusReporter} from './status-toasts.ts';
 
@@ -59,7 +60,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
   const mediaDevices = navigator.mediaDevices;
 
   if (!mediaDevices?.getUserMedia) {
-    status.show('Camera is unavailable in this browser.', 'error');
+    status.show(t.camera.unavailable, 'error');
     return;
   }
 
@@ -85,7 +86,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
 
   const title = document.createElement('span');
   title.className = 'camera-panel__title';
-  title.textContent = 'Camera';
+  title.textContent = t.camera.title;
 
   const closeBtn = document.createElement('button');
   closeBtn.type = 'button';
@@ -104,10 +105,10 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
   filtersContainer.className = 'camera-panel__filters';
 
   const filterDefs: Array<{label: string; key: keyof Filters}> = [
-    {label: 'Sepia', key: 'sepia'},
-    {label: 'Noise', key: 'noise'},
-    {label: 'Greyscale', key: 'greyscale'},
-    {label: 'Negative', key: 'negative'},
+    {label: t.camera.sepia, key: 'sepia'},
+    {label: t.camera.noise, key: 'noise'},
+    {label: t.camera.greyscale, key: 'greyscale'},
+    {label: t.camera.negative, key: 'negative'},
   ];
 
   for (const {label, key} of filterDefs) {
@@ -123,31 +124,31 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
   const snapBtn = document.createElement('button');
   snapBtn.type = 'button';
   snapBtn.className = 'command-button';
-  snapBtn.textContent = 'Snap';
+  snapBtn.textContent = t.camera.snap;
   snapBtn.addEventListener('click', doSnap);
 
   const snapToCanvasBtn = document.createElement('button');
   snapToCanvasBtn.type = 'button';
   snapToCanvasBtn.className = 'command-button';
-  snapToCanvasBtn.textContent = 'Snap to canvas';
+  snapToCanvasBtn.textContent = t.camera.snapToCanvas;
   snapToCanvasBtn.addEventListener('click', doSnapToCanvas);
 
   const applyBtn = document.createElement('button');
   applyBtn.type = 'button';
   applyBtn.className = 'command-button';
-  applyBtn.textContent = 'Apply to canvas';
+  applyBtn.textContent = t.camera.applyToCanvas;
   applyBtn.addEventListener('click', doApply);
 
   const saveBtn = document.createElement('button');
   saveBtn.type = 'button';
   saveBtn.className = 'command-button';
-  saveBtn.textContent = 'Save to file';
+  saveBtn.textContent = t.camera.saveToFile;
   saveBtn.addEventListener('click', doSave);
 
   const backBtn = document.createElement('button');
   backBtn.type = 'button';
   backBtn.className = 'command-button';
-  backBtn.textContent = 'Back to live';
+  backBtn.textContent = t.camera.backToLive;
   backBtn.addEventListener('click', resumeLive);
 
   showLiveActions();
@@ -179,7 +180,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
 
       const track = stream.getVideoTracks()[0];
       if (track?.label) {
-        title.textContent = `Camera — ${track.label}`;
+        title.textContent = t.camera.titleWithLabel(track.label);
       }
 
       previewCanvas.width = video.videoWidth;
@@ -188,7 +189,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
       startLiveLoop();
     } catch (error) {
       closePanel();
-      status.show(error instanceof Error ? error.message : 'Camera error.', 'error');
+      status.show(error instanceof Error ? error.message : t.camera.cameraError, 'error');
     }
   }
 
@@ -234,7 +235,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
   function doApply(): void {
     if (!snapshotCanvas) return;
     editor.importCanvasAsLayer(snapshotCanvas);
-    status.show('Camera frame added.', 'success');
+    status.show(t.camera.frameAdded, 'success');
     closePanel();
   }
 
@@ -245,7 +246,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'camera-snap.png';
+      a.download = t.camera.snapFilename;
       a.click();
       URL.revokeObjectURL(url);
     });
@@ -257,7 +258,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
     tmp.height = previewCanvas.height;
     tmp.getContext('2d')?.drawImage(previewCanvas, 0, 0);
     editor.importCanvasAsLayer(tmp);
-    status.show('Camera frame added.', 'success');
+    status.show(t.camera.frameAdded, 'success');
   }
 
   function showLiveActions(): void {

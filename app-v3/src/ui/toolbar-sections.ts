@@ -1,4 +1,5 @@
 import {parseWdraftBinary} from '../core/project-file';
+import {t} from '../core/i18n';
 import {Tool} from '../core/types';
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {openCameraPanel} from './camera-panel';
@@ -29,47 +30,47 @@ type ToolConfig = {
 const tools: ToolConfig[] = [
   {
     id: Tool.Select,
-    label: 'Select — S',
+    label: t.toolbar.toolSelect,
     icon: '<path d="M4 2L4 18L8 13L11 20L13 19L9 12L15 12Z" fill="currentColor" stroke="none"/>',
   },
   {
     id: Tool.Pencil,
-    label: 'Pencil — P',
+    label: t.toolbar.toolPencil,
     icon: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
   },
   {
     id: Tool.Eraser,
-    label: 'Eraser — E',
+    label: t.toolbar.toolEraser,
     icon: '<path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/>',
   },
   {
     id: Tool.Sampler,
-    label: 'Sampler — C',
+    label: t.toolbar.toolSampler,
     icon: '<path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/>',
   },
   {
     id: Tool.FillBucket,
-    label: 'Fill bucket — B',
+    label: t.toolbar.toolFillBucket,
     icon: '<path d="m19 11-8-8-8.5 8.5a5.5 5.5 0 0 0 7.78 7.78L19 11Z"/><path d="m20 12 2 2a7 7 0 0 1-7 7"/><circle cx="20.5" cy="20.5" r="1.5" fill="currentColor" stroke="none"/>',
   },
   {
     id: Tool.Web,
-    label: 'Web — W',
+    label: t.toolbar.toolWeb,
     icon: '<circle cx="6" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="18" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="2" fill="currentColor" stroke="none"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="7" y1="7.7" x2="11.3" y2="17.3"/><line x1="17" y1="7.7" x2="12.7" y2="17.3"/>',
   },
   {
     id: Tool.Rectangle,
-    label: 'Rectangle — R',
+    label: t.toolbar.toolRectangle,
     icon: '<rect x="3" y="6" width="18" height="12" rx="2"/>',
   },
   {
     id: Tool.Ellipse,
-    label: 'Ellipse — O',
+    label: t.toolbar.toolEllipse,
     icon: '<ellipse cx="12" cy="12" rx="10" ry="7"/>',
   },
   {
     id: Tool.Text,
-    label: 'Text — T',
+    label: t.toolbar.toolText,
     icon: '<path d="M4 7V5h16v2"/><path d="M9 20h6"/><path d="M12 5v15"/>',
   },
 ];
@@ -123,27 +124,27 @@ export function createToolSection(editor: WebDraftEditor): ToolbarSection {
   const transformGroup = createGrid(
     'toolbar__group',
     createEditButton(
-      'Invert colors — I',
+      t.toolbar.invertColors,
       '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18V3z" fill="currentColor" stroke="none"/>',
       () => editor.invertActiveLayer(),
     ),
     createEditButton(
-      'Rotate left — ,',
+      t.toolbar.rotateLeft,
       '<path d="M2.5 2v6h6"/><path d="M2.66 15.57a10 10 0 1 0 .57-8.38"/>',
       () => editor.rotateActiveLayer('left'),
     ),
     createEditButton(
-      'Rotate right — .',
+      t.toolbar.rotateRight,
       '<path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/>',
       () => editor.rotateActiveLayer('right'),
     ),
     createEditButton(
-      'Mirror horizontally — H',
+      t.toolbar.mirrorH,
       '<path d="M12 3v18"/><path d="M4 7 1 12l3 5"/><path d="M20 7l3 5-3 5"/>',
       () => editor.mirrorActiveLayer('horizontal'),
     ),
     createEditButton(
-      'Mirror vertically — V',
+      t.toolbar.mirrorV,
       '<path d="M3 12h18"/><path d="M7 4l5-3 5 3"/><path d="M7 20l5 3 5-3"/>',
       () => editor.mirrorActiveLayer('vertical'),
     ),
@@ -161,7 +162,7 @@ export function createToolSection(editor: WebDraftEditor): ToolbarSection {
 
 export function createStyleSection(editor: WebDraftEditor): ToolbarSection {
   const sizeControl = createRangeControl({
-    label: 'Size',
+    label: t.toolbar.size,
     min: 1,
     max: 120,
     value: editor.state.size,
@@ -169,7 +170,7 @@ export function createStyleSection(editor: WebDraftEditor): ToolbarSection {
   });
 
   const webSensitivityControl = createRangeControl({
-    label: 'Web',
+    label: t.toolbar.webSensitivity,
     min: 20,
     max: 260,
     value: editor.state.webSensitivity,
@@ -177,23 +178,23 @@ export function createStyleSection(editor: WebDraftEditor): ToolbarSection {
   });
 
   const colorPicker = createColorPicker({
-    label: 'Color',
+    label: t.toolbar.color,
     value: editor.state.color,
     onChange: (color) => editor.setColor(color),
   });
 
-  const fillToggle = createCheckboxControl('Fill shapes', editor.state.fillEnabled, (enabled) => {
+  const fillToggle = createCheckboxControl(t.toolbar.fillShapes, editor.state.fillEnabled, (enabled) => {
     editor.setFillEnabled(enabled);
   });
 
   const fillColorPicker = createColorPicker({
-    label: 'Fill color',
+    label: t.toolbar.fillColor,
     value: editor.state.fillColor,
     onChange: (color) => editor.setFillColor(color),
   });
 
   const fillOpacityControl = createRangeControl({
-    label: 'Fill opacity',
+    label: t.toolbar.fillOpacity,
     min: 0,
     max: 100,
     value: editor.state.fillOpacity,
@@ -201,7 +202,7 @@ export function createStyleSection(editor: WebDraftEditor): ToolbarSection {
   });
 
   const fillToleranceControl = createRangeControl({
-    label: 'Bucket tolerance',
+    label: t.toolbar.bucketTolerance,
     min: 0,
     max: 255,
     value: editor.state.fillTolerance,
@@ -248,18 +249,18 @@ export function createStyleSection(editor: WebDraftEditor): ToolbarSection {
 }
 
 export function createShadowSection(editor: WebDraftEditor): ToolbarSection {
-  const shadowToggle = createCheckboxControl('Shadow', editor.state.shadowEnabled, (enabled) => {
+  const shadowToggle = createCheckboxControl(t.toolbar.shadow, editor.state.shadowEnabled, (enabled) => {
     editor.setShadowEnabled(enabled);
   });
 
   const shadowColorPicker = createColorPicker({
-    label: 'Shadow color',
+    label: t.toolbar.shadowColor,
     value: editor.state.shadowColor,
     onChange: (color) => editor.setShadowColor(color),
   });
 
   const shadowBlurControl = createRangeControl({
-    label: 'Shadow blur',
+    label: t.toolbar.shadowBlur,
     min: 0,
     max: 80,
     value: editor.state.shadowBlur,
@@ -267,7 +268,7 @@ export function createShadowSection(editor: WebDraftEditor): ToolbarSection {
   });
 
   const shadowXControl = createRangeControl({
-    label: 'Shadow X',
+    label: t.toolbar.shadowX,
     min: -120,
     max: 120,
     value: editor.state.shadowOffsetX,
@@ -275,7 +276,7 @@ export function createShadowSection(editor: WebDraftEditor): ToolbarSection {
   });
 
   const shadowYControl = createRangeControl({
-    label: 'Shadow Y',
+    label: t.toolbar.shadowY,
     min: -120,
     max: 120,
     value: editor.state.shadowOffsetY,
@@ -312,18 +313,18 @@ export function createShadowSection(editor: WebDraftEditor): ToolbarSection {
 }
 
 export function createTextSection(editor: WebDraftEditor): ToolbarSection {
-  const fontSelect = createSelectControl('Text font', ['sans-serif', 'serif', 'monospace', 'cursive'], (font) => {
+  const fontSelect = createSelectControl(t.toolbar.textFont, ['sans-serif', 'serif', 'monospace', 'cursive'], (font) => {
     editor.setTextFontFamily(font);
   });
 
-  const alignSelect = createSelectControl('Text alignment', ['left', 'center', 'right'] as const, (align) => {
+  const alignSelect = createSelectControl(t.toolbar.textAlignment, ['left', 'center', 'right'] as const, (align) => {
     editor.setTextAlign(align);
   });
 
-  const textBoldToggle = createCheckboxControl('Bold', editor.state.textBold, (enabled) => {
+  const textBoldToggle = createCheckboxControl(t.toolbar.bold, editor.state.textBold, (enabled) => {
     editor.setTextBold(enabled);
   });
-  const textItalicToggle = createCheckboxControl('Italic', editor.state.textItalic, (enabled) => {
+  const textItalicToggle = createCheckboxControl(t.toolbar.italic, editor.state.textItalic, (enabled) => {
     editor.setTextItalic(enabled);
   });
 
@@ -347,32 +348,32 @@ export function createTextSection(editor: WebDraftEditor): ToolbarSection {
 
 export function createEditSection(editor: WebDraftEditor): ToolbarSection {
   const clearButton = createEditButton(
-    'Clear',
+    t.toolbar.clear,
     '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
     () => editor.clear(),
   );
   const undoButton = createEditButton(
-    'Undo — Ctrl+Z',
+    t.toolbar.undo,
     '<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
     () => editor.undo(),
   );
   const redoButton = createEditButton(
-    'Redo — Ctrl+Shift+Z',
+    t.toolbar.redo,
     '<path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',
     () => editor.redo(),
   );
   const copyButton = createEditButton(
-    'Copy — Ctrl+C',
+    t.toolbar.copy,
     '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
     () => editor.copySelection(),
   );
   const cutButton = createEditButton(
-    'Cut — Ctrl+X',
+    t.toolbar.cut,
     '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.12 15.88M14.47 9.53L20 20M8.12 8.12L12 12"/>',
     () => editor.cutSelection(),
   );
   const pasteButton = createEditButton(
-    'Paste — Ctrl+V',
+    t.toolbar.paste,
     '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>',
     () => editor.pasteSelection(),
   );
@@ -391,11 +392,11 @@ export function createEditSection(editor: WebDraftEditor): ToolbarSection {
 }
 
 export function createResizeSection(editor: WebDraftEditor, status?: StatusReporter): ToolbarSection {
-  const resizeWidthInput = createNumberInput('Width', editor.state.canvasWidth);
-  const resizeHeightInput = createNumberInput('Height', editor.state.canvasHeight);
-  const resizeButton = createCommandButton('Resize canvas', () => {
+  const resizeWidthInput = createNumberInput(t.toolbar.width, editor.state.canvasWidth);
+  const resizeHeightInput = createNumberInput(t.toolbar.height, editor.state.canvasHeight);
+  const resizeButton = createCommandButton(t.toolbar.resizeCanvas, () => {
     editor.resizeCanvas(Number(resizeWidthInput.value), Number(resizeHeightInput.value));
-    status?.show(`Canvas resized to ${editor.state.canvasWidth} x ${editor.state.canvasHeight}.`, 'success');
+    status?.show(t.toolbar.canvasResizedOk(editor.state.canvasWidth, editor.state.canvasHeight), 'success');
   });
 
   return {
@@ -413,11 +414,11 @@ export function createFileSection(
   exportImage: () => Promise<void>,
   status: StatusReporter,
 ): ToolbarSection {
-  const uploadButton = createCommandButton('Upload image', () => fileInput.click());
-  const cameraButton = createCommandButton('Camera', () => {
+  const uploadButton = createCommandButton(t.toolbar.uploadImage, () => fileInput.click());
+  const cameraButton = createCommandButton(t.toolbar.camera, () => {
     openCameraPanel(editor, status);
   });
-  const exportButton = createCommandButton('Export PNG', () => {
+  const exportButton = createCommandButton(t.toolbar.exportPng, () => {
     void exportImage();
   });
 
@@ -429,17 +430,17 @@ export function createFileSection(
 
 
 export function createProjectSection(editor: WebDraftEditor, status: StatusReporter): ToolbarSection {
-  const saveButton = createCommandButton('Save project', () => {
+  const saveButton = createCommandButton(t.toolbar.saveProject, () => {
     void (async () => {
       try {
         const blob = await editor.exportProject();
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'project.wdraft';
+        link.download = t.file.projectFilename;
         link.click();
         URL.revokeObjectURL(url);
-        status.show('Project saved.', 'success');
+        status.show(t.file.savedOk, 'success');
       } catch (error) {
         status.show(getErrorMessage(error), 'error');
       }
@@ -459,7 +460,7 @@ export function createProjectSection(editor: WebDraftEditor, status: StatusRepor
         try {
           const parsed = parseWdraftBinary(reader.result as ArrayBuffer);
           await editor.importProject(parsed);
-          status.show('Project opened.', 'success');
+          status.show(t.file.openedOk, 'success');
         } catch (error) {
           status.show(getErrorMessage(error), 'error');
         } finally {
@@ -470,7 +471,7 @@ export function createProjectSection(editor: WebDraftEditor, status: StatusRepor
     reader.readAsArrayBuffer(file);
   });
 
-  const openButton = createCommandButton('Open project', () => wdraftInput.click());
+  const openButton = createCommandButton(t.toolbar.openProject, () => wdraftInput.click());
 
   return {
     element: createToolbarSection(createGrid('toolbar__stack', saveButton, openButton, wdraftInput)),

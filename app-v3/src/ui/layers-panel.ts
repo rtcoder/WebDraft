@@ -1,3 +1,4 @@
+import { t } from '../core/i18n';
 import type { WebDraftEditor } from '../core/webdraft-editor';
 
 export function createLayersPanel(editor: WebDraftEditor): HTMLElement {
@@ -8,15 +9,15 @@ export function createLayersPanel(editor: WebDraftEditor): HTMLElement {
   header.className = 'panel-header';
 
   const title = document.createElement('h2');
-  title.textContent = 'Layers';
+  title.textContent = t.layers.title;
 
   const actions = document.createElement('div');
   actions.className = 'panel-actions';
 
-  const addButton = createIconButton('Add layer', '+', () => editor.addLayer());
-  const deleteButton = createIconButton('Delete layer', '-', () => editor.deleteActiveLayer());
-  const upButton = createIconButton('Move layer up', '↑', () => editor.moveActiveLayerUp());
-  const downButton = createIconButton('Move layer down', '↓', () => editor.moveActiveLayerDown());
+  const addButton = createIconButton(t.layers.addLayer, '+', () => editor.addLayer());
+  const deleteButton = createIconButton(t.layers.deleteLayer, '-', () => editor.deleteActiveLayer());
+  const upButton = createIconButton(t.layers.moveLayerUp, '↑', () => editor.moveActiveLayerUp());
+  const downButton = createIconButton(t.layers.moveLayerDown, '↓', () => editor.moveActiveLayerDown());
 
   actions.append(addButton, deleteButton, upButton, downButton);
   header.append(title, actions);
@@ -34,7 +35,7 @@ export function createLayersPanel(editor: WebDraftEditor): HTMLElement {
         const previewButton = document.createElement('button');
         previewButton.type = 'button';
         previewButton.className = 'layer-preview';
-        previewButton.title = `Select ${layer.name}`;
+        previewButton.title = t.layers.selectLayer(layer.name);
         previewButton.addEventListener('click', () => editor.selectLayer(layer.id));
 
         const previewImage = document.createElement('img');
@@ -45,7 +46,7 @@ export function createLayersPanel(editor: WebDraftEditor): HTMLElement {
         const renameInput = document.createElement('input');
         renameInput.className = 'layer-name-input';
         renameInput.value = layer.name;
-        renameInput.title = 'Rename layer';
+        renameInput.title = t.layers.renameLayer;
         renameInput.addEventListener('focus', () => {
           renameInput.select();
         });
@@ -61,7 +62,7 @@ export function createLayersPanel(editor: WebDraftEditor): HTMLElement {
         const visibilityButton = document.createElement('button');
         visibilityButton.type = 'button';
         visibilityButton.className = 'layer-visibility';
-        visibilityButton.title = layer.visible ? 'Hide layer' : 'Show layer';
+        visibilityButton.title = layer.visible ? t.layers.hideLayer : t.layers.showLayer;
         visibilityButton.textContent = layer.visible ? '●' : '○';
         visibilityButton.addEventListener('click', () => editor.toggleLayerVisibility(layer.id));
 

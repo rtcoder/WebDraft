@@ -1,3 +1,5 @@
+import { t } from '../core/i18n';
+
 export type ColorPickerOptions = {
   label: string;
   value: string;
@@ -161,8 +163,8 @@ export function createColorPicker(options: ColorPickerOptions): ColorPickerContr
 
     const rangeGroup = document.createElement('div');
     rangeGroup.className = 'cp-btn-group';
-    const btn100 = makeToggleBtn('0..100', rangeMax === 100, () => { rangeMax = 100; syncRangeButtons(); syncRightPanel(); });
-    const btn255 = makeToggleBtn('0..255', rangeMax === 255, () => { rangeMax = 255; syncRangeButtons(); syncRightPanel(); });
+    const btn100 = makeToggleBtn(t.picker.range100, rangeMax === 100, () => { rangeMax = 100; syncRangeButtons(); syncRightPanel(); });
+    const btn255 = makeToggleBtn(t.picker.range255, rangeMax === 255, () => { rangeMax = 255; syncRangeButtons(); syncRightPanel(); });
 
     rangeGroup.append(btn100, btn255);
     bar.append(rangeGroup);
@@ -765,7 +767,7 @@ export function createColorPicker(options: ColorPickerOptions): ColorPickerContr
     const addBtn = document.createElement('button');
     addBtn.className = 'cp-palette-add';
     addBtn.textContent = '+';
-    addBtn.title = 'Add current color';
+    addBtn.title = t.picker.addColor;
     addBtn.addEventListener('click', () => {
       const palette = loadPalette();
       if (!palette.includes(currentHex)) {
@@ -821,7 +823,7 @@ export function createColorPicker(options: ColorPickerOptions): ColorPickerContr
       strip.className = 'cp-color-strip' + (isOld ? ' cp-color-strip--old' : '');
       strip.style.backgroundColor = color;
       if (isOld) {
-        strip.title = 'Click to restore previous color';
+        strip.title = t.picker.restorePrevious;
         strip.addEventListener('pointerdown', (e) => e.stopPropagation());
         strip.addEventListener('click', () => {
           const parsed = hexToRgb(oldColor);
@@ -838,8 +840,8 @@ export function createColorPicker(options: ColorPickerOptions): ColorPickerContr
       return row;
     };
 
-    bar.append(make('New:', currentHex, false));
-    bar.append(make('Previous:', oldColor, true));
+    bar.append(make(t.picker.newColor, currentHex, false));
+    bar.append(make(t.picker.previousColor, oldColor, true));
     return bar;
   }
 

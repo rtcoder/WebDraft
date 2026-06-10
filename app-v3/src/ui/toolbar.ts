@@ -1,3 +1,4 @@
+import {t} from '../core/i18n';
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {bindKeyboardShortcuts} from './keyboard-shortcuts';
 import type {StatusReporter} from './status-toasts';
@@ -27,10 +28,10 @@ export function createToolbar(editor: WebDraftEditor, status: StatusReporter): H
       const link = document.createElement('a');
 
       link.href = url;
-      link.download = 'webdraft-image.png';
+      link.download = t.file.imageFilename;
       link.click();
       URL.revokeObjectURL(url);
-      status.show('PNG exported.', 'success');
+      status.show(t.toolbar.pngExportedOk, 'success');
     } catch (error) {
       status.show(getErrorMessage(error), 'error');
     }
@@ -72,7 +73,7 @@ function createFileInput(editor: WebDraftEditor, status: StatusReporter): HTMLIn
 
     try {
       await editor.importImage(file);
-      status.show('Image imported.', 'success');
+      status.show(t.toolbar.imageImportedOk, 'success');
     } catch (error) {
       status.show(getErrorMessage(error), 'error');
     } finally {
