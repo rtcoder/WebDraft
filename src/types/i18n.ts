@@ -5,6 +5,7 @@ export type MenuTranslations = {
   edit: string;
   image: string;
   layer: string;
+  help: string;
 };
 
 export type FileTranslations = {
@@ -159,6 +160,19 @@ export type SaveDialogTranslations = {
   cancel: string;
 };
 
+export type HelpTranslations = {
+  keyboardShortcuts: string;
+  close: string;
+  sectionTools: string;
+  sectionView: string;
+  sectionCanvas: string;
+  sizeDecrease: string;
+  sizeIncrease: string;
+  zoomIn: string;
+  zoomOut: string;
+  zoomReset: string;
+};
+
 export type Translations = {
   menu: MenuTranslations;
   file: FileTranslations;
@@ -171,4 +185,5 @@ export type Translations = {
   picker: PickerTranslations;
   common: CommonTranslations;
   saveDialog: SaveDialogTranslations;
+  help: HelpTranslations;
 };

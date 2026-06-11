@@ -3,6 +3,7 @@ import {cameraTranslations} from './camera.ts';
 import {commonTranslations} from './common.ts';
 import {editTranslations} from './edit.ts';
 import {fileTranslations} from './file.ts';
+import {helpTranslations} from './help.ts';
 import {imageTranslations} from './image.ts';
 import {layerTranslations} from './layer.ts';
 import {layersTranslations} from './layers.ts';
@@ -23,4 +24,5 @@ export const pl: Translations = {
   picker: pickerTranslations,
   common: commonTranslations,
   saveDialog: saveDialogTranslations,
+  help: helpTranslations,
 };

@@ -39,6 +39,12 @@ export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutO
       return;
     }
 
+    if (isCommand && key === 'h') {
+      event.preventDefault();
+      options.openShortcutsDialog();
+      return;
+    }
+
     if (isCommand && (key === '=' || key === '+')) {
       event.preventDefault();
       editor.zoomIn();

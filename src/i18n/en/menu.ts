@@ -5,4 +5,5 @@ export const menuTranslations: MenuTranslations = {
   edit: 'Edit',
   image: 'Image',
   layer: 'Layer',
+  help: 'Help',
 };

@@ -1,6 +1,7 @@
 import { parseWdraftBinary } from '../core/project-file';
 import { lang, setLang, t } from '../core/i18n';
 import { modKey } from '../core/platform';
+import { openShortcutsDialog } from './shortcuts-dialog';
 import type { WebDraftEditor } from '../core/webdraft-editor';
 import {Lang, Menu, MenuItem} from '../types';
 import type { StatusReporter } from '../types';
@@ -437,6 +438,17 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
               },
             });
           },
+        },
+      ],
+    },
+    {
+      label: t.menu.help,
+      items: [
+        {
+          type: 'action',
+          label: t.help.keyboardShortcuts,
+          shortcut: `${modKey}+H`,
+          action: openShortcutsDialog,
         },
       ],
     },

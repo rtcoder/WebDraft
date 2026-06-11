@@ -3,6 +3,7 @@ import type {WebDraftEditor} from '../core/webdraft-editor';
 import {StatusReporter} from '../types';
 import {bindKeyboardShortcuts} from './keyboard-shortcuts';
 import {openSaveDialog} from './save-dialog';
+import {openShortcutsDialog} from './shortcuts-dialog';
 import {getErrorMessage} from './status-toasts';
 import {
   createFileSection,
@@ -72,6 +73,7 @@ export function createToolbar(editor: WebDraftEditor, status: StatusReporter): H
       if (action === 'png') void exportImage();
       else void saveProject();
     }),
+    openShortcutsDialog,
   });
 
   return toolbar;
