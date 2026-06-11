@@ -1,3 +1,4 @@
+import {parseWdraftBinary} from '../core/project-file';
 import {t} from '../core/i18n';
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {StatusReporter} from '../types';
@@ -41,13 +42,13 @@ export function createToolbar(editor: WebDraftEditor, status: StatusReporter): H
     createToolSection(editor),
     createStyleSection(editor),
     createShadowSection(editor),
-    createFileSection(editor, fileInput, exportImage, status),
+    createFileSection(editor, status),
   ];
 
   editor.addEventListener('change', () => syncToolbarSections(sections));
   syncToolbarSections(sections);
 
-  toolbar.append(title, ...sections.map((section) => section.element));
+  toolbar.append(title, fileInput, ...sections.map((section) => section.element));
 
   const saveProject = async () => {
     try {
@@ -80,23 +81,28 @@ export function createToolbar(editor: WebDraftEditor, status: StatusReporter): H
 function createFileInput(editor: WebDraftEditor, status: StatusReporter): HTMLInputElement {
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
-  fileInput.accept = 'image/*';
+  fileInput.accept = 'image/*,.wdraft';
   fileInput.className = 'visually-hidden';
-  fileInput.addEventListener('change', async () => {
+  fileInput.addEventListener('change', () => {
     const file = fileInput.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
-    try {
-      await editor.importImage(file);
-      status.show(t.toolbar.imageImportedOk, 'success');
-    } catch (error) {
-      status.show(getErrorMessage(error), 'error');
-    } finally {
-      fileInput.value = '';
-    }
+    if (!file) return;
+    void (async () => {
+      try {
+        if (file.name.endsWith('.wdraft')) {
+          const buffer = await file.arrayBuffer();
+          const parsed = parseWdraftBinary(buffer);
+          await editor.importProject(parsed);
+          status.show(t.file.openedOk, 'success');
+        } else {
+          await editor.importImage(file);
+          status.show(t.toolbar.imageImportedOk, 'success');
+        }
+      } catch (error) {
+        status.show(getErrorMessage(error), 'error');
+      } finally {
+        fileInput.value = '';
+      }
+    })();
   });
 
   return fileInput;

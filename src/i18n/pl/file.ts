@@ -2,7 +2,7 @@ import type {FileTranslations} from '../../types/i18n';
 
 export const fileTranslations: FileTranslations = {
   new: 'Nowy projekt',
-  open: 'Otwórz projekt\u2026',
+  open: 'Otwórz\u2026',
   save: 'Zapisz projekt',
   importImage: 'Importuj obraz\u2026',
   exportPng: 'Eksportuj PNG',

@@ -1,11 +1,9 @@
 import {t} from '../core/i18n';
-import {parseWdraftBinary} from '../core/project-file';
 import type {WebDraftEditor} from '../core/webdraft-editor';
 import {StatusReporter, Tool} from '../types';
 import {ToolbarSection, ToolConfig} from '../types/toolbar.ts';
 import {openCameraPanel} from './camera-panel';
 import {createColorPicker} from './color-picker';
-import {getErrorMessage} from './status-toasts';
 import {
   createCheckboxControl,
   createCommandButton,
@@ -345,76 +343,14 @@ export function createEditSection(editor: WebDraftEditor): ToolbarSection {
   };
 }
 
-export function createFileSection(
-  editor: WebDraftEditor,
-  fileInput: HTMLInputElement,
-  exportImage: () => Promise<void>,
-  status: StatusReporter,
-): ToolbarSection {
-  const uploadButton = createCommandButton(t.toolbar.uploadImage, () => fileInput.click());
+export function createFileSection(editor: WebDraftEditor, status: StatusReporter): ToolbarSection {
   const cameraButton = createCommandButton(t.toolbar.camera, () => {
     openCameraPanel(editor, status);
   });
-  const exportButton = createCommandButton(t.toolbar.exportPng, () => {
-    void exportImage();
-  });
 
   return {
-    element: createToolbarSection(createGrid('toolbar__stack', uploadButton, cameraButton, exportButton, fileInput)),
-    sync: () => {
-    },
-  };
-}
-
-
-export function createProjectSection(editor: WebDraftEditor, status: StatusReporter): ToolbarSection {
-  const saveButton = createCommandButton(t.toolbar.saveProject, () => {
-    void (async () => {
-      try {
-        const blob = await editor.exportProject();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = t.file.projectFilename;
-        link.click();
-        URL.revokeObjectURL(url);
-        status.show(t.file.savedOk, 'success');
-      } catch (error) {
-        status.show(getErrorMessage(error), 'error');
-      }
-    })();
-  });
-
-  const wdraftInput = document.createElement('input');
-  wdraftInput.type = 'file';
-  wdraftInput.accept = '.wdraft';
-  wdraftInput.className = 'visually-hidden';
-  wdraftInput.addEventListener('change', () => {
-    const file = wdraftInput.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      void (async () => {
-        try {
-          const parsed = parseWdraftBinary(reader.result as ArrayBuffer);
-          await editor.importProject(parsed);
-          status.show(t.file.openedOk, 'success');
-        } catch (error) {
-          status.show(getErrorMessage(error), 'error');
-        } finally {
-          wdraftInput.value = '';
-        }
-      })();
-    };
-    reader.readAsArrayBuffer(file);
-  });
-
-  const openButton = createCommandButton(t.toolbar.openProject, () => wdraftInput.click());
-
-  return {
-    element: createToolbarSection(createGrid('toolbar__stack', saveButton, openButton, wdraftInput)),
-    sync: () => {
-    },
+    element: createToolbarSection(cameraButton),
+    sync: () => {},
   };
 }
 

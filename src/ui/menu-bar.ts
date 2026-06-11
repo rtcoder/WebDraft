@@ -184,50 +184,33 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
   bar.className = 'menu-bar';
   bar.setAttribute('aria-label', t.menu.file);
 
-  const projectInput = document.createElement('input');
-  projectInput.type = 'file';
-  projectInput.accept = '.wdraft';
-  projectInput.className = 'visually-hidden';
-  projectInput.addEventListener('change', () => {
-    const file = projectInput.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      void (async () => {
-        try {
-          const parsed = parseWdraftBinary(reader.result as ArrayBuffer);
-          await editor.importProject(parsed);
-          status.show(t.file.openedOk, 'success');
-        } catch (err) {
-          status.show(getErrorMessage(err), 'error');
-        } finally {
-          projectInput.value = '';
-        }
-      })();
-    };
-    reader.readAsArrayBuffer(file);
-  });
-
-  const imageInput = document.createElement('input');
-  imageInput.type = 'file';
-  imageInput.accept = 'image/*';
-  imageInput.className = 'visually-hidden';
-  imageInput.addEventListener('change', () => {
-    const file = imageInput.files?.[0];
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*,.wdraft';
+  fileInput.className = 'visually-hidden';
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files?.[0];
     if (!file) return;
     void (async () => {
       try {
-        await editor.importImage(file);
-        status.show(t.file.importedOk, 'success');
+        if (file.name.endsWith('.wdraft')) {
+          const buffer = await file.arrayBuffer();
+          const parsed = parseWdraftBinary(buffer);
+          await editor.importProject(parsed);
+          status.show(t.file.openedOk, 'success');
+        } else {
+          await editor.importImage(file);
+          status.show(t.file.importedOk, 'success');
+        }
       } catch (err) {
         status.show(getErrorMessage(err), 'error');
       } finally {
-        imageInput.value = '';
+        fileInput.value = '';
       }
     })();
   });
 
-  bar.append(projectInput, imageInput);
+  bar.append(fileInput);
 
   const menus: Menu[] = [
     {
@@ -248,7 +231,7 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
           type: 'action',
           label: t.file.open,
           shortcut: `${modKey}+O`,
-          action: () => projectInput.click(),
+          action: () => fileInput.click(),
         },
         { type: 'separator' },
         {
@@ -272,11 +255,6 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
           },
         },
         { type: 'separator' },
-        {
-          type: 'action',
-          label: t.file.importImage,
-          action: () => imageInput.click(),
-        },
         {
           type: 'action',
           label: t.file.exportPng,
