@@ -1,10 +1,10 @@
-import {parseWdraftBinary} from '../core/project-file';
 import {t} from '../core/i18n';
-import {Tool} from '../core/types';
+import {parseWdraftBinary} from '../core/project-file';
 import type {WebDraftEditor} from '../core/webdraft-editor';
+import {StatusReporter, Tool} from '../types';
+import {ToolbarSection, ToolConfig} from '../types/toolbar.ts';
 import {openCameraPanel} from './camera-panel';
 import {createColorPicker} from './color-picker';
-import type {StatusReporter} from './status-toasts';
 import {getErrorMessage} from './status-toasts';
 import {
   createCheckboxControl,
@@ -12,20 +12,8 @@ import {
   createGrid,
   createNumberInput,
   createRangeControl,
-  createSelectControl,
   createToolbarSection,
 } from './toolbar-controls';
-
-type ToolbarSection = {
-  element: HTMLElement;
-  sync: () => void;
-};
-
-type ToolConfig = {
-  id: Tool;
-  label: string;
-  icon: string;
-};
 
 const tools: ToolConfig[] = [
   {
@@ -390,7 +378,8 @@ export function createFileSection(
 
   return {
     element: createToolbarSection(createGrid('toolbar__stack', uploadButton, cameraButton, exportButton, fileInput)),
-    sync: () => {},
+    sync: () => {
+    },
   };
 }
 
@@ -441,7 +430,8 @@ export function createProjectSection(editor: WebDraftEditor, status: StatusRepor
 
   return {
     element: createToolbarSection(createGrid('toolbar__stack', saveButton, openButton, wdraftInput)),
-    sync: () => {},
+    sync: () => {
+    },
   };
 }
 

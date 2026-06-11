@@ -1,9 +1,7 @@
-import type {Layer} from './layer-manager';
-import {drawRichText} from './rich-text-renderer';
-import {createTextToolbar, type TextToolbarDefaults} from '../ui/text-toolbar';
+import type {EditorServices, Layer, Point, SizeWithPosition, TextToolbarDefaults} from '../types';
+import {createTextToolbar} from '../ui/text-toolbar';
 import {getBounds, normalizeTextBounds} from './editor-geometry';
-import type {EditorServices} from './editor-context';
-import type {Point, SizeWithPosition} from './types';
+import {drawRichText} from './rich-text-renderer';
 
 export class TextEditController {
   private startPoint: Point | null = null;
@@ -17,7 +15,8 @@ export class TextEditController {
   private editingLayer: Layer | null = null;
   private editSnapshot: ImageData | null = null;
 
-  constructor(private readonly svc: EditorServices) {}
+  constructor(private readonly svc: EditorServices) {
+  }
 
   get isActive(): boolean {
     return this.inputEl !== null;
@@ -80,7 +79,7 @@ export class TextEditController {
     this.startPoint = null;
   }
 
-  commit(options: {skipNextPointerDown?: boolean} = {}): void {
+  commit(options: { skipNextPointerDown?: boolean } = {}): void {
     if (!this.inputEl || !this._bounds) return;
 
     const html = this.inputEl.innerHTML;
@@ -268,7 +267,7 @@ export class TextEditController {
     ctx.restore();
   }
 
-  private get canvasSize(): {width: number; height: number} {
+  private get canvasSize(): { width: number; height: number } {
     return {width: this.svc.state.canvasWidth, height: this.svc.state.canvasHeight};
   }
 }

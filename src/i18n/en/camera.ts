@@ -1,4 +1,4 @@
-import type {CameraTranslations} from '../types.ts';
+import type {CameraTranslations} from '../../types/i18n';
 
 export const cameraTranslations: CameraTranslations = {
   title: 'Camera',

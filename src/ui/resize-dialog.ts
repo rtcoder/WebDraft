@@ -1,13 +1,5 @@
 import { t } from '../core/i18n';
-
-type ResizeDialogOptions = {
-  title: string;
-  width: number;
-  height: number;
-  checkboxLabel?: string;
-  checkboxChecked?: boolean;
-  onConfirm: (w: number, h: number, all: boolean) => void;
-};
+import {ResizeDialogOptions} from '../types';
 
 export function openResizeDialog(opts: ResizeDialogOptions): void {
   const backdrop = document.createElement('div');

@@ -1,4 +1,4 @@
-import type {SaveDialogTranslations} from '../types.ts';
+import type {SaveDialogTranslations} from '../../types/i18n';
 
 export const saveDialogTranslations: SaveDialogTranslations = {
   title: 'Zapisz',

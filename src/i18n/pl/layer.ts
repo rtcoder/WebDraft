@@ -1,4 +1,4 @@
-import type {LayerTranslations} from '../types.ts';
+import type {LayerTranslations} from '../../types/i18n';
 
 export const layerTranslations: LayerTranslations = {
   new: 'Nowa warstwa',

@@ -1,6 +1,6 @@
 import type {WebDraftEditor} from '../core/webdraft-editor';
+import {StatusReporter} from '../types';
 import {createLayersPanel} from './layers-panel';
-import type {StatusReporter} from './status-toasts';
 import {createEditSection, createProjectSection, syncToolbarSections} from './toolbar-sections';
 import {createToolbarSection} from './toolbar-controls';
 

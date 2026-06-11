@@ -1,18 +1,4 @@
-import type {Point, Size, SizeWithPosition} from './types';
-
-export type NaturalSize = {
-  naturalWidth: number;
-  naturalHeight: number;
-};
-
-export type ClippedPasteBounds = {
-  targetX: number;
-  targetY: number;
-  sourceX: number;
-  sourceY: number;
-  width: number;
-  height: number;
-};
+import type {ClippedPasteBounds, NaturalSize, Point, Size, SizeWithPosition} from '../types';
 
 export function getBounds(start: Point, end: Point): SizeWithPosition {
   const x = Math.min(start.x, end.x);
@@ -76,12 +62,5 @@ export function getClippedPasteBounds(target: Point, imageSize: Size, canvasSize
     return null;
   }
 
-  return {
-    targetX,
-    targetY,
-    sourceX,
-    sourceY,
-    width,
-    height,
-  };
+  return {targetX, targetY, sourceX, sourceY, width, height};
 }

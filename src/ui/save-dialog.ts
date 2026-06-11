@@ -1,6 +1,5 @@
-import { t } from '../core/i18n';
-
-export type SaveAction = 'png' | 'project';
+import {t} from '../core/i18n';
+import type {SaveAction} from '../types';
 
 const STORAGE_KEY = 'webdraft-save-action';
 

@@ -1,9 +1,12 @@
+export type Lang = 'pl' | 'en';
+
 export type MenuTranslations = {
   file: string;
   edit: string;
   image: string;
   layer: string;
 };
+
 export type FileTranslations = {
   new: string;
   open: string;
@@ -18,6 +21,7 @@ export type FileTranslations = {
   projectFilename: string;
   imageFilename: string;
 };
+
 export type EditTranslations = {
   undo: string;
   redo: string;
@@ -26,6 +30,7 @@ export type EditTranslations = {
   paste: string;
   clearLayer: string;
 };
+
 export type ImageTranslations = {
   resizeCanvas: string;
   invertColors: string;
@@ -38,6 +43,7 @@ export type ImageTranslations = {
   resizedOk: (w: number, h: number) => string;
   applyToAllLayers: string;
 };
+
 export type LayerTranslations = {
   new: string;
   delete: string;
@@ -48,6 +54,7 @@ export type LayerTranslations = {
   resize: string;
   layerResizedOk: (w: number, h: number) => string;
 };
+
 export type ToolbarTranslations = {
   toolSelect: string;
   toolPencil: string;
@@ -97,6 +104,7 @@ export type ToolbarTranslations = {
   imageImportedOk: string;
   canvasResizedOk: (w: number, h: number) => string;
 };
+
 export type LayersTranslations = {
   title: string;
   addLayer: string;
@@ -110,6 +118,7 @@ export type LayersTranslations = {
   showLayer: string;
   textLayer: string;
 };
+
 export type CameraTranslations = {
   title: string;
   titleWithLabel: (label: string) => string;
@@ -127,6 +136,7 @@ export type CameraTranslations = {
   cameraError: string;
   snapFilename: string;
 };
+
 export type PickerTranslations = {
   addColor: string;
   restorePrevious: string;
@@ -135,10 +145,12 @@ export type PickerTranslations = {
   range100: string;
   range255: string;
 };
+
 export type CommonTranslations = {
   somethingWentWrong: string;
   appTitle: string;
 };
+
 export type SaveDialogTranslations = {
   title: string;
   exportPng: string;
@@ -146,6 +158,7 @@ export type SaveDialogTranslations = {
   rememberChoice: string;
   cancel: string;
 };
+
 export type Translations = {
   menu: MenuTranslations;
   file: FileTranslations;

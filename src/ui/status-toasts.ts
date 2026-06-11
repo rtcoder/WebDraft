@@ -1,10 +1,5 @@
-import { t } from '../core/i18n';
-
-export type StatusTone = 'info' | 'success' | 'error';
-
-export type StatusReporter = {
-  show: (message: string, tone?: StatusTone) => void;
-};
+import {t} from '../core/i18n';
+import type {StatusReporter, StatusTone} from '../types';
 
 export function createStatusToasts(): HTMLElement & StatusReporter {
   const host = Object.assign(document.createElement('div'), {
@@ -29,9 +24,6 @@ export function createStatusToasts(): HTMLElement & StatusReporter {
 }
 
 export function getErrorMessage(error: unknown): string {
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-
+  if (error instanceof Error) return error.message;
   return t.common.somethingWentWrong;
 }

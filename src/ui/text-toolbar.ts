@@ -1,19 +1,12 @@
-import type { SizeWithPosition } from '../core/types';
-
-export type TextToolbarDefaults = {
-  fontSize: number;
-  fontFamily: string;
-  color: string;
-  align: CanvasTextAlign;
-};
+import type {SizeWithPosition, TextToolbarDefaults} from '../types';
 
 const FONT_FAMILIES = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
 const FONT_SIZES = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64, 72, 96, 128];
 
 const ALIGN_ICONS: Record<string, string> = {
-  left:   '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="4"  x2="15" y2="4"/><line x1="1" y1="8"  x2="10" y2="8"/><line x1="1" y1="12" x2="13" y2="12"/></svg>',
+  left: '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="4"  x2="15" y2="4"/><line x1="1" y1="8"  x2="10" y2="8"/><line x1="1" y1="12" x2="13" y2="12"/></svg>',
   center: '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="4"  x2="15" y2="4"/><line x1="3" y1="8"  x2="13" y2="8"/><line x1="2" y1="12" x2="14" y2="12"/></svg>',
-  right:  '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="4"  x2="15" y2="4"/><line x1="6" y1="8"  x2="15" y2="8"/><line x1="3" y1="12" x2="15" y2="12"/></svg>',
+  right: '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="4"  x2="15" y2="4"/><line x1="6" y1="8"  x2="15" y2="8"/><line x1="3" y1="12" x2="15" y2="12"/></svg>',
 };
 
 export function createTextToolbar(
@@ -61,7 +54,10 @@ export function createTextToolbar(
     contentEl.focus();
     if (savedRange) {
       const sel = window.getSelection();
-      if (sel) { sel.removeAllRanges(); sel.addRange(savedRange); }
+      if (sel) {
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+      }
       savedRange = null;
     }
     fn();
@@ -70,9 +66,9 @@ export function createTextToolbar(
   // --- Alignment ---
 
   const alignBtns: Record<string, HTMLButtonElement> = {
-    left:   mkBtn('Align left',   ALIGN_ICONS['left'],   'text-toolbar-align'),
+    left: mkBtn('Align left', ALIGN_ICONS['left'], 'text-toolbar-align'),
     center: mkBtn('Align center', ALIGN_ICONS['center'], 'text-toolbar-align'),
-    right:  mkBtn('Align right',  ALIGN_ICONS['right'],  'text-toolbar-align'),
+    right: mkBtn('Align right', ALIGN_ICONS['right'], 'text-toolbar-align'),
   };
 
   const setAlign = (align: CanvasTextAlign): void => {
@@ -95,12 +91,12 @@ export function createTextToolbar(
 
   // --- Bold / Italic / Underline ---
 
-  const btnBold      = mkBtn('Bold',      '<b>B</b>',      'text-toolbar-format');
-  const btnItalic    = mkBtn('Italic',    '<i>I</i>',      'text-toolbar-format');
-  const btnUnderline = mkBtn('Underline', '<u>U</u>',      'text-toolbar-format');
+  const btnBold = mkBtn('Bold', '<b>B</b>', 'text-toolbar-format');
+  const btnItalic = mkBtn('Italic', '<i>I</i>', 'text-toolbar-format');
+  const btnUnderline = mkBtn('Underline', '<u>U</u>', 'text-toolbar-format');
 
-  btnBold.addEventListener('click',      () => document.execCommand('bold'));
-  btnItalic.addEventListener('click',    () => document.execCommand('italic'));
+  btnBold.addEventListener('click', () => document.execCommand('bold'));
+  btnItalic.addEventListener('click', () => document.execCommand('italic'));
   btnUnderline.addEventListener('click', () => document.execCommand('underline'));
 
   const formatGroup = document.createElement('div');
@@ -114,7 +110,8 @@ export function createTextToolbar(
   fontFamilySelect.title = 'Font family';
   FONT_FAMILIES.forEach((f) => {
     const o = document.createElement('option');
-    o.value = f; o.textContent = f;
+    o.value = f;
+    o.textContent = f;
     if (f === defaults.fontFamily) o.selected = true;
     fontFamilySelect.append(o);
   });
@@ -130,7 +127,8 @@ export function createTextToolbar(
   fontSizeSelect.title = 'Font size';
   FONT_SIZES.forEach((s) => {
     const o = document.createElement('option');
-    o.value = `${s}`; o.textContent = `${s}`;
+    o.value = `${s}`;
+    o.textContent = `${s}`;
     if (s === defaults.fontSize) o.selected = true;
     fontSizeSelect.append(o);
   });
@@ -168,8 +166,8 @@ export function createTextToolbar(
 
   const onSelectionChange = (): void => {
     if (!contentEl.contains(window.getSelection()?.anchorNode ?? null)) return;
-    btnBold.classList.toggle('is-active',      document.queryCommandState('bold'));
-    btnItalic.classList.toggle('is-active',    document.queryCommandState('italic'));
+    btnBold.classList.toggle('is-active', document.queryCommandState('bold'));
+    btnItalic.classList.toggle('is-active', document.queryCommandState('italic'));
     btnUnderline.classList.toggle('is-active', document.queryCommandState('underline'));
   };
   document.addEventListener('selectionchange', onSelectionChange);

@@ -1,4 +1,4 @@
-import type {ImageTranslations} from '../types.ts';
+import type {ImageTranslations} from '../../types/i18n';
 
 export const imageTranslations: ImageTranslations = {
   resizeCanvas: 'Zmień rozmiar płótna\u2026',

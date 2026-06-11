@@ -1,18 +1,13 @@
-import type {EditorServices, HistorySnapshot} from './editor-context';
+import type {EditorServices, Point, SizeWithPosition, ClipboardSnapshot} from '../types';
 import {getBounds, getClippedPasteBounds, normalizeCanvasBounds} from './editor-geometry';
-import type {Point, SizeWithPosition} from './types';
-
-type ClipboardSnapshot = {
-  bounds: SizeWithPosition;
-  imageData: ImageData;
-};
 
 export class SelectionController {
   private startPoint: Point | null = null;
   private _bounds: SizeWithPosition | null = null;
   private clipboard: ClipboardSnapshot | null = null;
 
-  constructor(private readonly svc: EditorServices) {}
+  constructor(private readonly svc: EditorServices) {
+  }
 
   get hasBounds(): boolean {
     return this._bounds !== null;
@@ -109,7 +104,7 @@ export class SelectionController {
     this.svc.clearPreview();
   }
 
-  private get canvasSize(): {width: number; height: number} {
+  private get canvasSize(): { width: number; height: number } {
     return {width: this.svc.state.canvasWidth, height: this.svc.state.canvasHeight};
   }
 

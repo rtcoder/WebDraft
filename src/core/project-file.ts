@@ -1,32 +1,11 @@
+import type {ParsedWdraftFile, TextLayerData, WdraftFileMeta, WdraftLayerMeta} from '../types';
+
+export type {WdraftLayerMeta, WdraftFileMeta, ParsedWdraftFile};
+
 export const WDRAFT_VERSION = 3;
 export const WDRAFT_MAGIC = [0x57, 0x44, 0x46, 0x54] as const; // "WDFT"
 export const WDRAFT_MIME_TYPE = 'application/x-webdraft';
 export const WDRAFT_EXTENSION = '.wdraft';
-
-import type { TextLayerData } from './types';
-
-export type WdraftLayerMeta = {
-  id: string;
-  name: string;
-  visible: boolean;
-  width: number;
-  height: number;
-  textData?: TextLayerData;
-};
-
-export type WdraftFileMeta = {
-  version: number;
-  canvasWidth: number;
-  canvasHeight: number;
-  activeLayerId: string;
-  layerCount: number;
-  layers: WdraftLayerMeta[];
-};
-
-export type ParsedWdraftFile = {
-  meta: WdraftFileMeta;
-  pngBuffers: Uint8Array[];
-};
 
 const enc = new TextEncoder();
 const dec = new TextDecoder();
@@ -39,7 +18,6 @@ export function serializeWdraftBinary(meta: WdraftFileMeta, pngBuffers: Uint8Arr
     textDataJson: l.textData ? enc.encode(JSON.stringify(l.textData)) : null,
   }));
 
-  // Calculate total size
   let size =
     4 + // magic
     1 + // version
@@ -70,14 +48,20 @@ export function serializeWdraftBinary(meta: WdraftFileMeta, pngBuffers: Uint8Arr
   for (const byte of WDRAFT_MAGIC) bytes[offset++] = byte;
   bytes[offset++] = WDRAFT_VERSION;
 
-  view.setUint32(offset, meta.canvasWidth, true); offset += 4;
-  view.setUint32(offset, meta.canvasHeight, true); offset += 4;
-  view.setUint32(offset, meta.layerCount, true); offset += 4;
+  view.setUint32(offset, meta.canvasWidth, true);
+  offset += 4;
+  view.setUint32(offset, meta.canvasHeight, true);
+  offset += 4;
+  view.setUint32(offset, meta.layerCount, true);
+  offset += 4;
 
-  view.setUint16(offset, activeLayerIdBytes.length, true); offset += 2;
-  bytes.set(activeLayerIdBytes, offset); offset += activeLayerIdBytes.length;
+  view.setUint16(offset, activeLayerIdBytes.length, true);
+  offset += 2;
+  bytes.set(activeLayerIdBytes, offset);
+  offset += activeLayerIdBytes.length;
 
-  view.setUint16(offset, meta.layers.length, true); offset += 2;
+  view.setUint16(offset, meta.layers.length, true);
+  offset += 2;
 
   for (let i = 0; i < meta.layers.length; i++) {
     const layer = meta.layers[i];
@@ -86,23 +70,32 @@ export function serializeWdraftBinary(meta: WdraftFileMeta, pngBuffers: Uint8Arr
     const td = layerStrings[i].textDataJson;
     const png = pngBuffers[i];
 
-    view.setUint16(offset, idBytes.length, true); offset += 2;
-    bytes.set(idBytes, offset); offset += idBytes.length;
+    view.setUint16(offset, idBytes.length, true);
+    offset += 2;
+    bytes.set(idBytes, offset);
+    offset += idBytes.length;
 
-    view.setUint16(offset, nameBytes.length, true); offset += 2;
-    bytes.set(nameBytes, offset); offset += nameBytes.length;
+    view.setUint16(offset, nameBytes.length, true);
+    offset += 2;
+    bytes.set(nameBytes, offset);
+    offset += nameBytes.length;
 
     bytes[offset++] = layer.visible ? 1 : 0;
 
-    view.setUint32(offset, layer.width, true); offset += 4;
-    view.setUint32(offset, layer.height, true); offset += 4;
+    view.setUint32(offset, layer.width, true);
+    offset += 4;
+    view.setUint32(offset, layer.height, true);
+    offset += 4;
 
-    view.setUint32(offset, png.length, true); offset += 4;
-    bytes.set(png, offset); offset += png.length;
+    view.setUint32(offset, png.length, true);
+    offset += 4;
+    bytes.set(png, offset);
+    offset += png.length;
 
     // v3: textData (2-byte length, 0 = no text data)
     const tdLen = td ? td.length : 0;
-    view.setUint16(offset, tdLen, true); offset += 2;
+    view.setUint16(offset, tdLen, true);
+    offset += 2;
     if (td && tdLen > 0) {
       bytes.set(td, offset);
       offset += tdLen;
@@ -129,7 +122,10 @@ function migrateTextData(raw: unknown): TextLayerData | undefined {
 
   // Old format: { text: string, bounds }
   if (typeof obj.text === 'string' && obj.bounds) {
-    const html = obj.text.split('\n').map((l) => l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')).join('<br>');
+    const html = obj.text
+      .split('\n')
+      .map((l) => l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+      .join('<br>');
     return {
       html,
       bounds: obj.bounds as TextLayerData['bounds'],
@@ -151,7 +147,6 @@ export function parseWdraftBinary(buffer: ArrayBuffer): ParsedWdraftFile {
     throw new Error('Invalid .wdraft file: too short.');
   }
 
-  // Magic
   for (let i = 0; i < WDRAFT_MAGIC.length; i++) {
     if (bytes[i] !== WDRAFT_MAGIC[i]) {
       throw new Error('Invalid .wdraft file: wrong magic bytes.');
@@ -160,7 +155,6 @@ export function parseWdraftBinary(buffer: ArrayBuffer): ParsedWdraftFile {
 
   let offset = 4;
 
-  // Version
   const version = bytes[offset++];
   if (version !== 2 && version !== WDRAFT_VERSION) {
     throw new Error(`Unsupported .wdraft version: ${version}. Expected ${WDRAFT_VERSION}.`);

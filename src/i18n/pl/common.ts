@@ -1,4 +1,4 @@
-import type {CommonTranslations} from '../types.ts';
+import type {CommonTranslations} from '../../types/i18n';
 
 export const commonTranslations: CommonTranslations = {
   somethingWentWrong: 'Coś poszło nie tak.',

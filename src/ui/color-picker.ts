@@ -1,14 +1,5 @@
-import { t } from '../core/i18n';
-
-export type ColorPickerOptions = {
-  label: string;
-  value: string;
-  onChange: (color: string) => void;
-};
-
-export type ColorPickerControl = HTMLElement & {
-  setValue: (color: string) => void;
-};
+import {t} from '../core/i18n';
+import type {ColorPickerControl, ColorPickerOptions} from '../types';
 
 // Canvas sizes
 const SB = 220;   // SB square / HS rect

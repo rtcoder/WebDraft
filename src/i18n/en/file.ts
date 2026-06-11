@@ -1,4 +1,4 @@
-import type {FileTranslations} from '../types.ts';
+import type {FileTranslations} from '../../types/i18n';
 
 export const fileTranslations: FileTranslations = {
   new: 'New Project',

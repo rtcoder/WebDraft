@@ -1,4 +1,4 @@
-import type {Translations} from '../types.ts';
+import type {Translations} from '../../types/i18n';
 import {cameraTranslations} from './camera.ts';
 import {commonTranslations} from './common.ts';
 import {editTranslations} from './edit.ts';

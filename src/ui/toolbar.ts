@@ -1,8 +1,8 @@
 import {t} from '../core/i18n';
 import type {WebDraftEditor} from '../core/webdraft-editor';
+import {StatusReporter} from '../types';
 import {bindKeyboardShortcuts} from './keyboard-shortcuts';
 import {openSaveDialog} from './save-dialog';
-import type {StatusReporter} from './status-toasts';
 import {getErrorMessage} from './status-toasts';
 import {
   createFileSection,

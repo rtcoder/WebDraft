@@ -1,14 +1,4 @@
-import type {SizeWithPosition, TextLayerData} from './types';
-
-type StyledRun = {
-  text: string;
-  bold: boolean;
-  italic: boolean;
-  underline: boolean;
-  color: string;
-  fontSize: number;
-  fontFamily: string;
-};
+import type {SizeWithPosition, TextLayerData, StyledRun} from '../types';
 
 export function drawRichText(
   context: CanvasRenderingContext2D,

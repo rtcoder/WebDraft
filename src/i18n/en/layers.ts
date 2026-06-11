@@ -1,4 +1,4 @@
-import type {LayersTranslations} from '../types.ts';
+import type {LayersTranslations} from '../../types/i18n';
 
 export const layersTranslations: LayersTranslations = {
   title: 'Layers',

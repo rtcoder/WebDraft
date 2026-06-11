@@ -1,5 +1,5 @@
-import type {EditorState, Point, SizeWithPosition} from './types';
-import {Tool} from './types';
+import type {EditorState, Point, SizeWithPosition} from '../types';
+import {Tool} from '../types';
 
 export {drawRichText} from './rich-text-renderer';
 

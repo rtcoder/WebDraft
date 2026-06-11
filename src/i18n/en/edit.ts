@@ -1,4 +1,4 @@
-import type {EditTranslations} from '../types.ts';
+import type {EditTranslations} from '../../types/i18n';
 
 export const editTranslations: EditTranslations = {
   undo: 'Undo',

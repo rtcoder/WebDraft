@@ -1,12 +1,4 @@
-export type CheckboxControl = {
-  element: HTMLLabelElement;
-  setChecked: (checked: boolean) => void;
-};
-
-export type RangeControl = {
-  element: HTMLLabelElement;
-  setValue: (value: number) => void;
-};
+import type {CheckboxControl, RangeControl} from '../types';
 
 export function createCommandButton(label: string, onClick: () => void): HTMLButtonElement {
   const button = document.createElement('button');

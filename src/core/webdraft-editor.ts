@@ -1,22 +1,21 @@
-import type {Layer, LayerDocumentSnapshot, LayerSummary} from './layer-manager';
-import {
-  serializeWdraftBinary,
-  WDRAFT_VERSION,
-  type ParsedWdraftFile,
-  type WdraftFileMeta,
-} from './project-file';
+import type {
+  EditorOptions,
+  EditorServices,
+  EditorState,
+  HistorySnapshot,
+  LayerSummary,
+  ParsedWdraftFile,
+  Point,
+  WdraftFileMeta,
+} from '../types';
+import {Tool} from '../types';
 import {drawLine, drawPoint, drawShape, drawWebLine} from './canvas-drawing';
-import {
-  fitNaturalSizeToCanvas,
-  getBounds,
-  normalizeCanvasBounds,
-} from './editor-geometry';
+import {fitNaturalSizeToCanvas, getBounds} from './editor-geometry';
 import {floodFillImageData, hexToRgbaColor} from './flood-fill';
 import {HistoryManager} from './history-manager';
 import {LayerManager} from './layer-manager';
 import {invertPixelBuffer, mirrorPixelBuffer, rotatePixelBuffer} from './layer-transforms';
-import {EditorOptions, EditorState, Point, Tool} from './types';
-import type {EditorServices, HistorySnapshot} from './editor-context';
+import {serializeWdraftBinary, WDRAFT_VERSION} from './project-file';
 import {SelectionController} from './selection-controller';
 import {TextEditController} from './text-edit-controller';
 
@@ -722,7 +721,7 @@ export class WebDraftEditor extends EventTarget {
     this.root.style.marginBottom = zoom > 1 ? `${Math.round(h * (zoom - 1))}px` : '';
   }
 
-  private get canvasSize(): {width: number; height: number} {
+  private get canvasSize(): { width: number; height: number } {
     return {width: this.state.canvasWidth, height: this.state.canvasHeight};
   }
 
@@ -832,7 +831,7 @@ function toHex(value: number): string {
   return value.toString(16).padStart(2, '0');
 }
 
-function createImageData(buffer: {data: Uint8ClampedArray; width: number; height: number}): ImageData {
+function createImageData(buffer: { data: Uint8ClampedArray; width: number; height: number }): ImageData {
   const data = new Uint8ClampedArray(buffer.data.length);
   data.set(buffer.data);
   return new ImageData(data, buffer.width, buffer.height);

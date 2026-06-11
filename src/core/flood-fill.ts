@@ -1,9 +1,4 @@
-export type RgbaColor = {
-  red: number;
-  green: number;
-  blue: number;
-  alpha: number;
-};
+import type {RgbaColor} from '../types';
 
 export function floodFillImageData(
   imageData: ImageData,

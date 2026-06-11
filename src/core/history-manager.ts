@@ -1,7 +1,4 @@
-type HistoryEntry<TSnapshot> = {
-  before: TSnapshot;
-  after: TSnapshot;
-};
+import {HistoryEntry} from '../types';
 
 export class HistoryManager<TSnapshot> {
   private readonly undoStack: HistoryEntry<TSnapshot>[] = [];

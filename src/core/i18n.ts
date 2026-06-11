@@ -1,9 +1,6 @@
 import { en } from '../i18n/en';
 import { pl } from '../i18n/pl';
-import type { Translations } from '../i18n/types';
-
-export type { Translations };
-export type Lang = 'pl' | 'en';
+import type {Lang, Translations} from '../types';
 
 const LANG_KEY = 'webdraft-lang';
 

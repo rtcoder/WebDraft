@@ -1,17 +1,11 @@
 import { parseWdraftBinary } from '../core/project-file';
 import { lang, setLang, t } from '../core/i18n';
-import type { Lang } from '../core/i18n';
 import type { WebDraftEditor } from '../core/webdraft-editor';
-import type { StatusReporter } from './status-toasts';
+import {Lang, Menu, MenuItem} from '../types';
+import type { StatusReporter } from '../types';
 import { getErrorMessage } from './status-toasts';
 import { saveStateForReload } from './lang-state';
 import { openResizeDialog } from './resize-dialog';
-
-type MenuItem =
-  | { type: 'action'; label: string; action: () => void; shortcut?: string; disabled?: () => boolean }
-  | { type: 'separator' };
-
-type Menu = { label: string; items: MenuItem[] };
 
 let openMenu: HTMLElement | null = null;
 let openButton: HTMLButtonElement | null = null;

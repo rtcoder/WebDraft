@@ -1,4 +1,4 @@
-import type {PickerTranslations} from '../types.ts';
+import type {PickerTranslations} from '../../types/i18n';
 
 export const pickerTranslations: PickerTranslations = {
   addColor: 'Dodaj bieżący kolor',

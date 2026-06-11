@@ -1,4 +1,4 @@
-import type {MenuTranslations} from '../types.ts';
+import type {MenuTranslations} from '../../types/i18n';
 
 export const menuTranslations: MenuTranslations = {
   file: 'File',

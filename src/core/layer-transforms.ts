@@ -1,11 +1,4 @@
-export type PixelBuffer = {
-  width: number;
-  height: number;
-  data: Uint8ClampedArray;
-};
-
-export type RotationDirection = 'left' | 'right';
-export type MirrorAxis = 'horizontal' | 'vertical';
+import type {MirrorAxis, PixelBuffer, RotationDirection} from '../types';
 
 export function invertPixelBuffer(buffer: PixelBuffer): PixelBuffer {
   const output = clonePixelBuffer(buffer);

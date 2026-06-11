@@ -1,15 +1,8 @@
 import {t} from '../core/i18n';
 import type {WebDraftEditor} from '../core/webdraft-editor.ts';
-import type {StatusReporter} from './status-toasts.ts';
+import type {CameraFilters, StatusReporter} from '../types';
 
-type Filters = {
-  sepia: boolean;
-  noise: boolean;
-  greyscale: boolean;
-  negative: boolean;
-};
-
-function applyFilters(data: Uint8ClampedArray, filters: Filters): void {
+function applyFilters(data: Uint8ClampedArray, filters: CameraFilters): void {
   for (let i = 0; i < data.length; i += 4) {
     let r = data[i];
     let g = data[i + 1];
@@ -64,7 +57,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
     return;
   }
 
-  const filters: Filters = {sepia: false, noise: false, greyscale: false, negative: false};
+  const filters: CameraFilters = {sepia: false, noise: false, greyscale: false, negative: false};
   let stream: MediaStream | null = null;
   let rafId = 0;
   let isSnapped = false;
@@ -104,7 +97,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
   const filtersContainer = document.createElement('div');
   filtersContainer.className = 'camera-panel__filters';
 
-  const filterDefs: Array<{label: string; key: keyof Filters}> = [
+  const filterDefs: Array<{ label: string; key: keyof CameraFilters }> = [
     {label: t.camera.sepia, key: 'sepia'},
     {label: t.camera.noise, key: 'noise'},
     {label: t.camera.greyscale, key: 'greyscale'},
@@ -163,6 +156,7 @@ export function openCameraPanel(editor: WebDraftEditor, status: StatusReporter):
       closePanel();
     }
   }
+
   document.addEventListener('keydown', onKeyDown);
 
   // Start camera

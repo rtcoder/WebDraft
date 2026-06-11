@@ -1,4 +1,4 @@
-import type {ToolbarTranslations} from '../types.ts';
+import type {ToolbarTranslations} from '../../types/i18n';
 
 export const toolbarTranslations: ToolbarTranslations = {
   toolSelect: 'Zaznaczanie \u2014 S',

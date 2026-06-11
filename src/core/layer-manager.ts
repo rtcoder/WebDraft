@@ -1,46 +1,6 @@
+import type {Layer, LayerDocumentSnapshot, LayerSummary, SizeWithPosition} from '../types';
 import {t} from './i18n.ts';
-import type {SizeWithPosition, TextLayerData} from './types.ts';
 
-export type { TextLayerData };
-
-export type Layer = {
-  id: string;
-  name: string;
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D;
-  visible: boolean;
-  x: number;
-  y: number;
-  textData?: TextLayerData;
-};
-
-export type LayerSummary = {
-  id: string;
-  name: string;
-  active: boolean;
-  preview: string;
-  visible: boolean;
-  isTextLayer: boolean;
-};
-
-type LayerSnapshot = {
-  layerId: string;
-  imageData: ImageData;
-};
-
-export type LayerDocumentSnapshot = {
-  activeLayerId: string;
-  layerCount: number;
-  layers: LayerSnapshotWithMetadata[];
-};
-
-type LayerSnapshotWithMetadata = LayerSnapshot & {
-  name: string;
-  visible: boolean;
-  x: number;
-  y: number;
-  textData?: TextLayerData;
-};
 
 export class LayerManager {
   private readonly root: HTMLElement;
@@ -102,7 +62,7 @@ export class LayerManager {
     canvas.className = 'drawing-layer';
     canvas.dataset.layerId = id;
 
-    const name = t.layers.layerName(`${this.layerCount + 1}`)
+    const name = t.layers.layerName(`${this.layerCount + 1}`);
 
     const layer: Layer = {
       id,
@@ -211,12 +171,11 @@ export class LayerManager {
     this.updateActiveLayerClass();
   }
 
-
   drawImageOnNewLayer(
     image: CanvasImageSource,
     width: number,
     height: number,
-    target: SizeWithPosition
+    target: SizeWithPosition,
   ): Layer {
     const layer = this.createLayer(width, height);
     layer.context.drawImage(image, target.x, target.y, target.width, target.height);

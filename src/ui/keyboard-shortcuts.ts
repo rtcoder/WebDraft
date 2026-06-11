@@ -1,11 +1,6 @@
-import {Tool} from '../core/types';
+import {Tool} from '../types';
+import type {ShortcutOptions} from '../types';
 import type {WebDraftEditor} from '../core/webdraft-editor';
-
-type ShortcutOptions = {
-  openImagePicker: () => void;
-  exportImage: () => Promise<void>;
-  onSave: () => void;
-};
 
 export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutOptions): void {
   window.addEventListener('keydown', (event) => {
