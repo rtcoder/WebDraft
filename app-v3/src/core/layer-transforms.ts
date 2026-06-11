@@ -20,14 +20,18 @@ export function invertPixelBuffer(buffer: PixelBuffer): PixelBuffer {
 }
 
 export function rotatePixelBuffer(buffer: PixelBuffer, direction: RotationDirection): PixelBuffer {
-  const output = createEmptyPixelBuffer(buffer);
+  const output: PixelBuffer = {
+    width: buffer.height,
+    height: buffer.width,
+    data: new Uint8ClampedArray(buffer.width * buffer.height * 4),
+  };
 
   for (let y = 0; y < buffer.height; y += 1) {
     for (let x = 0; x < buffer.width; x += 1) {
       const target =
         direction === 'right'
-          ? {x: buffer.width - 1 - y, y: x}
-          : {x: y, y: buffer.height - 1 - x};
+          ? {x: buffer.height - 1 - y, y: x}
+          : {x: y, y: buffer.width - 1 - x};
 
       copyPixel(buffer, output, x, y, target.x, target.y);
     }

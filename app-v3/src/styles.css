@@ -205,10 +205,9 @@ select {
   background-size: 20px 20px;
   border: 1px solid #4b89ff;
   box-shadow: 0 24px 80px rgb(0 0 0 / 30%);
-  overflow: hidden;
+  overflow: visible;
 }
 
-.drawing-layer,
 .shape-preview-layer,
 .event-layer {
   position: absolute;
@@ -218,8 +217,15 @@ select {
 }
 
 .drawing-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
   z-index: 1;
   pointer-events: none;
+}
+
+.drawing-layer--active {
+  outline: 1px dashed rgba(75, 137, 255, 0.7);
 }
 
 .shape-preview-layer {

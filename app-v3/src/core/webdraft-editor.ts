@@ -356,6 +356,8 @@ export class WebDraftEditor extends EventTarget {
         layerId: l.id,
         name: l.name,
         visible: l.visible,
+        x: 0,
+        y: 0,
         imageData: imageDataList[i],
       })),
     };
@@ -380,7 +382,7 @@ export class WebDraftEditor extends EventTarget {
     canvas.height = this.state.canvasHeight;
 
     for (const layer of this.layerManager.visibleLayers) {
-      context.drawImage(layer.canvas, 0, 0);
+      context.drawImage(layer.canvas, layer.x, layer.y);
     }
 
     const blob = await new Promise<Blob | null>((resolve) => {
@@ -534,11 +536,18 @@ export class WebDraftEditor extends EventTarget {
     this.clearSelection();
 
     const before = this.captureHistorySnapshot();
-    const {canvas, context} = this.layerManager.activeLayer;
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const transformed = rotatePixelBuffer(imageData, direction);
+    const layer = this.layerManager.activeLayer;
+    const {canvas, context} = layer;
+    const oldW = canvas.width;
+    const oldH = canvas.height;
+    const transformed = rotatePixelBuffer(context.getImageData(0, 0, oldW, oldH), direction);
 
+    canvas.width = transformed.width;
+    canvas.height = transformed.height;
     context.putImageData(createImageData(transformed), 0, 0);
+    layer.x = Math.round(layer.x + (oldW - oldH) / 2);
+    layer.y = Math.round(layer.y + (oldH - oldW) / 2);
+    this.layerManager.syncActiveLayerStyle();
     this.pushHistory(before, this.captureHistorySnapshot());
   }
 
@@ -752,7 +761,7 @@ export class WebDraftEditor extends EventTarget {
     canvas.height = this.state.canvasHeight;
 
     for (const layer of this.layerManager.visibleLayers) {
-      context.drawImage(layer.canvas, 0, 0);
+      context.drawImage(layer.canvas, layer.x, layer.y);
     }
 
     const [red, green, blue, alpha] = context.getImageData(x, y, 1, 1).data;

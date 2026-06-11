@@ -7,6 +7,8 @@ export type Layer = {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   visible: boolean;
+  x: number;
+  y: number;
 };
 
 export type LayerSummary = {
@@ -31,6 +33,8 @@ export type LayerDocumentSnapshot = {
 type LayerSnapshotWithMetadata = LayerSnapshot & {
   name: string;
   visible: boolean;
+  x: number;
+  y: number;
 };
 
 export class LayerManager {
@@ -99,13 +103,17 @@ export class LayerManager {
       name,
       canvas,
       context,
-      visible: true
+      visible: true,
+      x: 0,
+      y: 0,
     };
 
     this.layerCount += 1;
     this.layers.push(layer);
     this.activeLayerId = layer.id;
     this.root.append(canvas);
+    this.syncLayerStyle(layer);
+    this.updateActiveLayerClass();
 
     return layer;
   }
@@ -131,6 +139,9 @@ export class LayerManager {
       layer.canvas.height = height;
       layer.context.clearRect(0, 0, width, height);
       layer.context.drawImage(source, 0, 0);
+      layer.x = 0;
+      layer.y = 0;
+      this.syncLayerStyle(layer);
     }
   }
 
@@ -142,6 +153,8 @@ export class LayerManager {
         layerId: layer.id,
         name: layer.name,
         visible: layer.visible,
+        x: layer.x,
+        y: layer.y,
         imageData: layer.context.getImageData(0, 0, layer.canvas.width, layer.canvas.height),
       })),
     };
@@ -170,19 +183,24 @@ export class LayerManager {
       canvas.hidden = !layerSnapshot.visible;
       context.putImageData(layerSnapshot.imageData, 0, 0);
 
-      this.layers.push({
+      const layer: Layer = {
         id: layerSnapshot.layerId,
         name: layerSnapshot.name,
         canvas,
         context,
         visible: layerSnapshot.visible,
-      });
+        x: layerSnapshot.x ?? 0,
+        y: layerSnapshot.y ?? 0,
+      };
+      this.syncLayerStyle(layer);
+      this.layers.push(layer);
       this.root.append(canvas);
     }
 
     this.activeLayerId = snapshot.layers.some((layer) => layer.layerId === snapshot.activeLayerId)
       ? snapshot.activeLayerId
       : this.layers[0]?.id ?? '';
+    this.updateActiveLayerClass();
   }
 
 
@@ -201,6 +219,7 @@ export class LayerManager {
   selectLayer(id: string): void {
     this.assertLayer(id);
     this.activeLayerId = id;
+    this.updateActiveLayerClass();
   }
 
   renameLayer(id: string, name: string): boolean {
@@ -226,6 +245,7 @@ export class LayerManager {
 
     const nextLayer = this.layers[index] ?? this.layers[index - 1];
     this.activeLayerId = nextLayer.id;
+    this.updateActiveLayerClass();
 
     return removedLayer;
   }
@@ -239,6 +259,7 @@ export class LayerManager {
       const nextVisibleLayer = [...this.layers].reverse().find((item) => item.visible);
       if (nextVisibleLayer) {
         this.activeLayerId = nextVisibleLayer.id;
+        this.updateActiveLayerClass();
       }
     }
   }
@@ -283,6 +304,23 @@ export class LayerManager {
     }
 
     return layer;
+  }
+
+  syncActiveLayerStyle(): void {
+    this.syncLayerStyle(this.activeLayer);
+  }
+
+  private syncLayerStyle(layer: Layer): void {
+    layer.canvas.style.left = `${layer.x}px`;
+    layer.canvas.style.top = `${layer.y}px`;
+    layer.canvas.style.width = `${layer.canvas.width}px`;
+    layer.canvas.style.height = `${layer.canvas.height}px`;
+  }
+
+  private updateActiveLayerClass(): void {
+    for (const layer of this.layers) {
+      layer.canvas.classList.toggle('drawing-layer--active', layer.id === this.activeLayerId);
+    }
   }
 
   private swapLayers(firstIndex: number, secondIndex: number): void {
