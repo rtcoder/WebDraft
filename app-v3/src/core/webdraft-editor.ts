@@ -633,10 +633,12 @@ export class WebDraftEditor extends EventTarget {
           return;
         }
 
+        const textLayerAtPoint = this.findTextLayerAt(this.lastPoint!);
+
         if (this.skipNextTextPointerDown) {
           this.skipNextTextPointerDown = false;
-          // Don't skip when the click is on a text layer — user wants to re-edit
-          if (!this.layerManager.activeLayer.textData) {
+          // Only skip when there is no text layer to edit at this point
+          if (!textLayerAtPoint) {
             this.isDrawing = false;
             this.lastPoint = null;
             return;
@@ -645,10 +647,8 @@ export class WebDraftEditor extends EventTarget {
 
         this.commitTextInput();
 
-        const activeLayer = this.layerManager.activeLayer;
-        if (activeLayer.textData) {
-          // Defer actual edit-mode entry to pointerup to avoid focus race with pointer capture
-          this.pendingTextLayerEdit = activeLayer;
+        if (textLayerAtPoint) {
+          this.pendingTextLayerEdit = textLayerAtPoint;
           this.isDrawing = false;
           this.lastPoint = null;
           return;
@@ -1003,6 +1003,10 @@ export class WebDraftEditor extends EventTarget {
 
   private enterTextEditMode(layer: Layer): void {
     if (!layer.textData) return;
+    if (layer.id !== this.layerManager.activeLayer.id) {
+      this.layerManager.selectLayer(layer.id);
+      this.dispatchChange();
+    }
     this.textEditSnapshot = layer.context.getImageData(0, 0, layer.canvas.width, layer.canvas.height);
     layer.context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
     this.textBounds = layer.textData.bounds;
@@ -1012,6 +1016,32 @@ export class WebDraftEditor extends EventTarget {
       this.textInput.value = layer.textData.text;
       this.textInput.select();
     }
+  }
+
+  private findTextLayerAt(point: Point): Layer | null {
+    const layers = this.layerManager.allLayers; // ordered bottom to top
+    for (let i = layers.length - 1; i >= 0; i--) {
+      const layer = layers[i];
+      if (!layer.visible) continue;
+
+      if (layer.textData) {
+        const b = layer.textData.bounds;
+        if (point.x >= b.x && point.x < b.x + b.width &&
+            point.y >= b.y && point.y < b.y + b.height) {
+          return layer;
+        }
+      }
+
+      // Check if this layer has a visible pixel at the point — if so, it occludes layers below
+      const lx = Math.floor(point.x - layer.x);
+      const ly = Math.floor(point.y - layer.y);
+      if (lx >= 0 && ly >= 0 && lx < layer.canvas.width && ly < layer.canvas.height) {
+        if (layer.context.getImageData(lx, ly, 1, 1).data[3] > 10) {
+          return null;
+        }
+      }
+    }
+    return null;
   }
 
   private removeTextInput(): void {
