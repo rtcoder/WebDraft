@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="stroke-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4b89ff"/>
+      <stop offset="100%" stop-color="#8ab4ff"/>
+    </linearGradient>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a2540"/>
+      <stop offset="100%" stop-color="#0e1520"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background: dark navy rounded square -->
+  <rect width="32" height="32" rx="7" fill="url(#bg-grad)"/>
+
+  <!-- Subtle inner border -->
+  <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="6.5"
+        fill="none" stroke="#ffffff" stroke-width="0.75" stroke-opacity="0.08"/>
+
+  <!-- Stylised W — two strokes that form the lettermark -->
+  <path d="M5 9 L9.5 23 L14.5 14 L19.5 23 L24 9"
+        fill="none"
+        stroke="url(#stroke-grad)"
+        stroke-width="3.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <!-- Tiny accent dot — pen nib at end of right arm -->
+  <circle cx="27" cy="9" r="2" fill="#4b89ff" opacity="0.7"/>
+</svg>
