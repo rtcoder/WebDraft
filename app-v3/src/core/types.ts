@@ -23,8 +23,12 @@ export type Size = {
 export type SizeWithPosition = Size & Point;
 
 export type TextLayerData = {
-  text: string;
+  html: string;
   bounds: SizeWithPosition;
+  defaultFontSize: number;
+  defaultFontFamily: string;
+  defaultColor: string;
+  defaultAlign: CanvasTextAlign;
 };
 
 export type EditorOptions = {
@@ -50,8 +54,4 @@ export type EditorState = {
   shadowBlur: number;
   shadowOffsetX: number;
   shadowOffsetY: number;
-  textFontFamily: string;
-  textAlign: CanvasTextAlign;
-  textBold: boolean;
-  textItalic: boolean;
 };

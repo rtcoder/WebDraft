@@ -112,6 +112,37 @@ export function serializeWdraftBinary(meta: WdraftFileMeta, pngBuffers: Uint8Arr
   return new Blob([buffer], {type: WDRAFT_MIME_TYPE});
 }
 
+function migrateTextData(raw: unknown): TextLayerData | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const obj = raw as Record<string, unknown>;
+
+  if (typeof obj.html === 'string' && obj.bounds) {
+    return {
+      html: obj.html,
+      bounds: obj.bounds as TextLayerData['bounds'],
+      defaultFontSize: typeof obj.defaultFontSize === 'number' ? obj.defaultFontSize : 16,
+      defaultFontFamily: typeof obj.defaultFontFamily === 'string' ? obj.defaultFontFamily : 'sans-serif',
+      defaultColor: typeof obj.defaultColor === 'string' ? obj.defaultColor : '#000000',
+      defaultAlign: (typeof obj.defaultAlign === 'string' ? obj.defaultAlign : 'left') as CanvasTextAlign,
+    };
+  }
+
+  // Old format: { text: string, bounds }
+  if (typeof obj.text === 'string' && obj.bounds) {
+    const html = obj.text.split('\n').map((l) => l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')).join('<br>');
+    return {
+      html,
+      bounds: obj.bounds as TextLayerData['bounds'],
+      defaultFontSize: 16,
+      defaultFontFamily: 'sans-serif',
+      defaultColor: '#000000',
+      defaultAlign: 'left',
+    };
+  }
+
+  return undefined;
+}
+
 export function parseWdraftBinary(buffer: ArrayBuffer): ParsedWdraftFile {
   const view = new DataView(buffer);
   const bytes = new Uint8Array(buffer);
@@ -186,7 +217,7 @@ export function parseWdraftBinary(buffer: ArrayBuffer): ParsedWdraftFile {
       offset += 2;
       if (tdLen > 0) {
         try {
-          textData = JSON.parse(dec.decode(bytes.subarray(offset, offset + tdLen))) as TextLayerData;
+          textData = migrateTextData(JSON.parse(dec.decode(bytes.subarray(offset, offset + tdLen))));
         } catch {
           // malformed textData — ignore
         }

@@ -8,11 +8,12 @@ import {
 import {
   drawLine,
   drawPoint,
+  drawRichText,
   drawShape,
-  drawText,
   drawWebLine,
-  getCanvasFont,
 } from './canvas-drawing';
+import {createTextToolbar} from '../ui/text-toolbar';
+import type {TextToolbarDefaults} from '../ui/text-toolbar';
 import {
   fitNaturalSizeToCanvas,
   getClippedPasteBounds,
@@ -39,7 +40,10 @@ export class WebDraftEditor extends EventTarget {
   private selectionBounds: SizeWithPosition | null = null;
   private textStartPoint: Point | null = null;
   private textBounds: SizeWithPosition | null = null;
-  private textInput: HTMLTextAreaElement | null = null;
+  private textInput: HTMLElement | null = null;
+  private textToolbar: HTMLElement | null = null;
+  private textToolbarCleanup: (() => void) | null = null;
+  private textInputDefaults: TextToolbarDefaults | null = null;
   private skipNextTextPointerDown = false;
   private pendingTextLayerEdit: Layer | null = null;
   private editingTextLayer: Layer | null = null;
@@ -85,10 +89,6 @@ export class WebDraftEditor extends EventTarget {
       shadowBlur: 8,
       shadowOffsetX: 8,
       shadowOffsetY: 8,
-      textFontFamily: 'sans-serif',
-      textAlign: 'left',
-      textBold: false,
-      textItalic: false,
     };
   }
 
@@ -204,26 +204,6 @@ export class WebDraftEditor extends EventTarget {
 
   setShadowOffsetY(offset: number): void {
     this.state.shadowOffsetY = Math.min(Math.max(offset, -120), 120);
-    this.dispatchChange();
-  }
-
-  setTextFontFamily(fontFamily: string): void {
-    this.state.textFontFamily = fontFamily;
-    this.dispatchChange();
-  }
-
-  setTextAlign(align: CanvasTextAlign): void {
-    this.state.textAlign = align;
-    this.dispatchChange();
-  }
-
-  setTextBold(enabled: boolean): void {
-    this.state.textBold = enabled;
-    this.dispatchChange();
-  }
-
-  setTextItalic(enabled: boolean): void {
-    this.state.textItalic = enabled;
     this.dispatchChange();
   }
 
@@ -901,40 +881,40 @@ export class WebDraftEditor extends EventTarget {
   }
 
   private showTextInput(point: Point): void {
-    if (!this.textStartPoint) {
-      return;
-    }
+    if (!this.textStartPoint) return;
 
     const bounds = normalizeTextBounds(getBounds(this.textStartPoint, point), this.canvasSize);
-
     this.textBounds = bounds;
     this.clearPreview();
-    this.createTextInput(bounds);
+    this.createTextInput(bounds, {
+      fontSize: 16,
+      fontFamily: 'sans-serif',
+      color: this.state.color,
+      align: 'left',
+    });
     this.textStartPoint = null;
   }
 
-  private createTextInput(bounds: SizeWithPosition): void {
+  private createTextInput(bounds: SizeWithPosition, defaults: TextToolbarDefaults): void {
     this.removeTextInput();
 
-    const input = document.createElement('textarea');
+    const input = document.createElement('div');
     input.className = 'text-input-layer';
+    input.contentEditable = 'true';
     input.style.left = `${bounds.x}px`;
     input.style.top = `${bounds.y}px`;
     input.style.width = `${bounds.width}px`;
     input.style.height = `${bounds.height}px`;
-    input.style.color = this.state.color;
-    input.style.font = getCanvasFont(this.state);
-    input.style.fontWeight = this.state.textBold ? '700' : '400';
-    input.style.fontStyle = this.state.textItalic ? 'italic' : 'normal';
-    input.style.textAlign = this.state.textAlign;
-    input.placeholder = 'Text';
+    input.style.color = defaults.color;
+    input.style.fontSize = `${defaults.fontSize}px`;
+    input.style.fontFamily = defaults.fontFamily;
+    input.style.textAlign = defaults.align;
 
     input.addEventListener('keydown', (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
         event.preventDefault();
         this.commitTextInput();
       }
-
       if (event.key === 'Escape') {
         event.preventDefault();
         const cancelLayer = this.editingTextLayer;
@@ -950,24 +930,34 @@ export class WebDraftEditor extends EventTarget {
       }
     });
 
-    input.addEventListener('blur', () => {
+    input.addEventListener('blur', (event) => {
+      const related = (event as FocusEvent).relatedTarget as Node | null;
+      if (this.textToolbar?.contains(related)) return;
       this.commitTextInput({skipNextPointerDown: true});
     });
 
     this.textInput = input;
+    this.textInputDefaults = defaults;
+
+    const {element: toolbar, cleanup} = createTextToolbar(input, bounds, defaults, (align) => {
+      if (this.textInputDefaults) this.textInputDefaults.align = align;
+    });
+    this.textToolbar = toolbar;
+    this.textToolbarCleanup = cleanup;
+
     this.root.append(input);
+    this.root.append(toolbar);
     input.focus();
   }
 
   private commitTextInput(options: {skipNextPointerDown?: boolean} = {}): void {
-    if (!this.textInput || !this.textBounds) {
-      return;
-    }
+    if (!this.textInput || !this.textBounds) return;
 
-    const value = this.textInput.value.trimEnd();
+    const html = this.textInput.innerHTML;
     const bounds = this.textBounds;
     const editingLayer = this.editingTextLayer;
     const snapshot = this.textEditSnapshot;
+    const defaults = this.textInputDefaults ?? {fontSize: 16, fontFamily: 'sans-serif', color: '#000000', align: 'left' as CanvasTextAlign};
 
     this.removeTextInput();
     this.clearPreview();
@@ -976,25 +966,33 @@ export class WebDraftEditor extends EventTarget {
     this.editingTextLayer = null;
     this.textEditSnapshot = null;
 
-    if (!value.trim()) {
-      if (editingLayer && snapshot) {
-        editingLayer.context.putImageData(snapshot, 0, 0);
-      }
+    const plainText = htmlToPlainText(html);
+    if (!plainText.trim()) {
+      if (editingLayer && snapshot) editingLayer.context.putImageData(snapshot, 0, 0);
       return;
     }
+
+    const textData = {
+      html,
+      bounds,
+      defaultFontSize: defaults.fontSize,
+      defaultFontFamily: defaults.fontFamily,
+      defaultColor: defaults.color,
+      defaultAlign: defaults.align,
+    };
 
     const before = this.captureHistorySnapshot();
 
     if (editingLayer) {
-      const { context, x: lx, y: ly } = editingLayer;
-      drawText(context, value, { x: bounds.x - lx, y: bounds.y - ly, width: bounds.width, height: bounds.height }, this.state);
-      editingLayer.textData = { text: value, bounds };
-      editingLayer.name = `T: ${value.slice(0, 18)}`;
+      const {context, x: lx, y: ly} = editingLayer;
+      drawRichText(context, textData, {x: bounds.x - lx, y: bounds.y - ly, width: bounds.width, height: bounds.height});
+      editingLayer.textData = textData;
+      editingLayer.name = `T: ${plainText.slice(0, 18)}`;
     } else {
       const newLayer = this.layerManager.createLayer(this.state.canvasWidth, this.state.canvasHeight);
-      drawText(newLayer.context, value, bounds, this.state);
-      newLayer.textData = { text: value, bounds };
-      newLayer.name = `T: ${value.slice(0, 18)}`;
+      drawRichText(newLayer.context, textData, bounds);
+      newLayer.textData = textData;
+      newLayer.name = `T: ${plainText.slice(0, 18)}`;
     }
 
     this.pushHistory(before, this.captureHistorySnapshot());
@@ -1011,10 +1009,14 @@ export class WebDraftEditor extends EventTarget {
     layer.context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
     this.textBounds = layer.textData.bounds;
     this.editingTextLayer = layer;
-    this.createTextInput(layer.textData.bounds);
+    this.createTextInput(layer.textData.bounds, {
+      fontSize: layer.textData.defaultFontSize,
+      fontFamily: layer.textData.defaultFontFamily,
+      color: layer.textData.defaultColor,
+      align: layer.textData.defaultAlign,
+    });
     if (this.textInput) {
-      this.textInput.value = layer.textData.text;
-      this.textInput.select();
+      this.textInput.innerHTML = layer.textData.html;
     }
   }
 
@@ -1045,8 +1047,13 @@ export class WebDraftEditor extends EventTarget {
   }
 
   private removeTextInput(): void {
+    this.textToolbarCleanup?.();
+    this.textToolbarCleanup = null;
+    this.textToolbar?.remove();
+    this.textToolbar = null;
     this.textInput?.remove();
     this.textInput = null;
+    this.textInputDefaults = null;
   }
 
   private renderTextFrame(): void {
@@ -1174,6 +1181,12 @@ function createImageData(buffer: {data: Uint8ClampedArray; width: number; height
   data.set(buffer.data);
 
   return new ImageData(data, buffer.width, buffer.height);
+}
+
+function htmlToPlainText(html: string): string {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent ?? '';
 }
 
 function loadPngBytesAsImageData(bytes: Uint8Array, width: number, height: number): Promise<ImageData> {

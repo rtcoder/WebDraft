@@ -312,40 +312,6 @@ export function createShadowSection(editor: WebDraftEditor): ToolbarSection {
   };
 }
 
-export function createTextSection(editor: WebDraftEditor): ToolbarSection {
-  const fontSelect = createSelectControl(t.toolbar.textFont, ['sans-serif', 'serif', 'monospace', 'cursive'], (font) => {
-    editor.setTextFontFamily(font);
-  });
-
-  const alignSelect = createSelectControl(t.toolbar.textAlignment, ['left', 'center', 'right'] as const, (align) => {
-    editor.setTextAlign(align);
-  });
-
-  const textBoldToggle = createCheckboxControl(t.toolbar.bold, editor.state.textBold, (enabled) => {
-    editor.setTextBold(enabled);
-  });
-  const textItalicToggle = createCheckboxControl(t.toolbar.italic, editor.state.textItalic, (enabled) => {
-    editor.setTextItalic(enabled);
-  });
-
-  const element = createToolbarSection(
-    createGrid('field-grid', fontSelect, alignSelect, textBoldToggle.element, textItalicToggle.element),
-  );
-
-  element.hidden = editor.state.activeTool !== Tool.Text;
-
-  return {
-    element,
-    sync: () => {
-      element.hidden = editor.state.activeTool !== Tool.Text;
-      fontSelect.value = editor.state.textFontFamily;
-      alignSelect.value = editor.state.textAlign;
-      textBoldToggle.setChecked(editor.state.textBold);
-      textItalicToggle.setChecked(editor.state.textItalic);
-    },
-  };
-}
-
 export function createEditSection(editor: WebDraftEditor): ToolbarSection {
   const clearButton = createEditButton(
     t.toolbar.clear,

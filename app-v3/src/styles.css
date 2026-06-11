@@ -245,12 +245,115 @@ select {
   min-width: 120px;
   min-height: 40px;
   padding: 6px;
-  resize: none;
   border: 1px solid #5b9cff;
   border-radius: 4px;
   outline: 2px solid rgb(91 156 255 / 20%);
   background: rgb(255 255 255 / 82%);
   caret-color: #111111;
+  line-height: 1.4;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  overflow: hidden;
+}
+
+.text-input-layer:focus {
+  outline: 2px solid rgb(91 156 255 / 40%);
+}
+
+.text-toolbar {
+  position: absolute;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background: #1e2329;
+  border: 1px solid #3a4049;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
+  user-select: none;
+  height: 36px;
+}
+
+.text-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.text-toolbar-sep {
+  width: 1px;
+  height: 20px;
+  background: #3a4049;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.text-toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: none;
+  color: #c9d1dc;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.text-toolbar-btn:hover {
+  background: #2d3340;
+  border-color: #3a4049;
+}
+
+.text-toolbar-btn.is-active {
+  background: #1e3a5c;
+  border-color: #4b89ff;
+  color: #fff;
+}
+
+.text-toolbar-select {
+  height: 26px;
+  padding: 0 4px;
+  border: 1px solid #3a4049;
+  border-radius: 4px;
+  background: #252b33;
+  color: #c9d1dc;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.text-toolbar-size-select {
+  width: 56px;
+}
+
+.text-toolbar-color {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #3a4049;
+  border-radius: 4px;
+  background: #252b33;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 2px;
+}
+
+.text-toolbar-color input[type="color"] {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  background: none;
 }
 
 .toolbar {

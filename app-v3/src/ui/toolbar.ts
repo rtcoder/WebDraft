@@ -9,7 +9,6 @@ import {
   createResizeSection,
   createShadowSection,
   createStyleSection,
-  createTextSection,
   createToolSection,
   syncToolbarSections,
 } from './toolbar-sections';
@@ -42,7 +41,6 @@ export function createToolbar(editor: WebDraftEditor, status: StatusReporter): H
     createToolSection(editor),
     createStyleSection(editor),
     createShadowSection(editor),
-    createTextSection(editor),
     createResizeSection(editor, status),
     createFileSection(editor, fileInput, exportImage, status),
   ];
