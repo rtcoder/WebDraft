@@ -41,6 +41,7 @@ export class WebDraftEditor extends EventTarget {
   private textBounds: SizeWithPosition | null = null;
   private textInput: HTMLTextAreaElement | null = null;
   private skipNextTextPointerDown = false;
+  private pendingTextLayerEdit: Layer | null = null;
   private editingTextLayer: Layer | null = null;
   private textEditSnapshot: ImageData | null = null;
   private webPoints: Point[] = [];
@@ -138,6 +139,7 @@ export class WebDraftEditor extends EventTarget {
 
   setTool(tool: Tool): void {
     this.commitTextInput();
+    this.pendingTextLayerEdit = null;
     this.state.activeTool = tool;
     if (tool !== Tool.Select) {
       this.clearSelection();
@@ -633,16 +635,20 @@ export class WebDraftEditor extends EventTarget {
 
         if (this.skipNextTextPointerDown) {
           this.skipNextTextPointerDown = false;
-          this.isDrawing = false;
-          this.lastPoint = null;
-          return;
+          // Don't skip when the click is on a text layer — user wants to re-edit
+          if (!this.layerManager.activeLayer.textData) {
+            this.isDrawing = false;
+            this.lastPoint = null;
+            return;
+          }
         }
 
         this.commitTextInput();
 
         const activeLayer = this.layerManager.activeLayer;
         if (activeLayer.textData) {
-          this.enterTextEditMode(activeLayer);
+          // Defer actual edit-mode entry to pointerup to avoid focus race with pointer capture
+          this.pendingTextLayerEdit = activeLayer;
           this.isDrawing = false;
           this.lastPoint = null;
           return;
@@ -724,7 +730,12 @@ export class WebDraftEditor extends EventTarget {
       }
 
       if (this.state.activeTool === Tool.Text) {
-        this.showTextInput(this.getPoint(event));
+        if (this.pendingTextLayerEdit) {
+          this.enterTextEditMode(this.pendingTextLayerEdit);
+          this.pendingTextLayerEdit = null;
+        } else {
+          this.showTextInput(this.getPoint(event));
+        }
       }
 
       if (this.isShapeTool()) {
@@ -748,6 +759,7 @@ export class WebDraftEditor extends EventTarget {
       this.shapeStartPoint = null;
       this.selectionStartPoint = null;
       this.textStartPoint = null;
+      this.pendingTextLayerEdit = null;
       this.webPoints = [];
       this.pendingHistorySnapshot = null;
       this.clearPreview();
