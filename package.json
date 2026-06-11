@@ -1,28 +1,17 @@
 {
-  "name": "webdraft",
-  "version": "2.3.3",
-  "description": "Web application for drawing.",
-  "main": "js/start.js",
+  "name": "webdraft-v3",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite --host 127.0.0.1",
+    "test": "node tests/layer-transforms.test.mjs && node tests/editor-geometry.test.mjs && node tests/history-manager.test.mjs && node tests/flood-fill.test.mjs",
+    "check": "npm test && npm run build",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host 127.0.0.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rtcoder/WebDraft.git"
-  },
-  "author": "Dawid Jeż (rtcoder)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/rtcoder/WebDraft/issues"
-  },
-  "homepage": "https://github.com/rtcoder/WebDraft#readme",
   "devDependencies": {
-    "grunt": "^1.0.2"
-  },
-  "dependencies": {
-    "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-cssmin": "^2.2.1",
-    "grunt-contrib-less": "^1.4.1",
-    "grunt-contrib-watch": "^1.1.0"
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
   }
 }
