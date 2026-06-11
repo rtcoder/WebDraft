@@ -86,7 +86,6 @@ A fast, lightweight browser-based image editor built with vanilla TypeScript and
 | Ctrl + Y | Redo |
 | Ctrl + S | Save project |
 | Ctrl + O | Open project |
-| Ctrl + Shift + E | Export PNG |
 | Ctrl + scroll | Zoom in / out |
 | Ctrl + = / + | Zoom in |
 | Ctrl + - | Zoom out |
