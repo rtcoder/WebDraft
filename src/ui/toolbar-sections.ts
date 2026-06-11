@@ -345,23 +345,6 @@ export function createEditSection(editor: WebDraftEditor): ToolbarSection {
   };
 }
 
-export function createResizeSection(editor: WebDraftEditor, status?: StatusReporter): ToolbarSection {
-  const resizeWidthInput = createNumberInput(t.toolbar.width, editor.state.canvasWidth);
-  const resizeHeightInput = createNumberInput(t.toolbar.height, editor.state.canvasHeight);
-  const resizeButton = createCommandButton(t.toolbar.resizeCanvas, () => {
-    editor.resizeCanvas(Number(resizeWidthInput.value), Number(resizeHeightInput.value));
-    status?.show(t.toolbar.canvasResizedOk(editor.state.canvasWidth, editor.state.canvasHeight), 'success');
-  });
-
-  return {
-    element: createToolbarSection(createGrid('field-grid', resizeWidthInput, resizeHeightInput, resizeButton)),
-    sync: () => {
-      resizeWidthInput.value = String(editor.state.canvasWidth);
-      resizeHeightInput.value = String(editor.state.canvasHeight);
-    },
-  };
-}
-
 export function createFileSection(
   editor: WebDraftEditor,
   fileInput: HTMLInputElement,

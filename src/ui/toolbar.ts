@@ -7,7 +7,6 @@ import {openShortcutsDialog} from './shortcuts-dialog';
 import {getErrorMessage} from './status-toasts';
 import {
   createFileSection,
-  createResizeSection,
   createShadowSection,
   createStyleSection,
   createToolSection,
@@ -42,7 +41,6 @@ export function createToolbar(editor: WebDraftEditor, status: StatusReporter): H
     createToolSection(editor),
     createStyleSection(editor),
     createShadowSection(editor),
-    createResizeSection(editor, status),
     createFileSection(editor, fileInput, exportImage, status),
   ];
 
