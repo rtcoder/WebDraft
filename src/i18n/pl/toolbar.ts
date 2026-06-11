@@ -1,4 +1,5 @@
 import type {ToolbarTranslations} from '../../types/i18n';
+import {modKey} from '../../core/platform';
 
 export const toolbarTranslations: ToolbarTranslations = {
   toolSelect: 'Zaznaczanie \u2014 S',
@@ -32,11 +33,11 @@ export const toolbarTranslations: ToolbarTranslations = {
   bold: 'Pogrubienie',
   italic: 'Kursywa',
   clear: 'Wyczyść',
-  undo: 'Cofnij \u2014 Ctrl+Z',
-  redo: 'Ponów \u2014 Ctrl+Shift+Z',
-  copy: 'Kopiuj \u2014 Ctrl+C',
-  cut: 'Wytnij \u2014 Ctrl+X',
-  paste: 'Wklej \u2014 Ctrl+V',
+  undo: `Cofnij \u2014 ${modKey}+Z`,
+  redo: `Ponów \u2014 ${modKey}+Shift+Z`,
+  copy: `Kopiuj \u2014 ${modKey}+C`,
+  cut: `Wytnij \u2014 ${modKey}+X`,
+  paste: `Wklej \u2014 ${modKey}+V`,
   width: 'Szerokość',
   height: 'Wysokość',
   resizeCanvas: 'Zmień rozmiar płótna',

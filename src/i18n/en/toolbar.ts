@@ -1,4 +1,5 @@
 import type {ToolbarTranslations} from '../../types/i18n';
+import {modKey} from '../../core/platform';
 
 export const toolbarTranslations: ToolbarTranslations = {
   toolSelect: 'Select \u2014 S',
@@ -32,11 +33,11 @@ export const toolbarTranslations: ToolbarTranslations = {
   bold: 'Bold',
   italic: 'Italic',
   clear: 'Clear',
-  undo: 'Undo \u2014 Ctrl+Z',
-  redo: 'Redo \u2014 Ctrl+Shift+Z',
-  copy: 'Copy \u2014 Ctrl+C',
-  cut: 'Cut \u2014 Ctrl+X',
-  paste: 'Paste \u2014 Ctrl+V',
+  undo: `Undo \u2014 ${modKey}+Z`,
+  redo: `Redo \u2014 ${modKey}+Shift+Z`,
+  copy: `Copy \u2014 ${modKey}+C`,
+  cut: `Cut \u2014 ${modKey}+X`,
+  paste: `Paste \u2014 ${modKey}+V`,
   width: 'Width',
   height: 'Height',
   resizeCanvas: 'Resize canvas',

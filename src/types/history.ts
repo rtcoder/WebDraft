@@ -1,5 +1,6 @@
-import type {LayerDocumentSnapshot, LayerManager} from '../core/layer-manager';
+import type {LayerManager} from '../core/layer-manager';
 import type {EditorState} from './core';
+import type {LayerDocumentSnapshot} from './layers';
 
 export type HistoryEntry<TSnapshot> = {
   before: TSnapshot;

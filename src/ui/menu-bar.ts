@@ -1,5 +1,6 @@
 import { parseWdraftBinary } from '../core/project-file';
 import { lang, setLang, t } from '../core/i18n';
+import { modKey } from '../core/platform';
 import type { WebDraftEditor } from '../core/webdraft-editor';
 import {Lang, Menu, MenuItem} from '../types';
 import type { StatusReporter } from '../types';
@@ -234,7 +235,7 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
         {
           type: 'action',
           label: t.file.new,
-          shortcut: 'Ctrl+N',
+          shortcut: `${modKey}+N`,
           action: () => {
             if (confirm(t.file.newConfirm)) {
               editor.clear();
@@ -245,7 +246,7 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
         {
           type: 'action',
           label: t.file.open,
-          shortcut: 'Ctrl+O',
+          shortcut: `${modKey}+O`,
           action: () => projectInput.click(),
         },
         { type: 'separator' },
@@ -303,14 +304,14 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
         {
           type: 'action',
           label: t.edit.undo,
-          shortcut: 'Ctrl+Z',
+          shortcut: `${modKey}+Z`,
           disabled: () => !editor.canUndo,
           action: () => editor.undo(),
         },
         {
           type: 'action',
           label: t.edit.redo,
-          shortcut: 'Ctrl+Y',
+          shortcut: `${modKey}+Y`,
           disabled: () => !editor.canRedo,
           action: () => editor.redo(),
         },
@@ -318,19 +319,19 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
         {
           type: 'action',
           label: t.edit.cut,
-          shortcut: 'Ctrl+X',
+          shortcut: `${modKey}+X`,
           action: () => editor.cutSelection(),
         },
         {
           type: 'action',
           label: t.edit.copy,
-          shortcut: 'Ctrl+C',
+          shortcut: `${modKey}+C`,
           action: () => editor.copySelection(),
         },
         {
           type: 'action',
           label: t.edit.paste,
-          shortcut: 'Ctrl+V',
+          shortcut: `${modKey}+V`,
           action: () => editor.pasteSelection(),
         },
         { type: 'separator' },
@@ -463,20 +464,20 @@ function createZoomWidget(editor: WebDraftEditor): HTMLElement {
   btnOut.type = 'button';
   btnOut.className = 'menu-zoom-btn';
   btnOut.textContent = '−';
-  btnOut.title = 'Zoom out (Ctrl+−)';
+  btnOut.title = `Zoom out (${modKey}+−)`;
   btnOut.addEventListener('click', () => editor.zoomOut());
 
   const label = document.createElement('button');
   label.type = 'button';
   label.className = 'menu-zoom-label';
-  label.title = 'Reset zoom (Ctrl+0)';
+  label.title = `Reset zoom (${modKey}+0)`;
   label.addEventListener('click', () => editor.setZoom(1));
 
   const btnIn = document.createElement('button');
   btnIn.type = 'button';
   btnIn.className = 'menu-zoom-btn';
   btnIn.textContent = '+';
-  btnIn.title = 'Zoom in (Ctrl+=)';
+  btnIn.title = `Zoom in (${modKey}+=)`;
   btnIn.addEventListener('click', () => editor.zoomIn());
 
   wrap.append(btnOut, label, btnIn);
