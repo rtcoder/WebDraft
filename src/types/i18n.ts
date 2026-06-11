@@ -1,0 +1,189 @@
+export type Lang = 'pl' | 'en';
+
+export type MenuTranslations = {
+  file: string;
+  edit: string;
+  image: string;
+  layer: string;
+  help: string;
+};
+
+export type FileTranslations = {
+  new: string;
+  open: string;
+  save: string;
+  importImage: string;
+  exportPng: string;
+  newConfirm: string;
+  savedOk: string;
+  openedOk: string;
+  importedOk: string;
+  exportedOk: string;
+  projectFilename: string;
+  imageFilename: string;
+};
+
+export type EditTranslations = {
+  undo: string;
+  redo: string;
+  cut: string;
+  copy: string;
+  paste: string;
+  clearLayer: string;
+};
+
+export type ImageTranslations = {
+  resizeCanvas: string;
+  invertColors: string;
+  mirrorH: string;
+  mirrorV: string;
+  rotateLeft: string;
+  rotateRight: string;
+  widthPrompt: string;
+  heightPrompt: string;
+  resizedOk: (w: number, h: number) => string;
+  applyToAllLayers: string;
+};
+
+export type LayerTranslations = {
+  new: string;
+  delete: string;
+  moveUp: string;
+  moveDown: string;
+  addedOk: string;
+  deletedOk: string;
+  resize: string;
+  layerResizedOk: (w: number, h: number) => string;
+};
+
+export type ToolbarTranslations = {
+  toolSelect: string;
+  toolPencil: string;
+  toolEraser: string;
+  toolSampler: string;
+  toolFillBucket: string;
+  toolWeb: string;
+  toolRectangle: string;
+  toolEllipse: string;
+  toolText: string;
+  invertColors: string;
+  rotateLeft: string;
+  rotateRight: string;
+  mirrorH: string;
+  mirrorV: string;
+  size: string;
+  webSensitivity: string;
+  color: string;
+  fillShapes: string;
+  fillColor: string;
+  fillOpacity: string;
+  bucketTolerance: string;
+  shadow: string;
+  shadowColor: string;
+  shadowBlur: string;
+  shadowX: string;
+  shadowY: string;
+  textFont: string;
+  textAlignment: string;
+  bold: string;
+  italic: string;
+  clear: string;
+  undo: string;
+  redo: string;
+  copy: string;
+  cut: string;
+  paste: string;
+  width: string;
+  height: string;
+  resizeCanvas: string;
+  uploadImage: string;
+  camera: string;
+  exportPng: string;
+  saveProject: string;
+  openProject: string;
+  pngExportedOk: string;
+  imageImportedOk: string;
+  canvasResizedOk: (w: number, h: number) => string;
+};
+
+export type LayersTranslations = {
+  title: string;
+  addLayer: string;
+  deleteLayer: string;
+  layerName: (suffix: string) => string;
+  moveLayerUp: string;
+  moveLayerDown: string;
+  selectLayer: (name: string) => string;
+  renameLayer: string;
+  hideLayer: string;
+  showLayer: string;
+  textLayer: string;
+};
+
+export type CameraTranslations = {
+  title: string;
+  titleWithLabel: (label: string) => string;
+  unavailable: string;
+  sepia: string;
+  noise: string;
+  greyscale: string;
+  negative: string;
+  snap: string;
+  snapToCanvas: string;
+  applyToCanvas: string;
+  saveToFile: string;
+  backToLive: string;
+  frameAdded: string;
+  cameraError: string;
+  snapFilename: string;
+};
+
+export type PickerTranslations = {
+  addColor: string;
+  restorePrevious: string;
+  newColor: string;
+  previousColor: string;
+  range100: string;
+  range255: string;
+};
+
+export type CommonTranslations = {
+  somethingWentWrong: string;
+  appTitle: string;
+};
+
+export type SaveDialogTranslations = {
+  title: string;
+  exportPng: string;
+  saveProject: string;
+  rememberChoice: string;
+  cancel: string;
+};
+
+export type HelpTranslations = {
+  keyboardShortcuts: string;
+  close: string;
+  sectionTools: string;
+  sectionView: string;
+  sectionCanvas: string;
+  sizeDecrease: string;
+  sizeIncrease: string;
+  zoomIn: string;
+  zoomOut: string;
+  zoomReset: string;
+};
+
+export type Translations = {
+  menu: MenuTranslations;
+  file: FileTranslations;
+  edit: EditTranslations;
+  image: ImageTranslations;
+  layer: LayerTranslations;
+  toolbar: ToolbarTranslations;
+  layers: LayersTranslations;
+  camera: CameraTranslations;
+  picker: PickerTranslations;
+  common: CommonTranslations;
+  saveDialog: SaveDialogTranslations;
+  help: HelpTranslations;
+};

@@ -1,0 +1,177 @@
+import {Tool} from '../types';
+import type {ShortcutOptions} from '../types';
+import type {WebDraftEditor} from '../core/webdraft-editor';
+
+export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutOptions): void {
+  window.addEventListener('keydown', (event) => {
+    if (isTypingTarget(event.target)) {
+      return;
+    }
+
+    const key = event.key.toLowerCase();
+    const isCommand = event.metaKey || event.ctrlKey;
+
+    if (isCommand && key === 'z') {
+      event.preventDefault();
+      if (event.shiftKey) {
+        editor.redo();
+      } else {
+        editor.undo();
+      }
+      return;
+    }
+
+    if (isCommand && key === 'y') {
+      event.preventDefault();
+      editor.redo();
+      return;
+    }
+
+    if (isCommand && key === 'o') {
+      event.preventDefault();
+      options.openImagePicker();
+      return;
+    }
+
+    if (isCommand && key === 's') {
+      event.preventDefault();
+      options.onSave();
+      return;
+    }
+
+    if (isCommand && key === 'h') {
+      event.preventDefault();
+      options.openShortcutsDialog();
+      return;
+    }
+
+    if (isCommand && (key === '=' || key === '+')) {
+      event.preventDefault();
+      editor.zoomIn();
+      return;
+    }
+
+    if (isCommand && key === '-') {
+      event.preventDefault();
+      editor.zoomOut();
+      return;
+    }
+
+    if (isCommand && key === '0') {
+      event.preventDefault();
+      editor.setZoom(1);
+      return;
+    }
+
+    if (isCommand && key === 'c') {
+      event.preventDefault();
+      editor.copySelection();
+      return;
+    }
+
+    if (isCommand && key === 'x') {
+      event.preventDefault();
+      editor.cutSelection();
+      return;
+    }
+
+    if (isCommand && key === 'v') {
+      event.preventDefault();
+      editor.pasteSelection();
+      return;
+    }
+
+    if (event.key === 'Delete' || event.key === 'Backspace') {
+      event.preventDefault();
+      editor.clear();
+      return;
+    }
+
+    if (key === '[') {
+      event.preventDefault();
+      editor.setSize(editor.state.size - 1);
+      return;
+    }
+
+    if (key === ']') {
+      event.preventDefault();
+      editor.setSize(editor.state.size + 1);
+      return;
+    }
+
+    if (key === 'i') {
+      event.preventDefault();
+      editor.invertActiveLayer();
+      return;
+    }
+
+    if (key === ',') {
+      event.preventDefault();
+      editor.rotateActiveLayer('left');
+      return;
+    }
+
+    if (key === '.') {
+      event.preventDefault();
+      editor.rotateActiveLayer('right');
+      return;
+    }
+
+    if (key === 'h') {
+      event.preventDefault();
+      editor.mirrorActiveLayer('horizontal');
+      return;
+    }
+
+    if (key === 'v') {
+      event.preventDefault();
+      editor.mirrorActiveLayer('vertical');
+      return;
+    }
+
+    const tool = getToolForKey(key);
+
+    if (tool) {
+      event.preventDefault();
+      editor.setTool(tool);
+    }
+  });
+}
+
+function getToolForKey(key: string): Tool | null {
+  switch (key) {
+    case 's':
+      return Tool.Select;
+    case 'p':
+      return Tool.Pencil;
+    case 'e':
+      return Tool.Eraser;
+    case 'c':
+      return Tool.Sampler;
+    case 'b':
+      return Tool.FillBucket;
+    case 'w':
+      return Tool.Web;
+    case 'r':
+      return Tool.Rectangle;
+    case 'o':
+      return Tool.Ellipse;
+    case 't':
+      return Tool.Text;
+    default:
+      return null;
+  }
+}
+
+function isTypingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  return (
+    target.isContentEditable ||
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement
+  );
+}
