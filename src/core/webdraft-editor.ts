@@ -5,27 +5,20 @@ import {
   type ParsedWdraftFile,
   type WdraftFileMeta,
 } from './project-file';
-import {
-  drawLine,
-  drawPoint,
-  drawRichText,
-  drawShape,
-  drawWebLine,
-} from './canvas-drawing';
-import {createTextToolbar} from '../ui/text-toolbar';
-import type {TextToolbarDefaults} from '../ui/text-toolbar';
+import {drawLine, drawPoint, drawShape, drawWebLine} from './canvas-drawing';
 import {
   fitNaturalSizeToCanvas,
-  getClippedPasteBounds,
   getBounds,
   normalizeCanvasBounds,
-  normalizeTextBounds,
 } from './editor-geometry';
 import {floodFillImageData, hexToRgbaColor} from './flood-fill';
 import {HistoryManager} from './history-manager';
 import {LayerManager} from './layer-manager';
 import {invertPixelBuffer, mirrorPixelBuffer, rotatePixelBuffer} from './layer-transforms';
-import {EditorOptions, EditorState, Point, SizeWithPosition, Tool} from './types';
+import {EditorOptions, EditorState, Point, Tool} from './types';
+import type {EditorServices, HistorySnapshot} from './editor-context';
+import {SelectionController} from './selection-controller';
+import {TextEditController} from './text-edit-controller';
 
 const ZOOM_STEPS = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4, 6, 8];
 
@@ -35,23 +28,12 @@ export class WebDraftEditor extends EventTarget {
   private readonly previewCanvas: HTMLCanvasElement;
   private readonly previewContext: CanvasRenderingContext2D;
   private readonly eventLayer: HTMLDivElement;
+  private readonly selection: SelectionController;
+  private readonly text: TextEditController;
   private isDrawing = false;
   private lastPoint: Point | null = null;
   private shapeStartPoint: Point | null = null;
-  private selectionStartPoint: Point | null = null;
-  private selectionBounds: SizeWithPosition | null = null;
-  private textStartPoint: Point | null = null;
-  private textBounds: SizeWithPosition | null = null;
-  private textInput: HTMLElement | null = null;
-  private textToolbar: HTMLElement | null = null;
-  private textToolbarCleanup: (() => void) | null = null;
-  private textInputDefaults: TextToolbarDefaults | null = null;
-  private skipNextTextPointerDown = false;
-  private pendingTextLayerEdit: Layer | null = null;
-  private editingTextLayer: Layer | null = null;
-  private textEditSnapshot: ImageData | null = null;
   private webPoints: Point[] = [];
-  private clipboard: ClipboardSnapshot | null = null;
   private pendingHistorySnapshot: HistorySnapshot | null = null;
   private readonly history = new HistoryManager<HistorySnapshot>(30);
 
@@ -93,6 +75,21 @@ export class WebDraftEditor extends EventTarget {
       shadowOffsetX: 8,
       shadowOffsetY: 8,
     };
+
+    const services: EditorServices = {
+      state: this.state,
+      layerManager: this.layerManager,
+      previewContext: this.previewContext,
+      previewCanvas: this.previewCanvas,
+      root: this.root,
+      captureSnapshot: () => this.captureHistorySnapshot(),
+      pushHistory: (b, a) => this.pushHistory(b, a),
+      clearPreview: () => this.clearPreview(),
+      dispatchChange: () => this.dispatchChange(),
+    };
+
+    this.selection = new SelectionController(services);
+    this.text = new TextEditController(services);
   }
 
   mount(): void {
@@ -117,11 +114,11 @@ export class WebDraftEditor extends EventTarget {
   }
 
   get hasSelection(): boolean {
-    return this.selectionBounds !== null;
+    return this.selection.hasBounds;
   }
 
   get canPaste(): boolean {
-    return this.clipboard !== null;
+    return this.selection.canPaste;
   }
 
   get canvasWidth(): number {
@@ -141,11 +138,10 @@ export class WebDraftEditor extends EventTarget {
   }
 
   setTool(tool: Tool): void {
-    this.commitTextInput();
-    this.pendingTextLayerEdit = null;
+    this.text.commit();
     this.state.activeTool = tool;
     if (tool !== Tool.Select) {
-      this.clearSelection();
+      this.selection.clear();
     }
     this.dispatchChange();
   }
@@ -227,8 +223,8 @@ export class WebDraftEditor extends EventTarget {
   }
 
   resizeCanvas(width: number, height: number, resizeLayersToo = true): void {
-    this.commitTextInput();
-    this.clearSelection();
+    this.text.commit();
+    this.selection.clear();
 
     const nextWidth = Math.min(Math.max(Math.round(width), 64), 4096);
     const nextHeight = Math.min(Math.max(Math.round(height), 64), 4096);
@@ -242,13 +238,12 @@ export class WebDraftEditor extends EventTarget {
     this.state.canvasHeight = nextHeight;
     if (resizeLayersToo) this.layerManager.resizeLayers(nextWidth, nextHeight);
     this.applyCanvasSize();
-    this.clipboard = null;
     this.pushHistory(before, this.captureHistorySnapshot());
   }
 
   resizeActiveLayer(width: number, height: number): void {
-    this.commitTextInput();
-    this.clearSelection();
+    this.text.commit();
+    this.selection.clear();
 
     const nextWidth = Math.min(Math.max(Math.round(width), 1), 8192);
     const nextHeight = Math.min(Math.max(Math.round(height), 1), 8192);
@@ -280,22 +275,14 @@ export class WebDraftEditor extends EventTarget {
 
   undo(): void {
     const snapshot = this.history.undo();
-
-    if (!snapshot) {
-      return;
-    }
-
+    if (!snapshot) return;
     this.restoreHistorySnapshot(snapshot);
     this.dispatchChange();
   }
 
   redo(): void {
     const snapshot = this.history.redo();
-
-    if (!snapshot) {
-      return;
-    }
-
+    if (!snapshot) return;
     this.restoreHistorySnapshot(snapshot);
     this.dispatchChange();
   }
@@ -304,7 +291,6 @@ export class WebDraftEditor extends EventTarget {
     const before = this.captureHistorySnapshot();
     const image = await this.loadImage(file);
     const target = fitNaturalSizeToCanvas(image, this.canvasSize);
-
     this.layerManager.drawImageOnNewLayer(image, this.state.canvasWidth, this.state.canvasHeight, target);
     this.pushHistory(before, this.captureHistorySnapshot());
   }
@@ -330,12 +316,14 @@ export class WebDraftEditor extends EventTarget {
           resolve();
           return;
         }
-
         video.addEventListener('loadedmetadata', () => resolve(), {once: true});
       });
 
       const before = this.captureHistorySnapshot();
-      const target = fitNaturalSizeToCanvas({naturalWidth: video.videoWidth, naturalHeight: video.videoHeight}, this.canvasSize);
+      const target = fitNaturalSizeToCanvas(
+        {naturalWidth: video.videoWidth, naturalHeight: video.videoHeight},
+        this.canvasSize,
+      );
       this.layerManager.drawImageOnNewLayer(video, this.state.canvasWidth, this.state.canvasHeight, target);
       this.pushHistory(before, this.captureHistorySnapshot());
     } finally {
@@ -412,7 +400,7 @@ export class WebDraftEditor extends EventTarget {
     this.state.canvasHeight = meta.canvasHeight;
     this.layerManager.restoreDocument(newDocument);
     this.applyCanvasSize();
-    this.clearSelection();
+    this.selection.clear();
     this.pushHistory(before, this.captureHistorySnapshot());
     this.dispatchChange();
   }
@@ -489,85 +477,20 @@ export class WebDraftEditor extends EventTarget {
   }
 
   copySelection(): void {
-    if (!this.selectionBounds) {
-      return;
-    }
-
-    const bounds = normalizeCanvasBounds(this.selectionBounds, this.canvasSize);
-
-    if (!bounds) {
-      return;
-    }
-
-    const {context} = this.layerManager.activeLayer;
-
-    this.clipboard = {
-      bounds,
-      imageData: context.getImageData(bounds.x, bounds.y, bounds.width, bounds.height),
-    };
-    this.dispatchChange();
+    this.selection.copy();
   }
 
   cutSelection(): void {
-    if (!this.selectionBounds) {
-      return;
-    }
-
-    const bounds = normalizeCanvasBounds(this.selectionBounds, this.canvasSize);
-
-    if (!bounds) {
-      return;
-    }
-
-    const before = this.captureHistorySnapshot();
-    const {context} = this.layerManager.activeLayer;
-
-    this.clipboard = {
-      bounds,
-      imageData: context.getImageData(bounds.x, bounds.y, bounds.width, bounds.height),
-    };
-    context.clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
-    this.pushHistory(before, this.captureHistorySnapshot());
-    this.dispatchChange();
+    this.selection.cut();
   }
 
   pasteSelection(): void {
-    if (!this.clipboard) {
-      return;
-    }
-
-    const before = this.captureHistorySnapshot();
-    const {context} = this.layerManager.activeLayer;
-    const target = this.selectionBounds ?? this.clipboard.bounds;
-    const pasteBounds = getClippedPasteBounds(target, this.clipboard.bounds, this.canvasSize);
-
-    if (!pasteBounds) {
-      return;
-    }
-
-    context.putImageData(
-      this.clipboard.imageData,
-      pasteBounds.targetX - pasteBounds.sourceX,
-      pasteBounds.targetY - pasteBounds.sourceY,
-      pasteBounds.sourceX,
-      pasteBounds.sourceY,
-      pasteBounds.width,
-      pasteBounds.height,
-    );
-    this.selectionBounds = {
-      x: pasteBounds.targetX,
-      y: pasteBounds.targetY,
-      width: this.clipboard.bounds.width,
-      height: this.clipboard.bounds.height,
-    };
-    this.renderSelectionFrame();
-    this.pushHistory(before, this.captureHistorySnapshot());
-    this.dispatchChange();
+    this.selection.paste();
   }
 
   invertActiveLayer(): void {
-    this.commitTextInput();
-    this.clearSelection();
+    this.text.commit();
+    this.selection.clear();
 
     const before = this.captureHistorySnapshot();
     const {canvas, context} = this.layerManager.activeLayer;
@@ -579,8 +502,8 @@ export class WebDraftEditor extends EventTarget {
   }
 
   rotateActiveLayer(direction: 'left' | 'right'): void {
-    this.commitTextInput();
-    this.clearSelection();
+    this.text.commit();
+    this.selection.clear();
 
     const before = this.captureHistorySnapshot();
     const layer = this.layerManager.activeLayer;
@@ -599,8 +522,8 @@ export class WebDraftEditor extends EventTarget {
   }
 
   mirrorActiveLayer(axis: 'horizontal' | 'vertical'): void {
-    this.commitTextInput();
-    this.clearSelection();
+    this.text.commit();
+    this.selection.clear();
 
     const before = this.captureHistorySnapshot();
     const {canvas, context} = this.layerManager.activeLayer;
@@ -618,44 +541,16 @@ export class WebDraftEditor extends EventTarget {
       this.lastPoint = this.getPoint(event);
 
       if (this.state.activeTool === Tool.Select) {
-        this.selectionStartPoint = this.lastPoint;
-        this.selectionBounds = null;
-        this.clearPreview();
+        this.selection.onPointerDown(this.lastPoint);
         return;
       }
 
       if (this.state.activeTool === Tool.Text) {
-        if (this.textInput) {
-          this.commitTextInput();
+        const consumed = this.text.onPointerDown(this.lastPoint);
+        if (consumed) {
           this.isDrawing = false;
           this.lastPoint = null;
-          return;
         }
-
-        const textLayerAtPoint = this.findTextLayerAt(this.lastPoint!);
-
-        if (this.skipNextTextPointerDown) {
-          this.skipNextTextPointerDown = false;
-          // Only skip when there is no text layer to edit at this point
-          if (!textLayerAtPoint) {
-            this.isDrawing = false;
-            this.lastPoint = null;
-            return;
-          }
-        }
-
-        this.commitTextInput();
-
-        if (textLayerAtPoint) {
-          this.pendingTextLayerEdit = textLayerAtPoint;
-          this.isDrawing = false;
-          this.lastPoint = null;
-          return;
-        }
-
-        this.textStartPoint = this.lastPoint;
-        this.textBounds = null;
-        this.clearPreview();
         return;
       }
 
@@ -692,19 +587,17 @@ export class WebDraftEditor extends EventTarget {
     });
 
     this.eventLayer.addEventListener('pointermove', (event) => {
-      if (!this.isDrawing || !this.lastPoint) {
-        return;
-      }
+      if (!this.isDrawing || !this.lastPoint) return;
 
       const nextPoint = this.getPoint(event);
 
       if (this.state.activeTool === Tool.Select) {
-        this.renderSelectionPreview(nextPoint);
+        this.selection.onPointerMove(nextPoint);
         return;
       }
 
       if (this.state.activeTool === Tool.Text) {
-        this.renderTextPreview(nextPoint);
+        this.text.onPointerMove(nextPoint);
         return;
       }
 
@@ -714,41 +607,48 @@ export class WebDraftEditor extends EventTarget {
       }
 
       if (this.state.activeTool === Tool.Web) {
-        this.webPoints = drawWebLine(this.layerManager.activeLayer.context, this.toLayerPoint(nextPoint), this.webPoints, this.state);
+        this.webPoints = drawWebLine(
+          this.layerManager.activeLayer.context,
+          this.toLayerPoint(nextPoint),
+          this.webPoints,
+          this.state,
+        );
         this.lastPoint = nextPoint;
         return;
       }
 
-      drawLine(this.layerManager.activeLayer.context, this.toLayerPoint(this.lastPoint), this.toLayerPoint(nextPoint), this.state);
+      drawLine(
+        this.layerManager.activeLayer.context,
+        this.toLayerPoint(this.lastPoint),
+        this.toLayerPoint(nextPoint),
+        this.state,
+      );
       this.lastPoint = nextPoint;
     });
 
     this.eventLayer.addEventListener('pointerup', (event) => {
+      const point = this.getPoint(event);
+
       if (this.state.activeTool === Tool.Select) {
-        this.commitSelection(this.getPoint(event));
+        this.selection.onPointerUp(point);
       }
 
       if (this.state.activeTool === Tool.Text) {
-        if (this.pendingTextLayerEdit) {
-          this.enterTextEditMode(this.pendingTextLayerEdit);
-          this.pendingTextLayerEdit = null;
-        } else {
-          this.showTextInput(this.getPoint(event));
-        }
+        this.text.onPointerUp(point);
       }
 
       if (this.isShapeTool()) {
-        this.commitShape(this.getPoint(event));
+        this.commitShape(point);
       }
 
       if (this.state.activeTool !== Tool.Select && this.state.activeTool !== Tool.Text) {
         this.commitPendingHistory();
       }
+
       this.eventLayer.releasePointerCapture(event.pointerId);
       this.isDrawing = false;
       this.lastPoint = null;
       this.shapeStartPoint = null;
-      this.selectionStartPoint = null;
       this.webPoints = [];
     });
 
@@ -756,26 +656,27 @@ export class WebDraftEditor extends EventTarget {
       this.isDrawing = false;
       this.lastPoint = null;
       this.shapeStartPoint = null;
-      this.selectionStartPoint = null;
-      this.textStartPoint = null;
-      this.pendingTextLayerEdit = null;
       this.webPoints = [];
       this.pendingHistorySnapshot = null;
       this.clearPreview();
     });
 
-    this.eventLayer.addEventListener('wheel', (event) => {
-      if (event.ctrlKey || event.metaKey) {
-        event.preventDefault();
-        if (event.deltaY < 0) this.zoomIn();
-        else this.zoomOut();
-      }
-    }, {passive: false});
+    this.eventLayer.addEventListener(
+      'wheel',
+      (event) => {
+        if (event.ctrlKey || event.metaKey) {
+          event.preventDefault();
+          if (event.deltaY < 0) this.zoomIn();
+          else this.zoomOut();
+        }
+      },
+      {passive: false},
+    );
   }
 
   private toLayerPoint(p: Point): Point {
-    const { x, y } = this.layerManager.activeLayer;
-    return { x: p.x - x, y: p.y - y };
+    const {x, y} = this.layerManager.activeLayer;
+    return {x: p.x - x, y: p.y - y};
   }
 
   private getPoint(event: PointerEvent): Point {
@@ -797,7 +698,6 @@ export class WebDraftEditor extends EventTarget {
         image.addEventListener('error', () => reject(new Error('Unable to load image.')), {once: true});
         image.src = url;
       });
-
       return image;
     } finally {
       URL.revokeObjectURL(url);
@@ -818,16 +718,12 @@ export class WebDraftEditor extends EventTarget {
     const h = this.state.canvasHeight;
     this.root.style.transform = zoom !== 1 ? `scale(${zoom})` : '';
     this.root.style.transformOrigin = 'top left';
-    // Expand layout area so workspace scroll reflects the visual size
     this.root.style.marginRight = zoom > 1 ? `${Math.round(w * (zoom - 1))}px` : '';
     this.root.style.marginBottom = zoom > 1 ? `${Math.round(h * (zoom - 1))}px` : '';
   }
 
   private get canvasSize(): {width: number; height: number} {
-    return {
-      width: this.state.canvasWidth,
-      height: this.state.canvasHeight,
-    };
+    return {width: this.state.canvasWidth, height: this.state.canvasHeight};
   }
 
   private isShapeTool(): boolean {
@@ -845,9 +741,7 @@ export class WebDraftEditor extends EventTarget {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
-    if (!context) {
-      throw new Error('Canvas 2D context is unavailable.');
-    }
+    if (!context) throw new Error('Canvas 2D context is unavailable.');
 
     canvas.width = this.state.canvasWidth;
     canvas.height = this.state.canvasHeight;
@@ -857,11 +751,7 @@ export class WebDraftEditor extends EventTarget {
     }
 
     const [red, green, blue, alpha] = context.getImageData(x, y, 1, 1).data;
-
-    if (alpha === 0) {
-      return;
-    }
-
+    if (alpha === 0) return;
     this.setColor(rgbToHex(red, green, blue));
   }
 
@@ -876,284 +766,25 @@ export class WebDraftEditor extends EventTarget {
       hexToRgbaColor(this.state.fillColor, this.state.fillOpacity / 100),
       this.state.fillTolerance,
     );
-
-    if (!changed) {
-      return;
-    }
-
+    if (!changed) return;
     context.putImageData(imageData, 0, 0);
     this.pushHistory(before, this.captureHistorySnapshot());
   }
 
-  private renderSelectionPreview(point: Point): void {
-    if (!this.selectionStartPoint) {
-      return;
-    }
-
-    this.selectionBounds = getBounds(this.selectionStartPoint, point);
-    this.renderSelectionFrame();
-  }
-
-  private commitSelection(point: Point): void {
-    if (!this.selectionStartPoint) {
-      return;
-    }
-
-    this.selectionBounds = getBounds(this.selectionStartPoint, point);
-
-    if (!normalizeCanvasBounds(this.selectionBounds, this.canvasSize)) {
-      this.clearSelection();
-      return;
-    }
-
-    this.renderSelectionFrame();
-    this.dispatchChange();
-  }
-
-  private renderTextPreview(point: Point): void {
-    if (!this.textStartPoint) {
-      return;
-    }
-
-    this.textBounds = getBounds(this.textStartPoint, point);
-    this.renderTextFrame();
-  }
-
-  private showTextInput(point: Point): void {
-    if (!this.textStartPoint) return;
-
-    const bounds = normalizeTextBounds(getBounds(this.textStartPoint, point), this.canvasSize);
-    this.textBounds = bounds;
-    this.clearPreview();
-    this.createTextInput(bounds, {
-      fontSize: 16,
-      fontFamily: 'sans-serif',
-      color: this.state.color,
-      align: 'left',
-    });
-    this.textStartPoint = null;
-  }
-
-  private createTextInput(bounds: SizeWithPosition, defaults: TextToolbarDefaults): void {
-    this.removeTextInput();
-
-    const input = document.createElement('div');
-    input.className = 'text-input-layer';
-    input.contentEditable = 'true';
-    input.style.left = `${bounds.x}px`;
-    input.style.top = `${bounds.y}px`;
-    input.style.width = `${bounds.width}px`;
-    input.style.height = `${bounds.height}px`;
-    input.style.color = defaults.color;
-    input.style.fontSize = `${defaults.fontSize}px`;
-    input.style.fontFamily = defaults.fontFamily;
-    input.style.textAlign = defaults.align;
-
-    input.addEventListener('keydown', (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
-        event.preventDefault();
-        this.commitTextInput();
-      }
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        const cancelLayer = this.editingTextLayer;
-        const cancelSnapshot = this.textEditSnapshot;
-        this.editingTextLayer = null;
-        this.textEditSnapshot = null;
-        this.textBounds = null;
-        if (cancelLayer && cancelSnapshot) {
-          cancelLayer.context.putImageData(cancelSnapshot, 0, 0);
-        }
-        this.removeTextInput();
-        this.clearPreview();
-      }
-    });
-
-    input.addEventListener('blur', (event) => {
-      const related = (event as FocusEvent).relatedTarget as Node | null;
-      if (this.textToolbar?.contains(related)) return;
-      this.commitTextInput({skipNextPointerDown: true});
-    });
-
-    this.textInput = input;
-    this.textInputDefaults = defaults;
-
-    const {element: toolbar, cleanup} = createTextToolbar(input, bounds, defaults, (align) => {
-      if (this.textInputDefaults) this.textInputDefaults.align = align;
-    });
-    this.textToolbar = toolbar;
-    this.textToolbarCleanup = cleanup;
-
-    this.root.append(input);
-    this.root.append(toolbar);
-    input.focus();
-  }
-
-  private commitTextInput(options: {skipNextPointerDown?: boolean} = {}): void {
-    if (!this.textInput || !this.textBounds) return;
-
-    const html = this.textInput.innerHTML;
-    const bounds = this.textBounds;
-    const editingLayer = this.editingTextLayer;
-    const snapshot = this.textEditSnapshot;
-    const defaults = this.textInputDefaults ?? {fontSize: 16, fontFamily: 'sans-serif', color: '#000000', align: 'left' as CanvasTextAlign};
-
-    this.removeTextInput();
-    this.clearPreview();
-    this.skipNextTextPointerDown = options.skipNextPointerDown ?? false;
-    this.textBounds = null;
-    this.editingTextLayer = null;
-    this.textEditSnapshot = null;
-
-    const plainText = htmlToPlainText(html);
-    if (!plainText.trim()) {
-      if (editingLayer && snapshot) editingLayer.context.putImageData(snapshot, 0, 0);
-      return;
-    }
-
-    const textData = {
-      html,
-      bounds,
-      defaultFontSize: defaults.fontSize,
-      defaultFontFamily: defaults.fontFamily,
-      defaultColor: defaults.color,
-      defaultAlign: defaults.align,
-    };
-
-    const before = this.captureHistorySnapshot();
-
-    if (editingLayer) {
-      const {context, x: lx, y: ly} = editingLayer;
-      drawRichText(context, textData, {x: bounds.x - lx, y: bounds.y - ly, width: bounds.width, height: bounds.height});
-      editingLayer.textData = textData;
-      editingLayer.name = `T: ${plainText.slice(0, 18)}`;
-    } else {
-      const newLayer = this.layerManager.createLayer(this.state.canvasWidth, this.state.canvasHeight);
-      drawRichText(newLayer.context, textData, bounds);
-      newLayer.textData = textData;
-      newLayer.name = `T: ${plainText.slice(0, 18)}`;
-    }
-
-    this.pushHistory(before, this.captureHistorySnapshot());
-    this.dispatchChange();
-  }
-
-  private enterTextEditMode(layer: Layer): void {
-    if (!layer.textData) return;
-    if (layer.id !== this.layerManager.activeLayer.id) {
-      this.layerManager.selectLayer(layer.id);
-      this.dispatchChange();
-    }
-    this.textEditSnapshot = layer.context.getImageData(0, 0, layer.canvas.width, layer.canvas.height);
-    layer.context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
-    this.textBounds = layer.textData.bounds;
-    this.editingTextLayer = layer;
-    this.createTextInput(layer.textData.bounds, {
-      fontSize: layer.textData.defaultFontSize,
-      fontFamily: layer.textData.defaultFontFamily,
-      color: layer.textData.defaultColor,
-      align: layer.textData.defaultAlign,
-    });
-    if (this.textInput) {
-      this.textInput.innerHTML = layer.textData.html;
-    }
-  }
-
-  private findTextLayerAt(point: Point): Layer | null {
-    const layers = this.layerManager.allLayers; // ordered bottom to top
-    for (let i = layers.length - 1; i >= 0; i--) {
-      const layer = layers[i];
-      if (!layer.visible) continue;
-
-      if (layer.textData) {
-        const b = layer.textData.bounds;
-        if (point.x >= b.x && point.x < b.x + b.width &&
-            point.y >= b.y && point.y < b.y + b.height) {
-          return layer;
-        }
-      }
-
-      // Check if this layer has a visible pixel at the point — if so, it occludes layers below
-      const lx = Math.floor(point.x - layer.x);
-      const ly = Math.floor(point.y - layer.y);
-      if (lx >= 0 && ly >= 0 && lx < layer.canvas.width && ly < layer.canvas.height) {
-        if (layer.context.getImageData(lx, ly, 1, 1).data[3] > 10) {
-          return null;
-        }
-      }
-    }
-    return null;
-  }
-
-  private removeTextInput(): void {
-    this.textToolbarCleanup?.();
-    this.textToolbarCleanup = null;
-    this.textToolbar?.remove();
-    this.textToolbar = null;
-    this.textInput?.remove();
-    this.textInput = null;
-    this.textInputDefaults = null;
-  }
-
-  private renderTextFrame(): void {
-    if (!this.textBounds) {
-      return;
-    }
-
-    const bounds = normalizeTextBounds(this.textBounds, this.canvasSize);
-
-    this.clearPreview();
-    this.previewContext.save();
-    this.previewContext.setLineDash([4, 4]);
-    this.previewContext.lineWidth = 1;
-    this.previewContext.strokeStyle = '#6b9dff';
-    this.previewContext.strokeRect(bounds.x + 0.5, bounds.y + 0.5, bounds.width, bounds.height);
-    this.previewContext.restore();
-  }
-
-  private clearSelection(): void {
-    this.selectionStartPoint = null;
-    this.selectionBounds = null;
-    this.clearPreview();
-  }
-
-  private renderSelectionFrame(): void {
-    if (!this.selectionBounds) {
-      return;
-    }
-
-    const bounds = normalizeCanvasBounds(this.selectionBounds, this.canvasSize);
-
-    if (!bounds) {
-      this.clearPreview();
-      return;
-    }
-
-    this.clearPreview();
-    this.previewContext.save();
-    this.previewContext.setLineDash([6, 4]);
-    this.previewContext.lineWidth = 1;
-    this.previewContext.strokeStyle = '#1b6cff';
-    this.previewContext.strokeRect(bounds.x + 0.5, bounds.y + 0.5, bounds.width, bounds.height);
-    this.previewContext.restore();
-  }
-
   private renderShapePreview(point: Point): void {
-    if (!this.shapeStartPoint) {
-      return;
-    }
-
+    if (!this.shapeStartPoint) return;
     this.clearPreview();
     drawShape(this.previewContext, getBounds(this.shapeStartPoint, point), this.state);
   }
 
   private commitShape(point: Point): void {
-    if (!this.shapeStartPoint) {
-      return;
-    }
-
+    if (!this.shapeStartPoint) return;
     const {context} = this.layerManager.activeLayer;
-    drawShape(context, getBounds(this.toLayerPoint(this.shapeStartPoint), this.toLayerPoint(point)), this.state);
+    drawShape(
+      context,
+      getBounds(this.toLayerPoint(this.shapeStartPoint), this.toLayerPoint(point)),
+      this.state,
+    );
     this.clearPreview();
   }
 
@@ -1162,10 +793,7 @@ export class WebDraftEditor extends EventTarget {
   }
 
   private commitPendingHistory(): void {
-    if (!this.pendingHistorySnapshot) {
-      return;
-    }
-
+    if (!this.pendingHistorySnapshot) return;
     this.pushHistory(this.pendingHistorySnapshot, this.captureHistorySnapshot());
     this.pendingHistorySnapshot = null;
   }
@@ -1183,7 +811,7 @@ export class WebDraftEditor extends EventTarget {
     this.state.canvasHeight = snapshot.canvasHeight;
     this.layerManager.restoreDocument(snapshot.document);
     this.applyCanvasSize();
-    this.clearSelection();
+    this.selection.clear();
   }
 
   private pushHistory(before: HistorySnapshot, after: HistorySnapshot): void {
@@ -1196,17 +824,6 @@ export class WebDraftEditor extends EventTarget {
   }
 }
 
-type HistorySnapshot = {
-  canvasWidth: number;
-  canvasHeight: number;
-  document: LayerDocumentSnapshot;
-};
-
-type ClipboardSnapshot = {
-  bounds: SizeWithPosition;
-  imageData: ImageData;
-};
-
 function rgbToHex(red: number, green: number, blue: number): string {
   return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
 }
@@ -1218,19 +835,17 @@ function toHex(value: number): string {
 function createImageData(buffer: {data: Uint8ClampedArray; width: number; height: number}): ImageData {
   const data = new Uint8ClampedArray(buffer.data.length);
   data.set(buffer.data);
-
   return new ImageData(data, buffer.width, buffer.height);
-}
-
-function htmlToPlainText(html: string): string {
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  return tmp.textContent ?? '';
 }
 
 function loadPngBytesAsImageData(bytes: Uint8Array, width: number, height: number): Promise<ImageData> {
   return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(new Blob([(bytes.buffer as ArrayBuffer).slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)], {type: 'image/png'}));
+    const url = URL.createObjectURL(
+      new Blob(
+        [(bytes.buffer as ArrayBuffer).slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)],
+        {type: 'image/png'},
+      ),
+    );
     const img = new Image();
     img.onload = () => {
       URL.revokeObjectURL(url);
