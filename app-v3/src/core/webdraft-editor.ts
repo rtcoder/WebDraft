@@ -650,7 +650,7 @@ export class WebDraftEditor extends EventTarget {
       }
 
       if (this.state.activeTool === Tool.FillBucket) {
-        this.fillActiveLayer(this.lastPoint);
+        this.fillActiveLayer(this.toLayerPoint(this.lastPoint));
         this.isDrawing = false;
         this.lastPoint = null;
         return;
@@ -664,12 +664,13 @@ export class WebDraftEditor extends EventTarget {
       }
 
       if (this.state.activeTool === Tool.Web) {
-        this.webPoints = [this.lastPoint];
-        drawPoint(this.layerManager.activeLayer.context, this.lastPoint, this.state);
+        const lp = this.toLayerPoint(this.lastPoint);
+        this.webPoints = [lp];
+        drawPoint(this.layerManager.activeLayer.context, lp, this.state);
         return;
       }
 
-      drawPoint(this.layerManager.activeLayer.context, this.lastPoint, this.state);
+      drawPoint(this.layerManager.activeLayer.context, this.toLayerPoint(this.lastPoint), this.state);
     });
 
     this.eventLayer.addEventListener('pointermove', (event) => {
@@ -695,12 +696,12 @@ export class WebDraftEditor extends EventTarget {
       }
 
       if (this.state.activeTool === Tool.Web) {
-        this.webPoints = drawWebLine(this.layerManager.activeLayer.context, nextPoint, this.webPoints, this.state);
+        this.webPoints = drawWebLine(this.layerManager.activeLayer.context, this.toLayerPoint(nextPoint), this.webPoints, this.state);
         this.lastPoint = nextPoint;
         return;
       }
 
-      drawLine(this.layerManager.activeLayer.context, this.lastPoint, nextPoint, this.state);
+      drawLine(this.layerManager.activeLayer.context, this.toLayerPoint(this.lastPoint), this.toLayerPoint(nextPoint), this.state);
       this.lastPoint = nextPoint;
     });
 
@@ -738,6 +739,11 @@ export class WebDraftEditor extends EventTarget {
       this.pendingHistorySnapshot = null;
       this.clearPreview();
     });
+  }
+
+  private toLayerPoint(p: Point): Point {
+    const { x, y } = this.layerManager.activeLayer;
+    return { x: p.x - x, y: p.y - y };
   }
 
   private getPoint(event: PointerEvent): Point {
@@ -938,9 +944,10 @@ export class WebDraftEditor extends EventTarget {
     }
 
     const before = this.captureHistorySnapshot();
-    const {context} = this.layerManager.activeLayer;
+    const { context, x: lx, y: ly } = this.layerManager.activeLayer;
+    const layerBounds = { x: bounds.x - lx, y: bounds.y - ly, width: bounds.width, height: bounds.height };
 
-    drawText(context, value, bounds, this.state);
+    drawText(context, value, layerBounds, this.state);
     this.pushHistory(before, this.captureHistorySnapshot());
     this.textBounds = null;
   }
@@ -1008,7 +1015,7 @@ export class WebDraftEditor extends EventTarget {
     }
 
     const {context} = this.layerManager.activeLayer;
-    drawShape(context, getBounds(this.shapeStartPoint, point), this.state);
+    drawShape(context, getBounds(this.toLayerPoint(this.shapeStartPoint), this.toLayerPoint(point)), this.state);
     this.clearPreview();
   }
 
