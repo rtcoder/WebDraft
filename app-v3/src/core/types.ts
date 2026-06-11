@@ -40,6 +40,7 @@ export type EditorOptions = {
 
 export type EditorState = {
   activeTool: Tool;
+  zoom: number;
   color: string;
   fillColor: string;
   fillEnabled: boolean;

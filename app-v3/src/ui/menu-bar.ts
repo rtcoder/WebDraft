@@ -451,7 +451,7 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
     bar.append(createMenuButton(menu));
   }
 
-  bar.append(createLangSelector(editor));
+  bar.append(createZoomWidget(editor), createLangSelector(editor));
 
   document.addEventListener('click', closeOpenMenu);
   document.addEventListener('keydown', (e) => {
@@ -459,4 +459,43 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
   });
 
   return bar;
+}
+
+function createZoomWidget(editor: WebDraftEditor): HTMLElement {
+  const wrap = document.createElement('div');
+  wrap.className = 'menu-zoom';
+
+  const btnOut = document.createElement('button');
+  btnOut.type = 'button';
+  btnOut.className = 'menu-zoom-btn';
+  btnOut.textContent = '−';
+  btnOut.title = 'Zoom out (Ctrl+−)';
+  btnOut.addEventListener('click', () => editor.zoomOut());
+
+  const label = document.createElement('button');
+  label.type = 'button';
+  label.className = 'menu-zoom-label';
+  label.title = 'Reset zoom (Ctrl+0)';
+  label.addEventListener('click', () => editor.setZoom(1));
+
+  const btnIn = document.createElement('button');
+  btnIn.type = 'button';
+  btnIn.className = 'menu-zoom-btn';
+  btnIn.textContent = '+';
+  btnIn.title = 'Zoom in (Ctrl+=)';
+  btnIn.addEventListener('click', () => editor.zoomIn());
+
+  wrap.append(btnOut, label, btnIn);
+
+  const sync = (): void => {
+    const pct = Math.round(editor.state.zoom * 100);
+    label.textContent = `${pct}%`;
+    btnOut.disabled = editor.state.zoom <= 0.1;
+    btnIn.disabled = editor.state.zoom >= 8;
+  };
+
+  editor.addEventListener('change', sync);
+  sync();
+
+  return wrap;
 }

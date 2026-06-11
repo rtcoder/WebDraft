@@ -44,6 +44,24 @@ export function bindKeyboardShortcuts(editor: WebDraftEditor, options: ShortcutO
       return;
     }
 
+    if (isCommand && (key === '=' || key === '+')) {
+      event.preventDefault();
+      editor.zoomIn();
+      return;
+    }
+
+    if (isCommand && key === '-') {
+      event.preventDefault();
+      editor.zoomOut();
+      return;
+    }
+
+    if (isCommand && key === '0') {
+      event.preventDefault();
+      editor.setZoom(1);
+      return;
+    }
+
     if (isCommand && key === 'c') {
       event.preventDefault();
       editor.copySelection();

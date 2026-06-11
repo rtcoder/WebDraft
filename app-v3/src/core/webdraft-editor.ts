@@ -27,6 +27,8 @@ import {LayerManager} from './layer-manager';
 import {invertPixelBuffer, mirrorPixelBuffer, rotatePixelBuffer} from './layer-transforms';
 import {EditorOptions, EditorState, Point, SizeWithPosition, Tool} from './types';
 
+const ZOOM_STEPS = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4, 6, 8];
+
 export class WebDraftEditor extends EventTarget {
   private readonly root: HTMLElement;
   private readonly layerManager: LayerManager;
@@ -75,6 +77,7 @@ export class WebDraftEditor extends EventTarget {
 
     this.state = {
       activeTool: Tool.Pencil,
+      zoom: 1,
       color: options.color,
       fillColor: '#ffffff',
       fillEnabled: false,
@@ -205,6 +208,22 @@ export class WebDraftEditor extends EventTarget {
   setShadowOffsetY(offset: number): void {
     this.state.shadowOffsetY = Math.min(Math.max(offset, -120), 120);
     this.dispatchChange();
+  }
+
+  setZoom(zoom: number): void {
+    this.state.zoom = Math.min(Math.max(zoom, 0.1), 8);
+    this.applyZoom();
+    this.dispatchChange();
+  }
+
+  zoomIn(): void {
+    const next = ZOOM_STEPS.find((z) => z > this.state.zoom + 0.001);
+    if (next !== undefined) this.setZoom(next);
+  }
+
+  zoomOut(): void {
+    const prev = [...ZOOM_STEPS].reverse().find((z) => z < this.state.zoom - 0.001);
+    if (prev !== undefined) this.setZoom(prev);
   }
 
   resizeCanvas(width: number, height: number, resizeLayersToo = true): void {
@@ -744,6 +763,14 @@ export class WebDraftEditor extends EventTarget {
       this.pendingHistorySnapshot = null;
       this.clearPreview();
     });
+
+    this.eventLayer.addEventListener('wheel', (event) => {
+      if (event.ctrlKey || event.metaKey) {
+        event.preventDefault();
+        if (event.deltaY < 0) this.zoomIn();
+        else this.zoomOut();
+      }
+    }, {passive: false});
   }
 
   private toLayerPoint(p: Point): Point {
@@ -753,10 +780,10 @@ export class WebDraftEditor extends EventTarget {
 
   private getPoint(event: PointerEvent): Point {
     const rect = this.eventLayer.getBoundingClientRect();
-
+    const zoom = this.state.zoom;
     return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
+      x: (event.clientX - rect.left) / zoom,
+      y: (event.clientY - rect.top) / zoom,
     };
   }
 
@@ -782,6 +809,18 @@ export class WebDraftEditor extends EventTarget {
     this.root.style.setProperty('--canvas-height', `${this.state.canvasHeight}px`);
     this.previewCanvas.width = this.state.canvasWidth;
     this.previewCanvas.height = this.state.canvasHeight;
+    this.applyZoom();
+  }
+
+  private applyZoom(): void {
+    const zoom = this.state.zoom;
+    const w = this.state.canvasWidth;
+    const h = this.state.canvasHeight;
+    this.root.style.transform = zoom !== 1 ? `scale(${zoom})` : '';
+    this.root.style.transformOrigin = 'top left';
+    // Expand layout area so workspace scroll reflects the visual size
+    this.root.style.marginRight = zoom > 1 ? `${Math.round(w * (zoom - 1))}px` : '';
+    this.root.style.marginBottom = zoom > 1 ? `${Math.round(h * (zoom - 1))}px` : '';
   }
 
   private get canvasSize(): {width: number; height: number} {

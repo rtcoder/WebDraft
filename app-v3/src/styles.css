@@ -69,7 +69,6 @@ select {
 }
 
 .menu-lang-selector {
-  margin-left: auto;
   display: flex;
   align-items: stretch;
 }
@@ -86,6 +85,55 @@ select {
 .menu-dropdown__item--active button {
   color: #fff;
   background: #2e6fb7;
+}
+
+/* ── Zoom widget ─────────────────────────────────────────── */
+
+.menu-zoom {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  margin-left: auto;
+  padding: 0 6px;
+}
+
+.menu-zoom-btn,
+.menu-zoom-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: #c8cdd4;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.menu-zoom-btn {
+  min-width: 20px;
+  font-size: 15px;
+}
+
+.menu-zoom-btn:hover,
+.menu-zoom-label:hover {
+  background: #2c3038;
+  border-color: #3a4049;
+  color: #f4f7fb;
+}
+
+.menu-zoom-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.menu-zoom-btn:disabled:hover {
+  background: none;
+  border-color: transparent;
 }
 
 .menu-btn {
@@ -191,10 +239,9 @@ select {
 
 .canvas-surface {
   position: relative;
+  flex-shrink: 0;
   width: var(--canvas-width);
   height: var(--canvas-height);
-  max-width: 100%;
-  max-height: calc(100vh - 64px);
   background-color: #f9fafb;
   background-image:
     linear-gradient(45deg, #d6dae0 25%, transparent 25%),
