@@ -941,6 +941,7 @@ input[type="number"].cp-field-input::-webkit-inner-spin-button {
 }
 
 .layer-preview {
+  position: relative;
   display: grid;
   place-items: center;
   padding: 5px;
@@ -958,6 +959,20 @@ input[type="number"].cp-field-input::-webkit-inner-spin-button {
     linear-gradient(-45deg, transparent 75%, #d6dae0 75%);
   background-position: 0 0, 0 4px, 4px -4px, -4px 0;
   background-size: 8px 8px;
+}
+
+.layer-text-badge {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  font-size: 9px;
+  font-weight: bold;
+  line-height: 1;
+  padding: 1px 3px;
+  border-radius: 2px;
+  background: #5b9cff;
+  color: #fff;
+  pointer-events: none;
 }
 
 .layer-name-input {

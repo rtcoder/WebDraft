@@ -22,6 +22,11 @@ export type Size = {
 
 export type SizeWithPosition = Size & Point;
 
+export type TextLayerData = {
+  text: string;
+  bounds: SizeWithPosition;
+};
+
 export type EditorOptions = {
   width: number;
   height: number;

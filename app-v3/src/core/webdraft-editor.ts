@@ -1,4 +1,4 @@
-import type {LayerDocumentSnapshot, LayerSummary} from './layer-manager';
+import type {Layer, LayerDocumentSnapshot, LayerSummary} from './layer-manager';
 import {
   serializeWdraftBinary,
   WDRAFT_VERSION,
@@ -41,6 +41,8 @@ export class WebDraftEditor extends EventTarget {
   private textBounds: SizeWithPosition | null = null;
   private textInput: HTMLTextAreaElement | null = null;
   private skipNextTextPointerDown = false;
+  private editingTextLayer: Layer | null = null;
+  private textEditSnapshot: ImageData | null = null;
   private webPoints: Point[] = [];
   private clipboard: ClipboardSnapshot | null = null;
   private pendingHistorySnapshot: HistorySnapshot | null = null;
@@ -380,6 +382,7 @@ export class WebDraftEditor extends EventTarget {
         visible: l.visible,
         width: l.imageData.width,
         height: l.imageData.height,
+        textData: l.textData,
       })),
     };
     return serializeWdraftBinary(meta, pngBuffers);
@@ -400,6 +403,7 @@ export class WebDraftEditor extends EventTarget {
         visible: l.visible,
         x: 0,
         y: 0,
+        textData: l.textData,
         imageData: imageDataList[i],
       })),
     };
@@ -635,6 +639,15 @@ export class WebDraftEditor extends EventTarget {
         }
 
         this.commitTextInput();
+
+        const activeLayer = this.layerManager.activeLayer;
+        if (activeLayer.textData) {
+          this.enterTextEditMode(activeLayer);
+          this.isDrawing = false;
+          this.lastPoint = null;
+          return;
+        }
+
         this.textStartPoint = this.lastPoint;
         this.textBounds = null;
         this.clearPreview();
@@ -912,6 +925,14 @@ export class WebDraftEditor extends EventTarget {
 
       if (event.key === 'Escape') {
         event.preventDefault();
+        const cancelLayer = this.editingTextLayer;
+        const cancelSnapshot = this.textEditSnapshot;
+        this.editingTextLayer = null;
+        this.textEditSnapshot = null;
+        this.textBounds = null;
+        if (cancelLayer && cancelSnapshot) {
+          cancelLayer.context.putImageData(cancelSnapshot, 0, 0);
+        }
         this.removeTextInput();
         this.clearPreview();
       }
@@ -933,23 +954,52 @@ export class WebDraftEditor extends EventTarget {
 
     const value = this.textInput.value.trimEnd();
     const bounds = this.textBounds;
+    const editingLayer = this.editingTextLayer;
+    const snapshot = this.textEditSnapshot;
 
     this.removeTextInput();
     this.clearPreview();
     this.skipNextTextPointerDown = options.skipNextPointerDown ?? false;
+    this.textBounds = null;
+    this.editingTextLayer = null;
+    this.textEditSnapshot = null;
 
     if (!value.trim()) {
-      this.textBounds = null;
+      if (editingLayer && snapshot) {
+        editingLayer.context.putImageData(snapshot, 0, 0);
+      }
       return;
     }
 
     const before = this.captureHistorySnapshot();
-    const { context, x: lx, y: ly } = this.layerManager.activeLayer;
-    const layerBounds = { x: bounds.x - lx, y: bounds.y - ly, width: bounds.width, height: bounds.height };
 
-    drawText(context, value, layerBounds, this.state);
+    if (editingLayer) {
+      const { context, x: lx, y: ly } = editingLayer;
+      drawText(context, value, { x: bounds.x - lx, y: bounds.y - ly, width: bounds.width, height: bounds.height }, this.state);
+      editingLayer.textData = { text: value, bounds };
+      editingLayer.name = `T: ${value.slice(0, 18)}`;
+    } else {
+      const newLayer = this.layerManager.createLayer(this.state.canvasWidth, this.state.canvasHeight);
+      drawText(newLayer.context, value, bounds, this.state);
+      newLayer.textData = { text: value, bounds };
+      newLayer.name = `T: ${value.slice(0, 18)}`;
+    }
+
     this.pushHistory(before, this.captureHistorySnapshot());
-    this.textBounds = null;
+    this.dispatchChange();
+  }
+
+  private enterTextEditMode(layer: Layer): void {
+    if (!layer.textData) return;
+    this.textEditSnapshot = layer.context.getImageData(0, 0, layer.canvas.width, layer.canvas.height);
+    layer.context.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
+    this.textBounds = layer.textData.bounds;
+    this.editingTextLayer = layer;
+    this.createTextInput(layer.textData.bounds);
+    if (this.textInput) {
+      this.textInput.value = layer.textData.text;
+      this.textInput.select();
+    }
   }
 
   private removeTextInput(): void {

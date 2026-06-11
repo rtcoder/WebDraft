@@ -108,6 +108,7 @@ export type LayersTranslations = {
   renameLayer: string;
   hideLayer: string;
   showLayer: string;
+  textLayer: string;
 };
 export type CameraTranslations = {
   title: string;

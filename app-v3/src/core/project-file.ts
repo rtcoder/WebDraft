@@ -1,7 +1,9 @@
-export const WDRAFT_VERSION = 2;
+export const WDRAFT_VERSION = 3;
 export const WDRAFT_MAGIC = [0x57, 0x44, 0x46, 0x54] as const; // "WDFT"
 export const WDRAFT_MIME_TYPE = 'application/x-webdraft';
 export const WDRAFT_EXTENSION = '.wdraft';
+
+import type { TextLayerData } from './types';
 
 export type WdraftLayerMeta = {
   id: string;
@@ -9,6 +11,7 @@ export type WdraftLayerMeta = {
   visible: boolean;
   width: number;
   height: number;
+  textData?: TextLayerData;
 };
 
 export type WdraftFileMeta = {
@@ -33,6 +36,7 @@ export function serializeWdraftBinary(meta: WdraftFileMeta, pngBuffers: Uint8Arr
   const layerStrings = meta.layers.map((l) => ({
     id: enc.encode(l.id),
     name: enc.encode(l.name),
+    textDataJson: l.textData ? enc.encode(JSON.stringify(l.textData)) : null,
   }));
 
   // Calculate total size
@@ -46,13 +50,15 @@ export function serializeWdraftBinary(meta: WdraftFileMeta, pngBuffers: Uint8Arr
     2; // layer entries count
 
   for (let i = 0; i < meta.layers.length; i++) {
+    const td = layerStrings[i].textDataJson;
     size +=
       2 + layerStrings[i].id.length +
       2 + layerStrings[i].name.length +
       1 + // visible
       4 + // width
       4 + // height
-      4 + pngBuffers[i].length; // png data length + data
+      4 + pngBuffers[i].length + // png data length + data
+      2 + (td ? td.length : 0); // textData length + data (0 = none)
   }
 
   const buffer = new ArrayBuffer(size);
@@ -61,62 +67,46 @@ export function serializeWdraftBinary(meta: WdraftFileMeta, pngBuffers: Uint8Arr
 
   let offset = 0;
 
-  // Magic
-  for (const byte of WDRAFT_MAGIC) {
-    bytes[offset++] = byte;
-  }
-
-  // Version
+  for (const byte of WDRAFT_MAGIC) bytes[offset++] = byte;
   bytes[offset++] = WDRAFT_VERSION;
 
-  // Canvas dimensions
-  view.setUint32(offset, meta.canvasWidth, true);
-  offset += 4;
-  view.setUint32(offset, meta.canvasHeight, true);
-  offset += 4;
+  view.setUint32(offset, meta.canvasWidth, true); offset += 4;
+  view.setUint32(offset, meta.canvasHeight, true); offset += 4;
+  view.setUint32(offset, meta.layerCount, true); offset += 4;
 
-  // Internal layer counter
-  view.setUint32(offset, meta.layerCount, true);
-  offset += 4;
+  view.setUint16(offset, activeLayerIdBytes.length, true); offset += 2;
+  bytes.set(activeLayerIdBytes, offset); offset += activeLayerIdBytes.length;
 
-  // Active layer ID
-  view.setUint16(offset, activeLayerIdBytes.length, true);
-  offset += 2;
-  bytes.set(activeLayerIdBytes, offset);
-  offset += activeLayerIdBytes.length;
+  view.setUint16(offset, meta.layers.length, true); offset += 2;
 
-  // Layer entries count
-  view.setUint16(offset, meta.layers.length, true);
-  offset += 2;
-
-  // Layers
   for (let i = 0; i < meta.layers.length; i++) {
     const layer = meta.layers[i];
     const idBytes = layerStrings[i].id;
     const nameBytes = layerStrings[i].name;
+    const td = layerStrings[i].textDataJson;
     const png = pngBuffers[i];
 
-    view.setUint16(offset, idBytes.length, true);
-    offset += 2;
-    bytes.set(idBytes, offset);
-    offset += idBytes.length;
+    view.setUint16(offset, idBytes.length, true); offset += 2;
+    bytes.set(idBytes, offset); offset += idBytes.length;
 
-    view.setUint16(offset, nameBytes.length, true);
-    offset += 2;
-    bytes.set(nameBytes, offset);
-    offset += nameBytes.length;
+    view.setUint16(offset, nameBytes.length, true); offset += 2;
+    bytes.set(nameBytes, offset); offset += nameBytes.length;
 
     bytes[offset++] = layer.visible ? 1 : 0;
 
-    view.setUint32(offset, layer.width, true);
-    offset += 4;
-    view.setUint32(offset, layer.height, true);
-    offset += 4;
+    view.setUint32(offset, layer.width, true); offset += 4;
+    view.setUint32(offset, layer.height, true); offset += 4;
 
-    view.setUint32(offset, png.length, true);
-    offset += 4;
-    bytes.set(png, offset);
-    offset += png.length;
+    view.setUint32(offset, png.length, true); offset += 4;
+    bytes.set(png, offset); offset += png.length;
+
+    // v3: textData (2-byte length, 0 = no text data)
+    const tdLen = td ? td.length : 0;
+    view.setUint16(offset, tdLen, true); offset += 2;
+    if (td && tdLen > 0) {
+      bytes.set(td, offset);
+      offset += tdLen;
+    }
   }
 
   return new Blob([buffer], {type: WDRAFT_MIME_TYPE});
@@ -141,7 +131,7 @@ export function parseWdraftBinary(buffer: ArrayBuffer): ParsedWdraftFile {
 
   // Version
   const version = bytes[offset++];
-  if (version !== WDRAFT_VERSION) {
+  if (version !== 2 && version !== WDRAFT_VERSION) {
     throw new Error(`Unsupported .wdraft version: ${version}. Expected ${WDRAFT_VERSION}.`);
   }
 
@@ -190,7 +180,21 @@ export function parseWdraftBinary(buffer: ArrayBuffer): ParsedWdraftFile {
     const png = bytes.slice(offset, offset + pngLen);
     offset += pngLen;
 
-    layers.push({id, name, visible, width, height});
+    let textData: TextLayerData | undefined;
+    if (version >= 3) {
+      const tdLen = view.getUint16(offset, true);
+      offset += 2;
+      if (tdLen > 0) {
+        try {
+          textData = JSON.parse(dec.decode(bytes.subarray(offset, offset + tdLen))) as TextLayerData;
+        } catch {
+          // malformed textData — ignore
+        }
+        offset += tdLen;
+      }
+    }
+
+    layers.push({id, name, visible, width, height, textData});
     pngBuffers.push(png);
   }
 

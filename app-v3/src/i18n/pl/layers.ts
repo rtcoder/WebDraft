@@ -11,4 +11,5 @@ export const layersTranslations: LayersTranslations = {
   renameLayer: 'Zmień nazwę warstwy',
   hideLayer: 'Ukryj warstwę',
   showLayer: 'Pokaż warstwę',
+  textLayer: 'Warstwa tekstowa',
 };

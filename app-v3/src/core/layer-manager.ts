@@ -1,5 +1,7 @@
 import {t} from './i18n.ts';
-import {SizeWithPosition} from './types.ts';
+import type {SizeWithPosition, TextLayerData} from './types.ts';
+
+export type { TextLayerData };
 
 export type Layer = {
   id: string;
@@ -9,6 +11,7 @@ export type Layer = {
   visible: boolean;
   x: number;
   y: number;
+  textData?: TextLayerData;
 };
 
 export type LayerSummary = {
@@ -17,6 +20,7 @@ export type LayerSummary = {
   active: boolean;
   preview: string;
   visible: boolean;
+  isTextLayer: boolean;
 };
 
 type LayerSnapshot = {
@@ -35,6 +39,7 @@ type LayerSnapshotWithMetadata = LayerSnapshot & {
   visible: boolean;
   x: number;
   y: number;
+  textData?: TextLayerData;
 };
 
 export class LayerManager {
@@ -68,7 +73,8 @@ export class LayerManager {
         name: layer.name,
         active: layer.id === this.activeLayerId,
         preview: layer.canvas.toDataURL('image/png'),
-        visible: layer.visible
+        visible: layer.visible,
+        isTextLayer: !!layer.textData,
       }))
       .reverse();
   }
@@ -155,6 +161,7 @@ export class LayerManager {
         visible: layer.visible,
         x: layer.x,
         y: layer.y,
+        textData: layer.textData,
         imageData: layer.context.getImageData(0, 0, layer.canvas.width, layer.canvas.height),
       })),
     };
@@ -191,6 +198,7 @@ export class LayerManager {
         visible: layerSnapshot.visible,
         x: layerSnapshot.x ?? 0,
         y: layerSnapshot.y ?? 0,
+        textData: layerSnapshot.textData,
       };
       this.syncLayerStyle(layer);
       this.layers.push(layer);

@@ -66,6 +66,14 @@ export function createLayersPanel(editor: WebDraftEditor): HTMLElement {
         visibilityButton.textContent = layer.visible ? '●' : '○';
         visibilityButton.addEventListener('click', () => editor.toggleLayerVisibility(layer.id));
 
+        if (layer.isTextLayer) {
+          const badge = document.createElement('span');
+          badge.className = 'layer-text-badge';
+          badge.textContent = 'T';
+          badge.title = t.layers.textLayer;
+          previewButton.append(badge);
+        }
+
         item.append(previewButton, renameInput, visibilityButton);
 
         return item;
