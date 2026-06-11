@@ -10,4 +10,5 @@ export const imageTranslations: ImageTranslations = {
   widthPrompt: 'Szerokość (px):',
   heightPrompt: 'Wysokość (px):',
   resizedOk: (w, h) => `Płótno: ${w}\u00d7${h}`,
+  applyToAllLayers: 'Zastosuj do wszystkich warstw',
 };

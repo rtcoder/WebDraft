@@ -36,6 +36,7 @@ export type ImageTranslations = {
   widthPrompt: string;
   heightPrompt: string;
   resizedOk: (w: number, h: number) => string;
+  applyToAllLayers: string;
 };
 export type LayerTranslations = {
   new: string;
@@ -44,6 +45,8 @@ export type LayerTranslations = {
   moveDown: string;
   addedOk: string;
   deletedOk: string;
+  resize: string;
+  layerResizedOk: (w: number, h: number) => string;
 };
 export type ToolbarTranslations = {
   toolSelect: string;

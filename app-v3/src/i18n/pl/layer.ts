@@ -7,4 +7,6 @@ export const layerTranslations: LayerTranslations = {
   moveDown: 'Przesuń warstwę w dół',
   addedOk: 'Warstwa dodana.',
   deletedOk: 'Warstwa usunięta.',
+  resize: 'Zmień rozmiar warstwy\u2026',
+  layerResizedOk: (w, h) => `Warstwa: ${w}\u00d7${h}`,
 };

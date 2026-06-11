@@ -7,4 +7,6 @@ export const layerTranslations: LayerTranslations = {
   moveDown: 'Move Layer Down',
   addedOk: 'Layer added.',
   deletedOk: 'Layer deleted.',
+  resize: 'Resize Layer\u2026',
+  layerResizedOk: (w, h) => `Layer: ${w}\u00d7${h}`,
 };

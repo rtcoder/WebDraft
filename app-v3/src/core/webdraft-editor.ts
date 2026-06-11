@@ -118,6 +118,22 @@ export class WebDraftEditor extends EventTarget {
     return this.clipboard !== null;
   }
 
+  get canvasWidth(): number {
+    return this.state.canvasWidth;
+  }
+
+  get canvasHeight(): number {
+    return this.state.canvasHeight;
+  }
+
+  get activeLayerWidth(): number {
+    return this.layerManager.activeLayer.canvas.width;
+  }
+
+  get activeLayerHeight(): number {
+    return this.layerManager.activeLayer.canvas.height;
+  }
+
   setTool(tool: Tool): void {
     this.commitTextInput();
     this.state.activeTool = tool;
@@ -207,7 +223,7 @@ export class WebDraftEditor extends EventTarget {
     this.dispatchChange();
   }
 
-  resizeCanvas(width: number, height: number): void {
+  resizeCanvas(width: number, height: number, resizeLayersToo = true): void {
     this.commitTextInput();
     this.clearSelection();
 
@@ -221,10 +237,36 @@ export class WebDraftEditor extends EventTarget {
     const before = this.captureHistorySnapshot();
     this.state.canvasWidth = nextWidth;
     this.state.canvasHeight = nextHeight;
-    this.layerManager.resizeLayers(nextWidth, nextHeight);
+    if (resizeLayersToo) this.layerManager.resizeLayers(nextWidth, nextHeight);
     this.applyCanvasSize();
     this.clipboard = null;
     this.pushHistory(before, this.captureHistorySnapshot());
+  }
+
+  resizeActiveLayer(width: number, height: number): void {
+    this.commitTextInput();
+    this.clearSelection();
+
+    const nextWidth = Math.min(Math.max(Math.round(width), 1), 8192);
+    const nextHeight = Math.min(Math.max(Math.round(height), 1), 8192);
+
+    const before = this.captureHistorySnapshot();
+    const layer = this.layerManager.activeLayer;
+    const source = document.createElement('canvas');
+    const sourceCtx = source.getContext('2d');
+
+    if (!sourceCtx) throw new Error('Canvas 2D context is unavailable.');
+
+    source.width = layer.canvas.width;
+    source.height = layer.canvas.height;
+    sourceCtx.drawImage(layer.canvas, 0, 0);
+    layer.canvas.width = nextWidth;
+    layer.canvas.height = nextHeight;
+    layer.context.clearRect(0, 0, nextWidth, nextHeight);
+    layer.context.drawImage(source, 0, 0);
+    this.layerManager.syncActiveLayerStyle();
+    this.pushHistory(before, this.captureHistorySnapshot());
+    this.dispatchChange();
   }
 
   clear(): void {

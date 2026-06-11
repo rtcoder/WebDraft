@@ -5,6 +5,7 @@ import type { WebDraftEditor } from '../core/webdraft-editor';
 import type { StatusReporter } from './status-toasts';
 import { getErrorMessage } from './status-toasts';
 import { saveStateForReload } from './lang-state';
+import { openResizeDialog } from './resize-dialog';
 
 type MenuItem =
   | { type: 'action'; label: string; action: () => void; shortcut?: string; disabled?: () => boolean }
@@ -353,14 +354,17 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
           type: 'action',
           label: t.image.resizeCanvas,
           action: () => {
-            const w = prompt(t.image.widthPrompt, '900');
-            const h = prompt(t.image.heightPrompt, '620');
-            const nw = parseInt(w ?? '', 10);
-            const nh = parseInt(h ?? '', 10);
-            if (nw > 0 && nh > 0) {
-              editor.resizeCanvas(nw, nh);
-              status.show(t.image.resizedOk(nw, nh), 'success');
-            }
+            openResizeDialog({
+              title: t.image.resizeCanvas,
+              width: editor.canvasWidth,
+              height: editor.canvasHeight,
+              checkboxLabel: t.image.applyToAllLayers,
+              checkboxChecked: true,
+              onConfirm: (w, h, all) => {
+                editor.resizeCanvas(w, h, all);
+                status.show(t.image.resizedOk(w, h), 'success');
+              },
+            });
           },
         },
         { type: 'separator' },
@@ -422,6 +426,22 @@ export function createMenuBar(editor: WebDraftEditor, status: StatusReporter): H
           type: 'action',
           label: t.layer.moveDown,
           action: () => editor.moveActiveLayerDown(),
+        },
+        { type: 'separator' },
+        {
+          type: 'action',
+          label: t.layer.resize,
+          action: () => {
+            openResizeDialog({
+              title: t.layer.resize,
+              width: editor.activeLayerWidth,
+              height: editor.activeLayerHeight,
+              onConfirm: (w, h) => {
+                editor.resizeActiveLayer(w, h);
+                status.show(t.layer.layerResizedOk(w, h), 'success');
+              },
+            });
+          },
         },
       ],
     },
