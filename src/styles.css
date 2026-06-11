@@ -1179,61 +1179,80 @@ input[type="number"].cp-field-input::-webkit-inner-spin-button {
 }
 
 @media (max-width: 760px) {
+  .app-wrap {
+    height: 100dvh;
+  }
+
   .app-shell {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr) auto;
-    min-height: 100svh;
+    overflow: hidden;
   }
+
+  /* ── Left sidebar: compact horizontal scroll strip ── */
 
   .sidebar {
     width: 100%;
-    min-height: 0;
-    max-height: none;
     overflow: hidden;
     border-right: 0;
     border-bottom: 1px solid #343941;
+    flex-shrink: 0;
   }
 
-  .right-panel {
-    min-height: 0;
-    max-height: none;
-    border-left: 0;
-    border-top: 1px solid #343941;
-  }
-
-  .toolbar {
+  .sidebar .toolbar {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
-    min-width: 0;
-    gap: 10px;
+    gap: 8px;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 10px;
-    scroll-snap-type: x proximity;
+    padding: 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
 
-  .toolbar h1 {
-    flex: 0 0 auto;
-    padding: 0 8px 0 0;
+  .sidebar .toolbar::-webkit-scrollbar {
+    display: none;
   }
 
-  .toolbar__section {
-    flex: 0 0 min(280px, 82vw);
+  .sidebar .toolbar h1 {
+    display: none;
+  }
+
+  .sidebar .toolbar__section {
+    flex: 0 0 min(260px, 84vw);
     scroll-snap-align: start;
+    max-height: 190px;
+    overflow-y: auto;
+    overscroll-behavior-x: contain;
   }
 
-  .toolbar__group {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .sidebar .toolbar__group {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
+
+  /* ── Canvas ── */
 
   .workspace {
     padding: 16px;
   }
 
+  /* ── Right panel: vertical layout with capped height ── */
+
+  .right-panel {
+    max-height: 260px;
+    overflow-y: auto;
+    border-left: 0;
+    border-top: 1px solid #343941;
+    flex-shrink: 0;
+  }
+
   .layers-panel {
     min-width: 0;
   }
+
+  /* ── Status toasts ── */
 
   .status-toasts {
     right: 10px;
@@ -1248,8 +1267,8 @@ input[type="number"].cp-field-input::-webkit-inner-spin-button {
 }
 
 @media (max-width: 480px) {
-  .toolbar__section {
-    flex-basis: min(252px, 86vw);
+  .sidebar .toolbar__section {
+    flex-basis: min(240px, 88vw);
   }
 }
 
